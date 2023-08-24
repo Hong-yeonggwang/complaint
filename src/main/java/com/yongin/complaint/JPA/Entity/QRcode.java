@@ -32,7 +32,7 @@ public class QRcode {
     @Column(name = "USE_DATE")
     private LocalDateTime useDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_SEQ_FK")
     private Member owner;
 }

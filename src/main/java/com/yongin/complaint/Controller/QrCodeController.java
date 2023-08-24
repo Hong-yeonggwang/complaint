@@ -6,13 +6,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/qrcode")
 public class QrCodeController {
 
-    @PostMapping(value = "/coupon")
+    @PostMapping(value = "/coupon") // 쿠폰 생성
     public void couponTicket(@RequestBody String hello){
         System.out.println(hello);
     }
 
-    @PostMapping(value = "/purchase")
+    @PostMapping(value = "/purchase") //쿠폰 구매
     public void purchaseTicket(){
 
+    }
+    @DeleteMapping(value = "/coupon") // 쿠폰 사용
+    public void useCoupon(){}
+
+    @PutMapping // "/qrcode" qrcode 사용
+    public void useQrCode(){
+        System.out.println("asdas");
     }
 }

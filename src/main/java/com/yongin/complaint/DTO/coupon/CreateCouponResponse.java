@@ -1,4 +1,4 @@
-package com.yongin.complaint.DTO.coupon.coupon;
+package com.yongin.complaint.DTO.coupon;
 
 import lombok.*;
 
