@@ -24,7 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/sign-api/**").permitAll()
-                .antMatchers("/qrcode/**").permitAll()
+                .antMatchers("/qrcode/**","/qrcode").permitAll()
                 .antMatchers("**excetion**").permitAll()
                 .anyRequest().hasRole("ADMIN")
                 .and()

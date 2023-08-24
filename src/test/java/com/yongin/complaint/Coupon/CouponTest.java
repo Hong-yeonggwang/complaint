@@ -1,16 +1,15 @@
 package com.yongin.complaint.Coupon;
 
-import com.yongin.complaint.DAO.CouponDAO;
-import com.yongin.complaint.DTO.coupon.coupon.CreateCouponResponse;
+import com.yongin.complaint.DTO.coupon.CreateCouponResponse;
 import com.yongin.complaint.Service.coupon.CouponService;
 import com.yongin.complaint.Service.coupon.Impl.CouponServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @SpringBootTest
 public class CouponTest{
@@ -47,6 +46,22 @@ public class CouponTest{
         CouponServiceImpl.CouponGenerator test = new CouponServiceImpl.CouponGenerator();
         test.generateRandomCoupon();
 
+    }
+
+    @Test
+    public void test(){
+        String input = "helloWorld";
+        try {
+            MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = sha256Digest.digest(input.getBytes());
+
+            // Convert the byte array to a hexadecimal string
+            String hashHex = DatatypeConverter.printHexBinary(hashBytes).toLowerCase();
+
+            System.out.println(hashHex);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 }
 
