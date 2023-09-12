@@ -1,6 +1,6 @@
 package com.yongin.complaint.Coupon;
 
-import com.yongin.complaint.DTO.coupon.CreateCouponResponse;
+import com.yongin.complaint.Payload.response.CreateCouponResponse;
 import com.yongin.complaint.Service.coupon.CouponService;
 import com.yongin.complaint.Service.coupon.Impl.CouponServiceImpl;
 import org.junit.jupiter.api.Test;

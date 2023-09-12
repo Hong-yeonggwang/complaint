@@ -1,6 +1,6 @@
 package com.yongin.complaint.Service.coupon;
 
-import com.yongin.complaint.DTO.coupon.CreateCouponResponse;
+import com.yongin.complaint.Payload.response.CreateCouponResponse;
 
 public interface CouponService {
 

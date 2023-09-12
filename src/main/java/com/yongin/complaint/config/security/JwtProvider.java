@@ -1,5 +1,6 @@
 package com.yongin.complaint.config.security;
 
+import com.yongin.complaint.Service.security.MemberDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtProvider {
     private final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
-    private final UserDetailsService userDetailsService;
+    private final MemberDetailsService memberDetailsService;
 
     @Value("spring.jwt.secret")
     private String secretKey = "secretKey";
@@ -57,7 +57,7 @@ public class JwtProvider {
     }
     public Authentication getAuthentication(String token){
         LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 시작");
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token));
+        UserDetails userDetails = memberDetailsService.loadUserByUsername(this.getUsername(token));
         LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 완료, UserDetails UserName :{}",userDetails.getUsername());
         return new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
     }

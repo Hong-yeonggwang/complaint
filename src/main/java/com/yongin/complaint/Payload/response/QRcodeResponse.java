@@ -1,4 +1,4 @@
-package com.yongin.complaint.DTO.QRcode;
+package com.yongin.complaint.Payload.response;
 
 import com.yongin.complaint.QRcodeGenerater.QRcodeGenerater;
 import lombok.*;
@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QRcodeResponseDTO {
+public class QRcodeResponse {
     private String msg;
     private QRcodeGenerater qRcode;
 }

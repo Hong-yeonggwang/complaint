@@ -24,7 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/sign-api/**").permitAll()
-                .antMatchers("/qrcode/**","/qrcode").permitAll()
+                .antMatchers("/auth/sign-in","/auth/sign-up").permitAll()
                 .antMatchers("**excetion**").permitAll()
                 .anyRequest().hasRole("ADMIN")
                 .and()
@@ -37,6 +37,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity webSecurity){
-        webSecurity.ignoring().antMatchers("/qrcode/**");
+        webSecurity.ignoring().antMatchers("/q");
     }
 }

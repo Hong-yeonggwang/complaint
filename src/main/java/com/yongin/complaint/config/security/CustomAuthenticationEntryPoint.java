@@ -1,7 +1,7 @@
 package com.yongin.complaint.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yongin.complaint.DTO.security.EntryPointErrorResponse;
+import com.yongin.complaint.Payload.response.EntryPointErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.web.AuthenticationEntryPoint;

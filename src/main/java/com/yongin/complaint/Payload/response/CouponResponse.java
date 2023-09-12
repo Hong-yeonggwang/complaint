@@ -1,4 +1,4 @@
-package com.yongin.complaint.DTO.coupon;
+package com.yongin.complaint.Payload.response;
 
 import lombok.Getter;
 import lombok.Setter;

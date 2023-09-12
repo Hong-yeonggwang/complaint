@@ -1,4 +1,4 @@
-package com.yongin.complaint.DTO.security;
+package com.yongin.complaint.Payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SignUpResultDTO {
+public class SignUpResponse {
     private boolean success;
     private int code;
     private String msg;

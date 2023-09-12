@@ -1,10 +1,11 @@
 package com.yongin.complaint.Service.security;
 
 
-import com.yongin.complaint.DTO.security.SignInResultDTO;
-import com.yongin.complaint.DTO.security.SignUpResultDTO;
+import com.yongin.complaint.Payload.response.SignInResponse;
+import com.yongin.complaint.Payload.requset.SignUpRequest;
+import com.yongin.complaint.Payload.response.SignUpResponse;
 
 public interface SignService {
-    SignUpResultDTO signUp(String id, String password, String name, String role);
-    SignInResultDTO signIn(String id, String password) throws RuntimeException;
+    SignUpResponse signUp(SignUpRequest signUpRequest);
+    SignInResponse signIn(String id, String password) throws RuntimeException;
 }

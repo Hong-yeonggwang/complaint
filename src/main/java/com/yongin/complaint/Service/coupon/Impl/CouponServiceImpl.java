@@ -1,7 +1,7 @@
 package com.yongin.complaint.Service.coupon.Impl;
 
 import com.yongin.complaint.DAO.CouponDAO;
-import com.yongin.complaint.DTO.coupon.CreateCouponResponse;
+import com.yongin.complaint.Payload.response.CreateCouponResponse;
 import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Service.coupon.CouponService;

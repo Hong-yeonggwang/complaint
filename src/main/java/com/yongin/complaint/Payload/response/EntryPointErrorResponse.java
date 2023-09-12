@@ -1,4 +1,4 @@
-package com.yongin.complaint.DTO.security;
+package com.yongin.complaint.Payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -30,4 +30,14 @@ public class RepositoryTest {
     public void TestQrcodeSelect(){
         System.out.println(qRcodeRepository.existsQRcode("11d4ddc357e0bfd226b6e1c2aac018d076a54da4f65e1dc8180684ac3"));
     }
+
+    @Test
+    public void testQrcodeUseDateNull(){
+        System.out.println(qRcodeRepository.existsQRcode("11d4ddc357e0822968dbfd226b6e1c2aac018d076a54da4f65e1dc8180684ac3").getUseDate());
+    }
+
+    @Test
+    public void testGetById(){
+        System.out.println(memberRepository.getById("123").getId());
+    }
 }
