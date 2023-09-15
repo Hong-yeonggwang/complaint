@@ -38,6 +38,9 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 
+	//classpath 꼬임 새로운 버전으로 대체 2023 9 15 업데이트 되면서 지원중단된듯.
+	implementation 'net.bytebuddy:byte-buddy-gradle-plugin:1.14.8'
+
 }
 
 tasks.named('test') {
