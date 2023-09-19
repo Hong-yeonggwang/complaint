@@ -52,6 +52,12 @@ public class SignController {
         throw new RuntimeException("접근이 금지되었습니다.");
     }
 
+    @PostMapping(value = "")
+    public Boolean checkToken(){
+        LOGGER.info("[checkToken]: 사용자가 토큰 검증만을 요구하고 있습니다.");
+        return true;
+    }
+
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<Map<String,String>> ExceptionHandler(RuntimeException e){
         HttpHeaders responseHeaders = new HttpHeaders();
