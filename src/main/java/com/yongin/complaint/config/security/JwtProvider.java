@@ -28,8 +28,8 @@ public class JwtProvider {
     private final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
     private final MemberDetailsService memberDetailsService;
 
-    @Value("spring.jwt.secret")
-    private String secretKey = "secretKey";
+    @Value("${spring.jwt.secret}")
+    private String secretKey;
     private final long tokenValidMillisecond = 1000L*60*60;
 
     @PostConstruct // 의존성이 주입된 이후 시작되는 메서드.
@@ -65,7 +65,15 @@ public class JwtProvider {
     public String getUsername (String token){
         LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
         String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-        LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료, info:{}");
+        LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료, info:{}",info);
+        LOGGER.info("[getUsername]",Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody());
+        return info;
+    }
+
+    public String getUserInfo(String token){
+        LOGGER.info("[getUserInfo] 회원 정보 추출");
+        String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        LOGGER.info("[getUserInfo] 회원 정보 추출, info:{}");
         System.out.println(info);
         System.out.println(token);
         return info;
@@ -85,4 +93,5 @@ public class JwtProvider {
             return false;
         }
     }
+
 }
