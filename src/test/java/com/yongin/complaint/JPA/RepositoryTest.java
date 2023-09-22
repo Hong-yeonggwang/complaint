@@ -23,7 +23,8 @@ public class RepositoryTest {
     @Test
     public void selectTest(){
         Coupon a = couponRepository.getBySerial("12312asdad");
-        System.out.println(a.getQrCodeCategory().getPrice());
+        a.setSerial("123");
+        couponRepository.save(a);
     }
 
     @Test

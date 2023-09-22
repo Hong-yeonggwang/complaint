@@ -1,6 +1,7 @@
 package com.yongin.complaint.Controller;
 
 import com.yongin.complaint.Payload.requset.SignInRequest;
+import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,15 @@ public class SignController {
         LOGGER.info("[signUp] 회원가입을 수행합니다.");
         SignUpResponse signUpResponse = signService.signUp(signUpRequest);
         LOGGER.info("[signUp] 회원가입 완료.");
+        return signUpResponse;
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(value = "/sing-ip/admin")
+    public SignUpResponse signUpAdmin(@Validated @RequestBody SignUpAdminRequest signUpAdminRequest){
+        LOGGER.info("[signUpAdmin] 관리자 아이디를 생성을 시작합니다.");
+        SignUpResponse signUpResponse = signService.signUpAdmin(signUpAdminRequest);
+        LOGGER.info("[signUpAdmin] 회원가입 완료.");
         return signUpResponse;
     }
     @GetMapping(value = "/exception")

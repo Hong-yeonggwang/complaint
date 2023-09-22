@@ -25,6 +25,10 @@ public class QRcodeServiceImpl implements QRcodeService {
 
         if(qrCode == null){
             //디비에 존재하지 않는 시리얼 넘버임.
+            return QRcodeResponse.builder()
+                    .msg("유효하지 않는 qrcode입니다.")
+                    .qRcode(null)
+                    .build();
         }
         else if(qrCode != null && qrCode.getUseDate() != null){ // 디비에 존재하는 시리얼이고 사용되지 않는 시리얼 넘버임.
             //디비에 존재하는 시리얼 넘버임.

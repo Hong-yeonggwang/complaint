@@ -1,6 +1,7 @@
 package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
+import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -38,7 +39,8 @@ public class SignServiceImpl implements SignService {
                 .id(signUpRequest.getId())
                 .name(signUpRequest.getName())
                 .pwd(passwordEncoder.encode(signUpRequest.getPassword()))
-                .roles((Collections.singletonList("ROLE_ADMIN")))
+                .roles((Collections.singletonList("USER")))
+                .phoneNumber(signUpRequest.getPhoneNumber())
                 .nickName(signUpRequest.getNickName())
                 .birth(signUpRequest.getBirth())
                 .major(signUpRequest.getMajor())
@@ -78,6 +80,32 @@ public class SignServiceImpl implements SignService {
         LOGGER.info("[getSignInResult] SignInResultDto 객체에 값 주입");
         setSuccessResult(signInResultDTO);
         return signInResultDTO;
+    }
+
+    @Override
+    public SignUpResponse signUpAdmin(SignUpAdminRequest signUpAdminRequest) {
+        LOGGER.info("[signUpAdmin] 회원 가입 정보 전달");
+        Member member;
+        member = Member.builder()
+                .id(signUpAdminRequest.getId())
+                .name(signUpAdminRequest.getName())
+                .pwd(passwordEncoder.encode(signUpAdminRequest.getPassword()))
+                .roles((Collections.singletonList(signUpAdminRequest.getRole())))
+                .phoneNumber(signUpAdminRequest.getPhoneNumber())
+                .build();
+
+        Member savedAdmin = memberRepository.save(member);
+        SignUpResponse signUpResponse = new SignUpResponse();
+
+        LOGGER.info("[signUpAdmin] adminEntity 값이 들어왔는지 확인 후 결과값 주입");
+        if(!savedAdmin.getName().isEmpty()){
+            LOGGER.info("[signUpAdmin] 정상 처리 완료 ");
+            setSuccessResult(signUpResponse);
+        }else{
+            LOGGER.info("[signUpAdmin] 실패 처리 완료 ");
+            setFailResult(signUpResponse);
+        }
+        return signUpResponse;
     }
 
     private void setSuccessResult(SignUpResponse result){
