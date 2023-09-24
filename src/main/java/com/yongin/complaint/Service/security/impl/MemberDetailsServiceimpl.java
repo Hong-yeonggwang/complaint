@@ -1,4 +1,4 @@
-package com.yongin.complaint.Service.security.Impl;
+package com.yongin.complaint.Service.security.impl;
 
 import com.yongin.complaint.JPA.Repository.MemberRepository;
 import com.yongin.complaint.Service.security.MemberDetailsService;
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MemberDetailsServiceImpl implements MemberDetailsService {
-    private final Logger LOGGER = LoggerFactory.getLogger(MemberDetailsServiceImpl.class);
+public class MemberDetailsServiceimpl implements MemberDetailsService {
+    private final Logger LOGGER = LoggerFactory.getLogger(MemberDetailsServiceimpl.class);
 
     private final MemberRepository memberRepository;
 

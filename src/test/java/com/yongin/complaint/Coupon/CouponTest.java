@@ -2,7 +2,7 @@ package com.yongin.complaint.Coupon;
 
 import com.yongin.complaint.Payload.response.CreateCouponResponse;
 import com.yongin.complaint.Service.coupon.CouponService;
-import com.yongin.complaint.Service.coupon.Impl.CouponServiceImpl;
+import com.yongin.complaint.Service.coupon.impl.CouponServiceimpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,7 +43,7 @@ public class CouponTest{
 
     @Test
     public void testCoupon(){
-        CouponServiceImpl.CouponGenerator test = new CouponServiceImpl.CouponGenerator();
+        CouponServiceimpl.CouponGenerator test = new CouponServiceimpl.CouponGenerator();
         test.generateRandomCoupon();
 
     }

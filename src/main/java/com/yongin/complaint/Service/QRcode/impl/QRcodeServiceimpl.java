@@ -1,4 +1,4 @@
-package com.yongin.complaint.Service.QRcode.Impl;
+package com.yongin.complaint.Service.QRcode.impl;
 
 import com.yongin.complaint.DAO.QRcodeDAO;
 import com.yongin.complaint.Payload.response.QRcodeResponse;
@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class QRcodeServiceImpl implements QRcodeService {
+public class QRcodeServiceimpl implements QRcodeService {
     private QRcodeDAO qrCodeDAO;
     private QRcodeGenerater qrCodeGenerater;
 
     @Autowired
-    public QRcodeServiceImpl( QRcodeDAO qrCodeDAO, QRcodeGenerater qrCodeGenerater){
+    public QRcodeServiceimpl(QRcodeDAO qrCodeDAO, QRcodeGenerater qrCodeGenerater){
         this.qrCodeDAO = qrCodeDAO;
         this.qrCodeGenerater = qrCodeGenerater;
     }

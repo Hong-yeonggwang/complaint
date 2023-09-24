@@ -1,4 +1,4 @@
-package com.yongin.complaint.Service.coupon.Impl;
+package com.yongin.complaint.Service.coupon.impl;
 
 import com.yongin.complaint.DAO.CouponDAO;
 import com.yongin.complaint.Payload.response.CreateCouponResponse;
@@ -12,12 +12,12 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 @Service
-public class CouponServiceImpl implements CouponService {
+public class CouponServiceimpl implements CouponService {
 
     private CouponDAO couponDAO;
 
     @Autowired
-    public CouponServiceImpl(CouponDAO couponDAO){
+    public CouponServiceimpl(CouponDAO couponDAO){
         this.couponDAO = couponDAO;
     }
 

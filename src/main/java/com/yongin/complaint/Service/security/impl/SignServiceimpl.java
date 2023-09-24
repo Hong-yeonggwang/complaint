@@ -1,4 +1,4 @@
-package com.yongin.complaint.Service.security.Impl;
+package com.yongin.complaint.Service.security.impl;
 
 import com.yongin.complaint.Common.CommonResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
@@ -17,15 +17,15 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 @Service
-public class SignServiceImpl implements SignService {
-    private final Logger LOGGER = LoggerFactory.getLogger(SignServiceImpl.class);
+public class SignServiceimpl implements SignService {
+    private final Logger LOGGER = LoggerFactory.getLogger(SignServiceimpl.class);
 
     public MemberRepository memberRepository;
     public JwtProvider jwtProvider;
     public PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SignServiceImpl(MemberRepository memberRepository,JwtProvider jwtProvider, PasswordEncoder passwordEncoder){
+    public SignServiceimpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder){
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;

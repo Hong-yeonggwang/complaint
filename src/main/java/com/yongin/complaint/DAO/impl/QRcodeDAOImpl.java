@@ -1,4 +1,4 @@
-package com.yongin.complaint.DAO.Impl;
+package com.yongin.complaint.DAO.impl;
 
 import com.yongin.complaint.DAO.QRcodeDAO;
 import com.yongin.complaint.JPA.Entity.QRcode;
