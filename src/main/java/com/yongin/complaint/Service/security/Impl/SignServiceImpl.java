@@ -2,7 +2,6 @@ package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
-import com.yongin.complaint.Payload.response.MemberInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -28,7 +27,7 @@ public class SignServiceImpl implements SignService {
     public PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SignServiceImpl(MemberRepository memberRepository,JwtProvider jwtProvider, PasswordEncoder passwordEncoder){
+    public SignServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder){
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;

@@ -2,7 +2,6 @@ package com.yongin.complaint.Coupon;
 
 import com.yongin.complaint.Payload.response.CreateCouponResponse;
 import com.yongin.complaint.Service.coupon.CouponService;
-import com.yongin.complaint.Service.coupon.Impl.CouponServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,13 +38,6 @@ public class CouponTest{
 //        assertEquals(name, response.getName());
 //        assertNotNull(response.getCoupon());
 //        assertEquals(1200, response.getPrice());
-    }
-
-    @Test
-    public void testCoupon(){
-        CouponServiceImpl.CouponGenerator test = new CouponServiceImpl.CouponGenerator();
-        test.generateRandomCoupon();
-
     }
 
     @Test
