@@ -41,6 +41,12 @@ dependencies {
 	//classpath 꼬임 새로운 버전으로 대체 2023 9 15 업데이트 되면서 지원중단된듯.
 	implementation 'net.bytebuddy:byte-buddy-gradle-plugin:1.14.8'
 
+	// webSocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// json
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
 }
 
 tasks.named('test') {
