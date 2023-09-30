@@ -2,6 +2,7 @@ package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
+import com.yongin.complaint.Payload.response.MemberInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 
 @Service
@@ -106,6 +108,13 @@ public class SignServiceImpl implements SignService {
             setFailResult(signUpResponse);
         }
         return signUpResponse;
+    }
+
+    @Override
+    public Member getMemberinfo(HttpServletRequest servletRequest) {
+        String memberId = jwtProvider.getUserInfo(servletRequest);
+        Member member = memberRepository.getById(memberId);
+        return member;
     }
 
     private void setSuccessResult(SignUpResponse result){

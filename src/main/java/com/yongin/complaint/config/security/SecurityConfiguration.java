@@ -23,10 +23,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/sign-api/**").permitAll()
                 .antMatchers("/auth/sign-in","/auth/sign-up").permitAll()
                 .antMatchers("**excetion**").permitAll()
-                .anyRequest().hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN") // admin 경로는 ADMIN 역할을 가진 사용자에게만 허용
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and()

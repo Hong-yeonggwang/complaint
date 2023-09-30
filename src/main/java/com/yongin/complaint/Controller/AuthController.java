@@ -1,7 +1,9 @@
 package com.yongin.complaint.Controller;
 
+import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.Payload.requset.SignInRequest;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
+import com.yongin.complaint.Payload.response.MemberInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -16,18 +18,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 //@CrossOrigin(origins = "http://localhost:8085")
-public class SignController {
-    private final Logger LOGGER = LoggerFactory.getLogger(SignController.class);
+public class AuthController {
+    private final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
     private final SignService signService;
 
     @Autowired
-    public SignController(SignService signService){
+    public AuthController(SignService signService){
         this.signService = signService;
     }
 
@@ -58,15 +61,29 @@ public class SignController {
         LOGGER.info("[signUpAdmin] 회원가입 완료.");
         return signUpResponse;
     }
-    @GetMapping(value = "/exception")
-    public void exceptionTest() throws RuntimeException{
-        throw new RuntimeException("접근이 금지되었습니다.");
-    }
-
     @PostMapping(value = "")
     public Boolean checkToken(){
         LOGGER.info("[checkToken]: 사용자가 토큰 검증만을 요구하고 있습니다.");
         return true;
+    }
+
+    @PostMapping(value = "/memeberinfo")
+    public MemberInfoResponse getMemberInfo(HttpServletRequest servletRequest){
+        Member member = signService.getMemberinfo(servletRequest);
+
+        MemberInfoResponse info = MemberInfoResponse.builder()
+                .name(member.getName())
+                .birth(member.getBirth())
+                .major(member.getMajor())
+                .nickName(member.getNickName())
+                .phoneNumber(member.getPhoneNumber())
+                .build();
+
+        return info;
+    }
+    @GetMapping(value = "/exception")
+    public void exceptionTest() throws RuntimeException{
+        throw new RuntimeException("접근이 금지되었습니다.");
     }
 
     @ExceptionHandler(value = RuntimeException.class)
