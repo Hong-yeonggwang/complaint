@@ -9,8 +9,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @EnableWebSocket // 웹 소켓 관련 설정을 자동으로
 public class WebSocketConfiguration implements WebSocketConfigurer {
+    private MyWebSocketHandler myWebSocketHandler;
     @Autowired
-    MyWebSocketHandler myWebSocketHandler;
+    public WebSocketConfiguration(MyWebSocketHandler myWebSocketHandler){
+        this.myWebSocketHandler =myWebSocketHandler;
+    }
 
     @Override // 메소드 customize
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

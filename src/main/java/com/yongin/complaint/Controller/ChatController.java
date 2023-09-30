@@ -13,15 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/chatTest")
-//@RequestMapping("/chat/{roomId}")
+@RequestMapping("/chat")
 public class ChatController {
-
-    public ModelAndView chat() {
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("chat");
-        return mv;
-    }
 
     private final ChatService chatService;
 
@@ -31,8 +24,9 @@ public class ChatController {
     }
 
 
-    @PostMapping("/chat/{roomId}")
+    @PostMapping()
     public ResponseEntity<SendingMessageResponse> sendMessage(@RequestBody SendingMessageRequest request) {
+        System.out.println("test soket");
         SendingMessageResponse response = chatService.sendMessage(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
