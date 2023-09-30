@@ -9,6 +9,8 @@ import com.yongin.complaint.Service.QRcode.QRcodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class QRcodeServiceImpl implements QRcodeService {
     private QRcodeDAO qrCodeDAO;
@@ -34,6 +36,11 @@ public class QRcodeServiceImpl implements QRcodeService {
             //디비에 존재하는 시리얼 넘버임.
         }
         return null;
+    }
+
+    @Override
+    public List<QRcode> getQRcodeList(String userId) {
+        return qrCodeDAO.getQRcodeList(userId);
     }
 
 }

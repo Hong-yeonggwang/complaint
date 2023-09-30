@@ -8,4 +8,10 @@ public interface CouponDAO {
     Coupon CouponExist(String name);
 
     QRcodeCategory getPrice(String category , String name);
+
+    void saveCoupon(String serial, Long category);
+
+    void updateCouponStatus(String couponSerial);
+
+
 }

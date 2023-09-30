@@ -1,5 +1,6 @@
 package com.yongin.complaint.DTO;
 
+import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import lombok.*;
 
 @Getter
@@ -9,6 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QRcodeDTO {
-    private String category;
+    private QRcodeCategory category;
     private String qrSerial;
 }

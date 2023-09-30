@@ -1,15 +1,20 @@
 package com.yongin.complaint.JPA;
 
+import com.yongin.complaint.DAO.QRcodeDAO;
 import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.Member;
+import com.yongin.complaint.JPA.Entity.QRcode;
 import com.yongin.complaint.JPA.Repository.CouponRepository;
 import com.yongin.complaint.JPA.Repository.MemberRepository;
+import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class RepositoryTest {
@@ -19,6 +24,11 @@ public class RepositoryTest {
     private CouponRepository couponRepository;
     @Autowired
     private QRcodeRepository qRcodeRepository;
+    @Autowired
+    private QRcodeCategoryRepository qrCodeCategoryRepository;
+
+    @Autowired
+    private QRcodeDAO qrCodeDAO;
 
     @Test
     public void selectTest(){
@@ -40,5 +50,16 @@ public class RepositoryTest {
     @Test
     public void testGetById(){
         System.out.println(memberRepository.getById("123").getId());
+    }
+
+    @Test
+    public void testGetByName(){
+        System.out.println(qrCodeCategoryRepository.getByQrCodeCategory("버스").getName());
+    }
+
+    @Test
+    public void testQRcodeList(){
+        List<QRcode> qRcodeList = qRcodeRepository.getQrcodeList("a");
+        qRcodeList.forEach(test -> System.out.println(test.toString()));
     }
 }

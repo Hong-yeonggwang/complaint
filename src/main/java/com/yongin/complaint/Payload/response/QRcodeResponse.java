@@ -11,5 +11,5 @@ import lombok.*;
 @NoArgsConstructor
 public class QRcodeResponse {
     private String msg;
-    private QRcodeGenerater qRcode;
+    private String qRcode;
 }

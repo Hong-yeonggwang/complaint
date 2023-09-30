@@ -70,12 +70,11 @@ public class JwtProvider {
         return info;
     }
 
-    public String getUserInfo(String token){
+    public String getUserInfo(HttpServletRequest servletRequest){
         LOGGER.info("[getUserInfo] 회원 정보 추출");
+        String token = servletRequest.getHeader("X-AUTH-TOKEN");
         String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         LOGGER.info("[getUserInfo] 회원 정보 추출, info:{}");
-        System.out.println(info);
-        System.out.println(token);
         return info;
     }
 

@@ -8,6 +8,8 @@ import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
 @Component
 public class CouponDAOImpl implements CouponDAO {
     private CouponRepository couponRepository;
@@ -30,6 +32,26 @@ public class CouponDAOImpl implements CouponDAO {
 
     @Override
     public QRcodeCategory getPrice(String category, String name) {
-        return qrCodeCategoryRepository.getPrice(name,category);
+        return qrCodeCategoryRepository.getPrice(category,name);
+    }
+
+    @Override
+    public void saveCoupon(String serial, Long category) {
+        QRcodeCategory qRcodeCategory = new QRcodeCategory();
+        qRcodeCategory.setQrCategorySeq(category);
+        Coupon coupon = Coupon.builder()
+                .serial(serial)
+                .qrCodeCategory(qRcodeCategory)
+                .status("none")
+                .build();
+        couponRepository.save(coupon);
+    }
+
+    @Transactional
+    @Override
+    public void updateCouponStatus(String couponSerial) {
+        Coupon coupon = couponRepository.getBySerial(couponSerial);
+        coupon.setStatus("use");
+        couponRepository.save(coupon);
     }
 }

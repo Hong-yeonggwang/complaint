@@ -23,4 +23,7 @@ public class Coupon {
     @OneToOne
     @JoinColumn(name = "CATEGORY_FK")
     private QRcodeCategory qrCodeCategory;
+
+    @Column(name = "STATUS")
+    private String status;
 }
