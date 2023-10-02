@@ -12,7 +12,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
     private MyWebSocketHandler myWebSocketHandler;
     @Autowired
     public WebSocketConfiguration(MyWebSocketHandler myWebSocketHandler){
-        this.myWebSocketHandler =myWebSocketHandler;
+        this.myWebSocketHandler = myWebSocketHandler;
     }
 
     @Override // 메소드 customize
@@ -20,7 +20,4 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
         registry.addHandler(myWebSocketHandler, "/chat/{roomId}") // 웹소켓 서버 entrypoint
                 .setAllowedOrigins("*"); //CORS, 허용할 uri를 지정한다. (default는 same-origin만 허용)
     }
-
-//    @Bean
-//    public WebSocketHandler webSocketHandler() { return new MyWebSocketHandler(); }
 }
