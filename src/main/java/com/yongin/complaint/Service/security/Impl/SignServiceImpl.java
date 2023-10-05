@@ -2,6 +2,8 @@ package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
+import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
+import com.yongin.complaint.Payload.response.MemberInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -74,9 +76,12 @@ public class SignServiceImpl implements SignService {
         LOGGER.info("[getSignInResult] 패스워드 일치");
 
         LOGGER.info("[getSignInResult] signInResultDTO 객체 생성");
+
         SignInResponse signInResultDTO = SignInResponse.builder()
                 .token(jwtProvider.createToken(String.valueOf(member.getId()),member.getRoles()))
                 .build();
+
+
 
         LOGGER.info("[getSignInResult] SignInResultDto 객체에 값 주입");
         setSuccessResult(signInResultDTO);
@@ -114,6 +119,16 @@ public class SignServiceImpl implements SignService {
         String memberId = jwtProvider.getUserInfo(servletRequest);
         Member member = memberRepository.getById(memberId);
         return member;
+    }
+
+    @Override
+    public void updateUserInfo(Member member,UserInfoUpdateRequest userInfo) {
+        member.setBirth(userInfo.getBirth());
+        member.setMajor(userInfo.getMajor());
+        member.setNickName(userInfo.getNickName());
+        member.setPhoneNumber(userInfo.getPhoneNumber());
+
+        memberRepository.save(member);
     }
 
     private void setSuccessResult(SignUpResponse result){

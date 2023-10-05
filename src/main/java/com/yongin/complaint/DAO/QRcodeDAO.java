@@ -9,4 +9,6 @@ public interface QRcodeDAO {
     QRcode existQRcode(String serial);
 
     List<QRcode> getQRcodeList(String memberId);
+
+    void qrcodeUpdate(QRcode qrCode);
 }

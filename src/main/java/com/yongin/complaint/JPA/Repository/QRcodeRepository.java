@@ -13,7 +13,7 @@ public interface QRcodeRepository extends JpaRepository<QRcode,Long> {
     @Query("SELECT q from QRcode q join fetch q.category where q.qrCode = :SERIAL")
     QRcode existsQRcode(@Param("SERIAL") String qrCodeSerial);
 
-    @Query("select q from QRcode q join fetch q.category join fetch q.owner m where m.id = :MEMBERID")
+    @Query("select q from QRcode q join fetch q.category join fetch q.owner m where m.id = :MEMBERID and q.useDate = null")
     List<QRcode> getQrcodeList(@Param("MEMBERID") String memberId);
 
 

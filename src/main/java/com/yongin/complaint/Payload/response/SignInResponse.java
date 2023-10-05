@@ -10,7 +10,7 @@ import lombok.*;
 public class SignInResponse extends SignUpResponse {
     private String token;
     @Builder
-    public SignInResponse(boolean success, int code, String msg, String token){
+    public SignInResponse(boolean success, int code, String msg, String token,MemberInfoResponse memberInfoResponse){
         super(success,code,msg);
         this.token = token;
     }

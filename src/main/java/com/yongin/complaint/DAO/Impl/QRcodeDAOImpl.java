@@ -25,4 +25,9 @@ public class QRcodeDAOImpl implements QRcodeDAO {
     public List<QRcode> getQRcodeList(String memberId) {
         return qrCodeRepository.getQrcodeList(memberId);
     }
+
+    @Override
+    public void qrcodeUpdate(QRcode qrCode) {
+        qrCodeRepository.save(qrCode);
+    }
 }

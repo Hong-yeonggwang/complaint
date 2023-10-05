@@ -27,7 +27,7 @@ public class SignUpRequest {
     private String major;
 
     @Size(min=3, max=7)
-    @NotNull(message = "생년월일을 입력해주세요")
+    @NotNull(message = "닉네임은 3-7자 사이입니다")
     private String nickName;
 
     @Pattern(regexp = "^(010|01[1-9])\\d{3,4}\\d{4}$", message = "전화번호 10자리만 입력하세요")

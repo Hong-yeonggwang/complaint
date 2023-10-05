@@ -11,6 +11,7 @@ import com.yongin.complaint.Service.coupon.CouponService;
 import com.yongin.complaint.Service.security.SignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.html.HTMLImageElement;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -49,10 +50,9 @@ public class QrCodeController {
         return couponService.useCoupon(couponSerial,member);
     }
 
-//    @PostMapping// "/qrcode" qrcode 사용
-//    public String useQrCode(@RequestBody QRcodeRequest qrCode){
-////        QRcodeService.useQrcode();
-//        System.out.println(qrCode.getQrCodeSerial());
-//        return qrCode.getQrCodeSerial();
-//    }
+    @DeleteMapping// "/qrcode" qrcode 사용
+    public QRcodeResponse useQrCode(HttpServletRequest servletRequest,String qrCodeSerial){
+        Member member = signService.getMemberinfo(servletRequest);
+        return qrcodeService.useQrcode(qrCodeSerial,member);
+    }
 }

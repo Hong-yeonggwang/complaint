@@ -3,6 +3,7 @@ package com.yongin.complaint.Controller;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.Payload.requset.SignInRequest;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
+import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.MemberInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,6 +83,13 @@ public class AuthController {
 
         return info;
     }
+    @PutMapping(value = "/memberinfo")
+    @Transactional
+    public void updateUserInfo(HttpServletRequest servletRequest,@Validated @RequestBody UserInfoUpdateRequest userInfo){
+        Member member = signService.getMemberinfo(servletRequest);
+        signService.updateUserInfo(member,userInfo);
+    }
+
     @GetMapping(value = "/exception")
     public void exceptionTest() throws RuntimeException{
         throw new RuntimeException("접근이 금지되었습니다.");

@@ -3,6 +3,7 @@ package com.yongin.complaint.Service.security;
 
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
+import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -16,4 +17,6 @@ public interface SignService {
     SignUpResponse signUpAdmin(SignUpAdminRequest signUpAdminRequest);
 
     Member getMemberinfo(HttpServletRequest servletRequest);
+
+    void updateUserInfo(Member member,UserInfoUpdateRequest userInfo);
 }
