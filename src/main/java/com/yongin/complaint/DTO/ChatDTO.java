@@ -1,12 +1,15 @@
 package com.yongin.complaint.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatDTO {
     private String chatMessage;
     private LocalDateTime chatHistoryTime;

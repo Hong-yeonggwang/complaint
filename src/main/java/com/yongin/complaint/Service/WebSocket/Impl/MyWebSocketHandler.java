@@ -10,6 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,8 +117,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
         // 세션 등록이 끝나면 발급 받은 세션 ID 값의 메시지 발송
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "getId");    // 발신 메시지 타입
+        jsonObject.put("type", "getSession");    // 발신 메시지 타입
         jsonObject.put("sessionId", session.getId());   // sessionId
+        jsonObject.put("Time", LocalDateTime.now().toString());   // localDateTime
+//        System.out.println(LocalDateTime.now().toString());
+
         session.sendMessage(new TextMessage(jsonObject.toJSONString()));
     }
 
