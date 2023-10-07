@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Setter
@@ -24,6 +25,9 @@ public class ChatRoomInfo {
     @Column(name = "CHATROOM_NAME")
     private String chatRoomName;
 
+    @Column(name = "CURRENT_NUMBER_OF_PEOPLE")
+    private Integer currentNumBerOfPeople;
+
     @Column(name = "NUMBER_OF_PEOPLE_LIMITED")
     private Integer chatRoomLimited;
 
@@ -35,4 +39,8 @@ public class ChatRoomInfo {
 
     @Column(name = "state")
     private String state;
+
+    @ManyToMany
+    @JoinColumn(name = "ID")
+    private List<Member> members;
 }

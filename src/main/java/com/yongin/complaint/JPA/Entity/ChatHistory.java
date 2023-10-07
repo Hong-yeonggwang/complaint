@@ -24,10 +24,12 @@ public class ChatHistory {
     @Column(name="CHAT_HISTORY_TIME")
     private LocalDateTime chatHistoryTime;
 
-    @Column(name="CHAT_USER_ID")
-    private String chatUserId;
+    @OneToOne
+    @JoinColumn(name="CHAT_USER_ID")
+    private Member chatUserId;
 
-    @Column(name="CHATROOM_ID")
-    private String chatRoomId;
+    @ManyToOne
+    @JoinColumn(name = "CHATROOM_ID")
+    private ChatRoomInfo chatRoomId;
 
 }
