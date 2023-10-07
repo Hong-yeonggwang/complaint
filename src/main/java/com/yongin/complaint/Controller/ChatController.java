@@ -1,6 +1,9 @@
 package com.yongin.complaint.Controller;
 
 import com.yongin.complaint.DTO.ChatRoomInfoDTO;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,12 +26,15 @@ public class ChatController {
      * @param params
      * @return
      */
-    @RequestMapping("/createRoom")
+    @RequestMapping("/createChatRoom")
     @ResponseBody
-    public List<ChatRoomInfoDTO> createRoom(@RequestParam HashMap<Object, Object> params){
+    public List<ChatRoomInfoDTO> createRoom(@RequestParam String params){
         System.out.println("불럿냐?");
 
-        String roomName = (String) params.get("roomName");
+        System.out.println(params);
+        JSONObject jsonObject = jsonToObjectParser(params);
+
+        String roomName = (String) jsonObject.get("chatRoomName");
         if(roomName != null && !roomName.trim().equals("")) {
             System.out.println("이름있냐?");
             ChatRoomInfoDTO chatRoomInfoDTO = new ChatRoomInfoDTO();
@@ -53,10 +59,20 @@ public class ChatController {
      * @param params
      * @return
      */
-    @RequestMapping("/getRoom")
+    @RequestMapping("/getChatRoom")
     @ResponseBody
     public List<ChatRoomInfoDTO> getRoom(@RequestParam HashMap<Object, Object> params){
         return roomList;
     }
 
+    private static JSONObject jsonToObjectParser(String jsonStr) {
+        JSONParser parser = new JSONParser();
+        JSONObject obj = null;
+        try {
+            obj = (JSONObject)parser.parse(jsonStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
 }
