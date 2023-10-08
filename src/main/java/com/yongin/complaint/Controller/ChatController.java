@@ -5,9 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -16,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Controller
+@RestController
 public class ChatController {
     List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
     SecureRandom random  = new SecureRandom(); // 채팅방 고유 ID를 생성하기 위한 랜덤 객체
@@ -26,9 +24,8 @@ public class ChatController {
      * @param params
      * @return
      */
-    @RequestMapping("/createChatRoom")
-    @ResponseBody
-    public List<ChatRoomInfoDTO> createRoom(@RequestParam String params){
+    @PostMapping(value = "/createChatRoom")
+    public List<ChatRoomInfoDTO> createRoom(@RequestBody String params){
         System.out.println("불럿냐?");
 
         System.out.println(params);
@@ -60,7 +57,6 @@ public class ChatController {
      * @return
      */
     @RequestMapping("/getChatRoom")
-    @ResponseBody
     public List<ChatRoomInfoDTO> getRoom(@RequestParam HashMap<Object, Object> params){
         return roomList;
     }
