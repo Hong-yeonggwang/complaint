@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/createChatTest")
 public class ChatController {
     List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
     SecureRandom random  = new SecureRandom(); // 채팅방 고유 ID를 생성하기 위한 랜덤 객체
@@ -30,52 +29,55 @@ public class ChatController {
      * @return
      */
     @PostMapping(value = "/createChatRoom")
-    public List<ChatRoomInfoDTO> createRoom(@RequestBody String params){
+    public boolean createRoom(@RequestBody JSONObject params){
+        boolean createSuccess = false;
         System.out.println("불럿냐?");
+        ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO();
 
         System.out.println(params);
-        JSONObject jsonObject = jsonToObjectParser(params);
 
-        String roomName = (String) jsonObject.get("chatRoomName");
+        String roomName = (String) params.get("chatRoomName");
+//        int maxUsers = (Integer) params.get("maxUsers");
+//        System.out.println(maxUsers);
+
         if(roomName != null && !roomName.trim().equals("")) {
             System.out.println("이름있냐?");
-            ChatRoomInfoDTO chatRoomInfoDTO = new ChatRoomInfoDTO();
 
             String uniqueId = new BigInteger(130, random).toString(32);
 
-            chatRoomInfoDTO.setChatRoomId(uniqueId);
-            chatRoomInfoDTO.setChatRoomName(roomName);
-            chatRoomInfoDTO.setChatRoomCreatedDate(LocalDateTime.now());
-            chatRoomInfoDTO.setChatRoomLimited(9); // 지금은 default지만 파라미터 받아서 설정할것임
+            newChatRoomInfoDTO.setChatRoomId(uniqueId);
+            newChatRoomInfoDTO.setChatRoomName(roomName);
+            newChatRoomInfoDTO.setChatRoomCreatedDate(LocalDateTime.now());
+            newChatRoomInfoDTO.setChatRoomLimited(9); // 방생성 잘 되면 maxUsers 로 받을 예정
 
-            roomList.add(chatRoomInfoDTO);
+            roomList.add(newChatRoomInfoDTO);
+            createSuccess = true;
         }
 
-        System.out.println("다 만들었냐?");
+        System.out.println("다 만들었냐? : " + roomList.size());
 
-        return roomList;
+        return createSuccess;
     }
 
     /**
      * 방 정보가져오기
-     * @param params
+//     * @param params
      * @return
      */
-//    @RequestMapping("/getChatRoom")
-    @PostMapping(value = "/getChatRoom")
-    @ResponseBody
-    public List<ChatRoomInfoDTO> getRoom(@RequestParam HashMap<Object, Object> params){
+    @PostMapping(value = "/getChatRoomList")
+    public List<ChatRoomInfoDTO> getRoomList(){
+//        @RequestBody HashMap<Object, Object> params
         return roomList;
     }
 
-    private static JSONObject jsonToObjectParser(String jsonStr) {
-        JSONParser parser = new JSONParser();
-        JSONObject obj = null;
-        try {
-            obj = (JSONObject)parser.parse(jsonStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
+//    private static JSONObject jsonToObjectParser(String jsonStr) {
+//        JSONParser parser = new JSONParser();
+//        JSONObject obj = null;
+//        try {
+//            obj = (JSONObject)parser.parse(jsonStr);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return obj;
+//    }
 }
