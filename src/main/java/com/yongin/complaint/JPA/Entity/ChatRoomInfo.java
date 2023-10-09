@@ -16,31 +16,35 @@ import java.util.List;
 public class ChatRoomInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="CHATROOM_SEQ_PK")
+    @Column(name="CHATROOM_SEQ_PK"/* , nullable = false */)
     private Long chatRoomSeq;
 
-    @Column(name = "CHATROOM_ID")
-    private String chatRoomId;
+    @Column(name = "CHATROOM_ID"/* , nullable = false */)
+    private String chatRoomId; // Not Null
 
-    @Column(name = "CHATROOM_NAME")
-    private String chatRoomName;
+    @Column(name = "CHATROOM_NAME"/* , nullable = false */)
+    private String chatRoomName; // Not Null
 
-    @Column(name = "CURRENT_NUMBER_OF_PEOPLE")
-    private Integer currentNumBerOfPeople;
+    @ManyToOne
+    @JoinColumn(name = "CHATROOM_OWNER_FK"/* , nullable = false */)
+    private Member chatRoomOwner; // Not Null
 
-    @Column(name = "NUMBER_OF_PEOPLE_LIMITED")
-    private Integer chatRoomLimited;
+    @Column(name = "CURRENT_NUMBER_OF_PEOPLE"/* , nullable = false */)
+    private Integer currentNumBerOfPeople; // Not Null
 
-    @Column(name = "CHATROOM_CREATED_DATE")
-    private LocalDateTime chatRoomCreatedDate;
+    @Column(name = "NUMBER_OF_PEOPLE_LIMITED"/* , nullable = false */)
+    private Integer chatRoomLimited; // Not Null
+
+    @Column(name = "CHATROOM_CREATED_DATE"/* , nullable = false */)
+    private LocalDateTime chatRoomCreatedDate; // Not Null
 
     @Column(name = "CHATROOM_DELETED_DATE")
     private LocalDateTime chatRoomDeletedDate;
 
-    @Column(name = "state")
-    private String state;
+    @Column(name = "STATE"/* , nullable = false */)
+    private String state; // Not Null
 
-    @ManyToMany
-    @JoinColumn(name = "ID")
-    private List<Member> members;
+//    @ManyToMany
+//    @JoinColumn(name = "ID")
+//    private List<Member> members; // Not Null
 }
