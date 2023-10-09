@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ChatHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="CHAT_SEQ_PK"/* , nullable = false */)
+    @Column(name="CHAT_SEQ_PK")
     private Long chatSeq;
 
     @Column(name="CHAT_MESSAGE"/* , nullable = false */)

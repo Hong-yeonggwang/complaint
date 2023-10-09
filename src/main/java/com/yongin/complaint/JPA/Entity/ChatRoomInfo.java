@@ -16,7 +16,7 @@ import java.util.List;
 public class ChatRoomInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="CHATROOM_SEQ_PK"/* , nullable = false */)
+    @Column(name="CHATROOM_SEQ_PK")
     private Long chatRoomSeq;
 
     @Column(name = "CHATROOM_ID"/* , nullable = false */)
