@@ -1,6 +1,7 @@
 package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
+import com.yongin.complaint.Common.MemberRoleEnum;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.MemberInfoResponse;
@@ -42,7 +43,7 @@ public class SignServiceImpl implements SignService {
                 .id(signUpRequest.getId())
                 .name(signUpRequest.getName())
                 .pwd(passwordEncoder.encode(signUpRequest.getPassword()))
-                .roles((Collections.singletonList("USER")))
+                .role(MemberRoleEnum.valueOf("ROLE_USER"))
                 .phoneNumber(signUpRequest.getPhoneNumber())
                 .nickName(signUpRequest.getNickName())
                 .birth(signUpRequest.getBirth())
@@ -78,7 +79,7 @@ public class SignServiceImpl implements SignService {
         LOGGER.info("[getSignInResult] signInResultDTO 객체 생성");
 
         SignInResponse signInResultDTO = SignInResponse.builder()
-                .token(jwtProvider.createToken(String.valueOf(member.getId()),member.getRoles()))
+                .token(jwtProvider.createToken(String.valueOf(member.getId()),member.getRole().toString()))
                 .build();
 
 
@@ -96,7 +97,7 @@ public class SignServiceImpl implements SignService {
                 .id(signUpAdminRequest.getId())
                 .name(signUpAdminRequest.getName())
                 .pwd(passwordEncoder.encode(signUpAdminRequest.getPassword()))
-                .roles((Collections.singletonList(signUpAdminRequest.getRole())))
+                .role(MemberRoleEnum.valueOf(signUpAdminRequest.getRole()))
                 .phoneNumber(signUpAdminRequest.getPhoneNumber())
                 .build();
 

@@ -48,25 +48,20 @@ public class Member implements UserDetails {
     @Column(name = "MAJOR")
     private String major;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
-
-//    @Column(name = "ROLE")
-//    @Enumerated(EnumType.STRING)
-//    private MemberRoleEnum role;
+    @Column(name = "ROLE")
+    @Enumerated(EnumType.STRING)
+    private MemberRoleEnum role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-//        Collection<GrantedAuthority> collect = new ArrayList<>();
-//        collect.add(new GrantedAuthority() {
-//            @Override
-//            public String getAuthority() {
-//                return role.toString();
-//            }
-//        });
-//        return null;
+        Collection<GrantedAuthority> collect = new ArrayList<>();
+        collect.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return role.toString();
+            }
+        });
+        return null;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

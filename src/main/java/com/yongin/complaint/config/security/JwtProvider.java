@@ -40,11 +40,11 @@ public class JwtProvider {
         LOGGER.info("[init] JwtProvider내 secretKey 완료");
     }
 
-    public String createToken(String userUid , List<String> roles){
+    public String createToken(String userUid , String roles){
         LOGGER.info("[createToken] 토큰 생성 시작.");
         Claims claims = Jwts.claims().setSubject(userUid);
+        LOGGER.info("[test]{}",roles);
         claims.put("roles",roles);
-        claims.put("uid",userUid);
         Date now = new Date();
 
         String token  = Jwts.builder()
