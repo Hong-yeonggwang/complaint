@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/createChatRoom").permitAll()
                 .antMatchers("/getChatRoom").permitAll()
                 .antMatchers("**excetion**").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN") // admin 경로는 ADMIN 역할을 가진 사용자에게만 허용
+                .antMatchers("/auth/sign-up/admin").hasRole("ADMIN") // admin 경로는 ADMIN 역할을 가진 사용자에게만 허용
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())

@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 @Service
@@ -72,14 +74,14 @@ public class SignServiceImpl implements SignService {
         LOGGER.info("[getSignInResult] 패스워드 비교 수행");
 
         if(!passwordEncoder.matches(password, member.getPassword())){
-            throw new RuntimeException();
+            throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
         LOGGER.info("[getSignInResult] 패스워드 일치");
 
         LOGGER.info("[getSignInResult] signInResultDTO 객체 생성");
 
         SignInResponse signInResultDTO = SignInResponse.builder()
-                .token(jwtProvider.createToken(String.valueOf(member.getId()),member.getRole().toString()))
+                .token(jwtProvider.createToken(String.valueOf(member.getId()),new ArrayList<>(Arrays.asList(member.getRole().toString()))))
                 .build();
 
 

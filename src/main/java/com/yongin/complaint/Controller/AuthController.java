@@ -37,15 +37,19 @@ public class AuthController {
     }
 
     @PostMapping(value = "/sign-in")
-    public SignInResponse signIn(@RequestBody SignInRequest signInRequest)throws RuntimeException{
+    public ResponseEntity signIn(@RequestBody SignInRequest signInRequest)throws RuntimeException{
         LOGGER.info("[signIn] 로그인을 시도하고 있습니다.");
-
+//        try{
         SignInResponse signInResultDTO = signService.signIn(signInRequest.getId(), signInRequest.getPassword());
-
-        if(signInResultDTO.getCode() == 0){
-            LOGGER.info("[signIn] 정상적으로 로그인되었습니다.");
-        }
-        return signInResultDTO;
+            if(signInResultDTO.getCode() == 0){
+                LOGGER.info("[signIn] 정상적으로 로그인되었습니다.");
+            }
+//            return signInResultDTO;
+            return ResponseEntity.ok(signInResultDTO);
+//        }catch (Exception e){
+//            LOGGER.info("{}",e);
+//            return new ResponseEntity(new SignInResponse(false,401,"아이디와 비밀번호를 확인해주세요",null),HttpStatus.valueOf(401));
+//        }
     }
     @PostMapping(value = "/sign-up")
     public SignUpResponse signUp(@Validated @RequestBody SignUpRequest signUpRequest){
@@ -56,7 +60,7 @@ public class AuthController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/sing-ip/admin")
+    @PostMapping(value = "/sign-up/admin")
     public SignUpResponse signUpAdmin(@Validated @RequestBody SignUpAdminRequest signUpAdminRequest){
         LOGGER.info("[signUpAdmin] 관리자 아이디를 생성을 시작합니다.");
         SignUpResponse signUpResponse = signService.signUpAdmin(signUpAdminRequest);

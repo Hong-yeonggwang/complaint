@@ -55,13 +55,8 @@ public class Member implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
         Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return role.toString();
-            }
-        });
-        return null;
+        collect.add(new SimpleGrantedAuthority(this.role.toString()));
+        return collect;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
