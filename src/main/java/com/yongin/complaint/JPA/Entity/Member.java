@@ -1,13 +1,13 @@
 package com.yongin.complaint.JPA.Entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yongin.complaint.Common.MemberRoleEnum;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,9 +52,21 @@ public class Member implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
+//    @Column(name = "ROLE")
+//    @Enumerated(EnumType.STRING)
+//    private MemberRoleEnum role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
         return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+//        Collection<GrantedAuthority> collect = new ArrayList<>();
+//        collect.add(new GrantedAuthority() {
+//            @Override
+//            public String getAuthority() {
+//                return role.toString();
+//            }
+//        });
+//        return null;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

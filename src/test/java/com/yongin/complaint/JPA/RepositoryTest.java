@@ -1,20 +1,16 @@
 package com.yongin.complaint.JPA;
 
+import com.yongin.complaint.Common.MemberRoleEnum;
 import com.yongin.complaint.DAO.QRcodeDAO;
 import com.yongin.complaint.JPA.Entity.Coupon;
-import com.yongin.complaint.JPA.Entity.Member;
+import com.yongin.complaint.JPA.Entity.MemberRole;
 import com.yongin.complaint.JPA.Entity.QRcode;
-import com.yongin.complaint.JPA.Repository.CouponRepository;
-import com.yongin.complaint.JPA.Repository.MemberRepository;
-import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
-import com.yongin.complaint.JPA.Repository.QRcodeRepository;
+import com.yongin.complaint.JPA.Repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 public class RepositoryTest {
@@ -26,6 +22,8 @@ public class RepositoryTest {
     private QRcodeRepository qRcodeRepository;
     @Autowired
     private QRcodeCategoryRepository qrCodeCategoryRepository;
+    @Autowired
+    private MemberRoleRepository memberRoleRepository;
 
     @Autowired
     private QRcodeDAO qrCodeDAO;
@@ -61,5 +59,12 @@ public class RepositoryTest {
     public void testQRcodeList(){
         List<QRcode> qRcodeList = qRcodeRepository.getQrcodeList("a");
         qRcodeList.forEach(test -> System.out.println(test.toString()));
+    }
+    @Test
+    public void testEnumColum(){
+        MemberRole memberRole = MemberRole.builder()
+                .role(MemberRoleEnum.valueOf("ROLE_USER")).build();
+        System.out.println(memberRole.getRole());
+        memberRoleRepository.save(memberRole);
     }
 }
