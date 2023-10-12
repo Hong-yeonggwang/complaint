@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ChatService {
 
-    List<ChatRoomInfo> CreateChatRoom(ChatRoomInfoDTO newChatRoomInfoDTO);
+    List<ChatRoomInfo> CreateChatRoom(ChatRoomInfo newChatRoomInfo);
 
     boolean dropChatRoom(ChatRoomInfoDTO chatRoomInfoDTO);
 

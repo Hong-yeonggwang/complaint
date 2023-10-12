@@ -2,28 +2,23 @@ package com.yongin.complaint.Controller;
 
 import com.yongin.complaint.DTO.ChatRoomInfoDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
-import com.yongin.complaint.Service.Chat.ChatImpl.ChatServiceImpl;
 import com.yongin.complaint.Service.Chat.ChatService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class ChatController {
+public class ChatRoomController {
 //    List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
     List<ChatRoomInfo> roomList = null;
     List<ChatRoomInfoDTO> myRoomList = null;
     final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
 
     @Autowired
-    ChatController(ChatService chatServiceImpl){
+    ChatRoomController(ChatService chatServiceImpl){
         this.chatServiceImpl = chatServiceImpl;
     }
 
@@ -34,19 +29,22 @@ public class ChatController {
      */
     @PostMapping(value = "/createChatRoom")
     public List<ChatRoomInfo> createRoom(@RequestBody JSONObject jsonObjectParams) {
-        ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO(); // DB에 저장하기 전에 정보를 담아둘 객체
+        ChatRoomInfo newChatRoomInfo = new ChatRoomInfo();
+//        ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO(); // DB에 저장하기 전에 정보를 담아둘 객체
 
 //        System.out.println(jsonObjectParams);
 
         String roomName = (String) jsonObjectParams.get("chatRoomName");
-        int maxUsers = (Integer) jsonObjectParams.get("maxUsers");
+        int chatRoomLimited = (Integer) jsonObjectParams.get("chatRoomLimited");
 
         // 채팅방 이름과 인원 제한을 제대로 수신하면
-        if (roomName != null && !roomName.trim().equals("") && maxUsers > 1) {
-            newChatRoomInfoDTO.setChatRoomName(roomName);
-            newChatRoomInfoDTO.setChatRoomLimited(maxUsers);
+        if (roomName != null && !roomName.trim().equals("") && chatRoomLimited > 1) {
+            newChatRoomInfo.setChatRoomName(roomName);
+            newChatRoomInfo.setChatRoomLimited(chatRoomLimited);
+//            newChatRoomInfoDTO.setChatRoomName(roomName);
+//            newChatRoomInfoDTO.setChatRoomLimited(maxUsers);
 
-            roomList = chatServiceImpl.CreateChatRoom(newChatRoomInfoDTO);
+            roomList = chatServiceImpl.CreateChatRoom(newChatRoomInfo);
         }
         else{ System.out.println("채팅방 이름 또는 인원 제한 파라미터가 제대로 수신되지 않았습니다."); }
 

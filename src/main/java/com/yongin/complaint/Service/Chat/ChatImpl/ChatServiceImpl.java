@@ -3,6 +3,7 @@ package com.yongin.complaint.Service.Chat.ChatImpl;
 import com.yongin.complaint.DAO.ChatRoomDAO;
 import com.yongin.complaint.DTO.ChatRoomInfoDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
+import com.yongin.complaint.JPA.Repository.ChatRoomInfoRepository;
 import com.yongin.complaint.Payload.response.ChatRoomInfoResponse;
 import com.yongin.complaint.Service.Chat.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +19,17 @@ import java.util.List;
 public class ChatServiceImpl implements ChatService {
     SecureRandom secureRandom  = new SecureRandom(); // 채팅방 고유 ID를 생성하기 위한 랜덤 객체
     List<ChatRoomInfo> roomList = null; // 리스트 반환용
-    ChatRoomDAO chatRoomDAO = null;
+    ChatRoomInfoRepository chatRoomInfoRepository;
 
 
     @Autowired
-    public ChatServiceImpl(ChatRoomDAO chatRoomDAO){
-        this.chatRoomDAO = chatRoomDAO;
+    public ChatServiceImpl(ChatRoomInfoRepository chatRoomInfoRepository){
+        this.chatRoomInfoRepository = chatRoomInfoRepository;
     }
 
     @Override
     @Transactional
-    public List<ChatRoomInfo> CreateChatRoom(ChatRoomInfoDTO newChatRoomInfoDTO) {
+    public List<ChatRoomInfo> CreateChatRoom(ChatRoomInfo newChatRoomInfo) {
         roomList = this.getChatRoomList();
         boolean checkNewChatRoomId = false; // ChatRoomId 중복 검사 플래그
         String uniqueId = new BigInteger(130, secureRandom).toString(32);
@@ -50,14 +51,11 @@ public class ChatServiceImpl implements ChatService {
             }
         }
 
-        newChatRoomInfoDTO.setChatRoomId(uniqueId);
-        newChatRoomInfoDTO.setChatRoomCreatedDate(LocalDateTime.now());
+        newChatRoomInfo.setChatRoomId(uniqueId);
+        newChatRoomInfo.setChatRoomCreatedDate(LocalDateTime.now());
 //            newChatRoomInfoDTO.setChatRoomName(userId); // 방 만든 사람
 
-        ;
-        if(chatRoomDAO.createChatRoom(newChatRoomInfoDTO)){
-            chatRoomDAO.getLastestChatRoomInfo();
-        }
+        roomList.add(chatRoomInfoRepository.save(newChatRoomInfo));
 
         return roomList;
     }
@@ -71,7 +69,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<ChatRoomInfo> getChatRoomList() {
-        List<ChatRoomInfo> chatRoomList = null;
+        List<ChatRoomInfo> chatRoomList = chatRoomInfoRepository.findAll();;
 
         return chatRoomList;
     }
