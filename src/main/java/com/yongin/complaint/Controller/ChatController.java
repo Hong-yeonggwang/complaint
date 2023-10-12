@@ -18,10 +18,9 @@ import java.util.List;
 @RestController
 public class ChatController {
 //    List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
-    List<ChatRoomInfo> roomList = new ArrayList<ChatRoomInfo>();
-    List<ChatRoomInfoDTO> myRoomList = new ArrayList<ChatRoomInfoDTO>();
+    List<ChatRoomInfo> roomList = null;
+    List<ChatRoomInfoDTO> myRoomList = null;
     final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
-    SecureRandom random  = new SecureRandom(); // 채팅방 고유 ID를 생성하기 위한 랜덤 객체
 
     @Autowired
     ChatController(ChatService chatServiceImpl){
@@ -30,54 +29,28 @@ public class ChatController {
 
     /**
      * 방 생성하기
-     * @param params
+     * @param jsonObjectParams
      * @return ChatRoomInfo : Entity
      */
     @PostMapping(value = "/createChatRoom")
-    public ChatRoomInfo createRoom(@RequestBody JSONObject params) {
+    public List<ChatRoomInfo> createRoom(@RequestBody JSONObject jsonObjectParams) {
         ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO(); // DB에 저장하기 전에 정보를 담아둘 객체
-        ChatRoomInfo accomplishedChatRoomInfo = null;   // DB 저장 후 받을 객체
 
-        System.out.println(params);
+//        System.out.println(jsonObjectParams);
 
-        String roomName = (String) params.get("chatRoomName");
-        int maxUsers = (Integer) params.get("maxUsers");
-//        String userId = (String) params.get("userId");
+        String roomName = (String) jsonObjectParams.get("chatRoomName");
+        int maxUsers = (Integer) jsonObjectParams.get("maxUsers");
 
-        boolean checkNewChatRoomId = false;
-
-        if (roomName != null && !roomName.trim().equals("")) {
-            String uniqueId = new BigInteger(130, random).toString(32);
-
-            if (roomList.size() == 0) checkNewChatRoomId = true;
-
-            while (!checkNewChatRoomId) {
-                for (int i = 0; i < roomList.size(); ++i) {
-                    // Id가 중복이면 새로 만들고 처음부터 다시 검사
-                    if (uniqueId.equals(roomList.get(i).getChatRoomId())) {
-                        uniqueId = new BigInteger(130, random).toString(32);
-                        i = 0;
-                    }
-                    if (i + 1 == roomList.size()) {
-                        checkNewChatRoomId = true;
-                    }
-                }
-            }
-
-            newChatRoomInfoDTO.setChatRoomId(uniqueId);
+        // 채팅방 이름과 인원 제한을 제대로 수신하면
+        if (roomName != null && !roomName.trim().equals("") && maxUsers > 1) {
             newChatRoomInfoDTO.setChatRoomName(roomName);
-//            newChatRoomInfoDTO.setChatRoomName(userId); // 방 만든 사람
-            newChatRoomInfoDTO.setChatRoomCreatedDate(LocalDateTime.now());
-            newChatRoomInfoDTO.setChatRoomLimited(maxUsers); // 방 인원 제한
+            newChatRoomInfoDTO.setChatRoomLimited(maxUsers);
 
-            accomplishedChatRoomInfo = chatServiceImpl.CreateChatRoom(newChatRoomInfoDTO);
-
-//            roomList.add(newChatRoomInfoDTO);
-            roomList.add(accomplishedChatRoomInfo);
+            roomList = chatServiceImpl.CreateChatRoom(newChatRoomInfoDTO);
         }
+        else{ System.out.println("채팅방 이름 또는 인원 제한 파라미터가 제대로 수신되지 않았습니다."); }
 
-//        return newChatRoomInfoDTO;
-        return accomplishedChatRoomInfo;
+        return roomList;
     }
 
     /**
@@ -101,7 +74,7 @@ public class ChatController {
 
     /**
      * 내 방 정보가져오기
-     * @return
+     * @return List<ChatRoomInfo> : Entity List
      */
 //    @PostMapping(value = "/getMyChatRoomList")
 //    public List<ChatRoomInfoDTO> getRoomList(String userId){
