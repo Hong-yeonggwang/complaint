@@ -44,7 +44,7 @@ public class ChatRoomInfo {
 //    @Column(name = "STATE"/* , nullable = false */)
 //    private boolean state; // Not Null
 
-    @ManyToMany
-    @JoinColumn(name = "CHATROOM_MEMBERS")
-    private List<Member> members; // Not Null
+//    @ManyToMany
+//    @JoinColumn(name = "CHATROOM_MEMBERS")
+//    private List<Member> members; // Not Null
 }

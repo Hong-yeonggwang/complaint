@@ -19,7 +19,7 @@ public class ChatRoomController {
     final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
     List<ChatRoomInfo> roomList = null;
     List<ChatRoomInfoDTO> myRoomList = null;
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    Authentication auth;// = SecurityContextHolder.getContext().getAuthentication();
     Member myInfo;
 
     @Autowired
@@ -83,6 +83,8 @@ public class ChatRoomController {
      */
     @PostMapping(value = "/getChatRoomList")
     public List<ChatRoomInfo> getRoomList(){
+        roomList = chatServiceImpl.getChatRoomList();
+
         return roomList;
     }
 
