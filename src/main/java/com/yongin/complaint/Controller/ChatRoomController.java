@@ -34,7 +34,7 @@ public class ChatRoomController {
      */
     @PostMapping(value = "/createChatRoom")
     public List<ChatRoomInfo> createRoom(@RequestBody JSONObject jsonObjectParams) {
-        myInfo = (Member)auth.getPrincipal();
+//        myInfo = (Member)auth.getPrincipal();
         ChatRoomInfo newChatRoomInfo = new ChatRoomInfo();
 //        ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO(); // DB에 저장하기 전에 정보를 담아둘 객체
 
@@ -72,7 +72,7 @@ public class ChatRoomController {
      * @param chatRoomId
      * @return
      */
-    @RequestMapping(value = "/checkChatRoomId/{chatRoomId}")
+//    @RequestMapping(value = "/checkChatRoomId/{chatRoomId}")
     public void checkChatRoomId(@PathVariable("chatRoomId") String chatRoomId){
 
     }

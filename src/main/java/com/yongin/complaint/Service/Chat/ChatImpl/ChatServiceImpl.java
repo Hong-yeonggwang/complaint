@@ -35,11 +35,18 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public List<ChatRoomInfo> getChatRoomList() {
+        List<ChatRoomInfo> chatRoomList = chatRoomInfoRepository.findAll();;
+
+        return chatRoomList;
+    }
+
+    @Override
     @Transactional
     public List<ChatRoomInfo> createChatRoom(ChatRoomInfo newChatRoomInfo, Member myInfo) {
-        memberList = new ArrayList<>(){{
-            add(myInfo);
-        }};
+//        memberList = new ArrayList<>(){{
+//            add(myInfo);
+//        }};
 
         roomList = this.getChatRoomList();
         boolean checkNewChatRoomId = false; // ChatRoomId 중복 검사 플래그
@@ -65,7 +72,7 @@ public class ChatServiceImpl implements ChatService {
         newChatRoomInfo.setChatRoomId(uniqueId);
         newChatRoomInfo.setChatRoomCreatedDate(LocalDateTime.now());
         newChatRoomInfo.setCurrentNumBerOfPeople(1);
-        newChatRoomInfo.setMembers(memberList);
+//        newChatRoomInfo.setMembers(memberList);
 
         roomList.add(chatRoomInfoRepository.save(newChatRoomInfo));
 
@@ -89,13 +96,6 @@ public class ChatServiceImpl implements ChatService {
         boolean result = false;
 
         return result;
-    }
-
-    @Override
-    public List<ChatRoomInfo> getChatRoomList() {
-        List<ChatRoomInfo> chatRoomList = chatRoomInfoRepository.findAll();;
-
-        return chatRoomList;
     }
 
     @Override
