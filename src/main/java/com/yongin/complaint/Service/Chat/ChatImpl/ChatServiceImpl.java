@@ -104,7 +104,10 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void checkChatRoomId(String chatRoomId) {
+    public boolean checkChatRoomId(String chatRoomId) {
+        boolean result = chatRoomInfoRepository.findByChatRoomId(chatRoomId);
+//        this.getChatRoomList();
 
+        return result;
     }
 }

@@ -20,5 +20,5 @@ public interface ChatService {
 
     List<ChatRoomInfo> getMyChatRoomList(String userId);
 
-    void checkChatRoomId(String chatRoomId);
+    boolean checkChatRoomId(String chatRoomId);
 }
