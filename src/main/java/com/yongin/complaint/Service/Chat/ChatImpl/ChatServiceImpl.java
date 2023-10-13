@@ -1,25 +1,32 @@
 package com.yongin.complaint.Service.Chat.ChatImpl;
 
-import com.yongin.complaint.DAO.ChatRoomDAO;
 import com.yongin.complaint.DTO.ChatRoomInfoDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
+import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Repository.ChatRoomInfoRepository;
-import com.yongin.complaint.Payload.response.ChatRoomInfoResponse;
 import com.yongin.complaint.Service.Chat.ChatService;
+import com.yongin.complaint.config.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChatServiceImpl implements ChatService {
     SecureRandom secureRandom  = new SecureRandom(); // 채팅방 고유 ID를 생성하기 위한 랜덤 객체
-    List<ChatRoomInfo> roomList = null; // 리스트 반환용
+    List<ChatRoomInfo> roomList; // 리스트 반환용
+    Optional<ChatRoomInfo> optionalChatRoomInfo;
+    ChatRoomInfo chatRoomInfo;
     ChatRoomInfoRepository chatRoomInfoRepository;
+    List<Member> memberList;
 
 
     @Autowired
@@ -29,7 +36,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public List<ChatRoomInfo> CreateChatRoom(ChatRoomInfo newChatRoomInfo) {
+    public List<ChatRoomInfo> createChatRoom(ChatRoomInfo newChatRoomInfo, Member myInfo) {
+        memberList = new ArrayList<>(){{
+            add(myInfo);
+        }};
+
         roomList = this.getChatRoomList();
         boolean checkNewChatRoomId = false; // ChatRoomId 중복 검사 플래그
         String uniqueId = new BigInteger(130, secureRandom).toString(32);
@@ -53,11 +64,24 @@ public class ChatServiceImpl implements ChatService {
 
         newChatRoomInfo.setChatRoomId(uniqueId);
         newChatRoomInfo.setChatRoomCreatedDate(LocalDateTime.now());
-//            newChatRoomInfoDTO.setChatRoomName(userId); // 방 만든 사람
+        newChatRoomInfo.setCurrentNumBerOfPeople(1);
+        newChatRoomInfo.setMembers(memberList);
 
         roomList.add(chatRoomInfoRepository.save(newChatRoomInfo));
 
         return roomList;
+    }
+
+    @Override
+    public void enterChatRoom(Long chatRoomSeq) {
+        optionalChatRoomInfo = chatRoomInfoRepository.findById(chatRoomSeq);
+
+        if(optionalChatRoomInfo.isPresent()){
+            chatRoomInfo = optionalChatRoomInfo.get();
+        }
+        else{
+
+        }
     }
 
     @Override
@@ -77,5 +101,10 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<ChatRoomInfo> getMyChatRoomList(String userId) {
         return null;
+    }
+
+    @Override
+    public void checkChatRoomId(String chatRoomId) {
+
     }
 }

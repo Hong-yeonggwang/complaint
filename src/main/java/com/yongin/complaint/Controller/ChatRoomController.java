@@ -2,9 +2,12 @@ package com.yongin.complaint.Controller;
 
 import com.yongin.complaint.DTO.ChatRoomInfoDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
+import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.Service.Chat.ChatService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -13,9 +16,11 @@ import java.util.List;
 @RestController
 public class ChatRoomController {
 //    List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
+    final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
     List<ChatRoomInfo> roomList = null;
     List<ChatRoomInfoDTO> myRoomList = null;
-    final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    Member myInfo = (Member)auth.getPrincipal();
 
     @Autowired
     ChatRoomController(ChatService chatServiceImpl){
@@ -25,7 +30,7 @@ public class ChatRoomController {
     /**
      * 방 생성하기
      * @param jsonObjectParams
-     * @return ChatRoomInfo : Entity
+     * @return roomList : Entity List
      */
     @PostMapping(value = "/createChatRoom")
     public List<ChatRoomInfo> createRoom(@RequestBody JSONObject jsonObjectParams) {
@@ -44,7 +49,7 @@ public class ChatRoomController {
 //            newChatRoomInfoDTO.setChatRoomName(roomName);
 //            newChatRoomInfoDTO.setChatRoomLimited(maxUsers);
 
-            roomList = chatServiceImpl.CreateChatRoom(newChatRoomInfo);
+            roomList = chatServiceImpl.createChatRoom(newChatRoomInfo, myInfo);
         }
         else{ System.out.println("채팅방 이름 또는 인원 제한 파라미터가 제대로 수신되지 않았습니다."); }
 
@@ -52,18 +57,28 @@ public class ChatRoomController {
     }
 
     /**
-     * 방 정보가져오기
-     * @return List<ChatRoomInfoDTO> : DTO List
+     * 방 입장하기
+     * @param chatRoomSeq
+     * @return
      */
-//    @PostMapping(value = "/getChatRoomList")
-//    public List<ChatRoomInfoDTO> getRoomList(){
-//        return roomList;
-//    }
+    @PostMapping(value = "/enterRoom")
+    public void createRoom(@RequestBody Long chatRoomSeq) {
+        
+    }
 
+    /**
+     * 클라이언트가 직접 입력한 chat Url 검사
+     * @param chatRoomId
+     * @return
+     */
+    @RequestMapping(value = "/chat/{chatRoomId}")
+    public void checkChatRoomId(@PathVariable("chatRoomId") String chatRoomId){
+
+    }
 
     /**
      * 방 정보가져오기
-     * @return List<ChatRoomInfo> : Entity List
+     * @return roomList : Entity List
      */
     @PostMapping(value = "/getChatRoomList")
     public List<ChatRoomInfo> getRoomList(){
@@ -72,7 +87,7 @@ public class ChatRoomController {
 
     /**
      * 내 방 정보가져오기
-     * @return List<ChatRoomInfo> : Entity List
+     * @return myRoomList : Entity List
      */
 //    @PostMapping(value = "/getMyChatRoomList")
 //    public List<ChatRoomInfoDTO> getRoomList(String userId){

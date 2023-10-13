@@ -17,7 +17,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override // 메소드 customize
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(myWebSocketHandler, "/chat/{roomId}") // 웹소켓 서버 entrypoint
+        registry.addHandler(myWebSocketHandler, "/chat/{chatRoomId}") // 웹소켓 서버 entrypoint
                 .setAllowedOrigins("*"); //CORS, 허용할 uri를 지정한다. (default는 same-origin만 허용)
     }
 }

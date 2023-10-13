@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface ChatRoomInfoRepository extends JpaRepository<ChatRoomInfo,Long> {
 
-//    ChatRoomInfo save();
-    List<ChatRoomInfo> findAll();
+//    List<ChatRoomInfo> findAll();
 }

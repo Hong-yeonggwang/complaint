@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/test")
+//@RequestMapping("/test")
 public class testController {
 
     @GetMapping(value = "/token")
@@ -17,13 +17,14 @@ public class testController {
         return MemberRoleEnum.getMemberRole();
     }
 
-    @PostMapping("")
+    @PostMapping("/test")
     public String SecurityContextHolderTest(@RequestBody String test){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Member member  = (Member)auth.getPrincipal();
+        Member member = (Member)auth.getPrincipal();
+        System.out.println(member.getMemberSeq());
+        System.out.println(member.getNickName());
         System.out.println(member.getId());
         System.out.println(member.getUsername());
-        System.out.println(member.getPassword());
         return member.toString();
     }
 }
