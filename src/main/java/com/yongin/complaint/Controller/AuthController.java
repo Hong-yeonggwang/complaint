@@ -26,7 +26,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-//@CrossOrigin(origins = "http://localhost:8085")
 public class AuthController {
     private final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
     private final SignService signService;
@@ -37,19 +36,13 @@ public class AuthController {
     }
 
     @PostMapping(value = "/sign-in")
-    public ResponseEntity signIn(@RequestBody SignInRequest signInRequest)throws RuntimeException{
+    public ResponseEntity signIn(@RequestBody SignInRequest signInRequest){
         LOGGER.info("[signIn] 로그인을 시도하고 있습니다.");
-//        try{
         SignInResponse signInResultDTO = signService.signIn(signInRequest.getId(), signInRequest.getPassword());
             if(signInResultDTO.getCode() == 0){
                 LOGGER.info("[signIn] 정상적으로 로그인되었습니다.");
             }
-//            return signInResultDTO;
             return ResponseEntity.ok(signInResultDTO);
-//        }catch (Exception e){
-//            LOGGER.info("{}",e);
-//            return new ResponseEntity(new SignInResponse(false,401,"아이디와 비밀번호를 확인해주세요",null),HttpStatus.valueOf(401));
-//        }
     }
     @PostMapping(value = "/sign-up")
     public SignUpResponse signUp(@Validated @RequestBody SignUpRequest signUpRequest){
@@ -104,13 +97,13 @@ public class AuthController {
         HttpHeaders responseHeaders = new HttpHeaders();
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         LOGGER.info("ExceptionHandler 호출.");
-        LOGGER.info(e.getCause().toString());
-        LOGGER.info(e.getMessage().toString());
+        LOGGER.info("원인: {}", e.toString());
+        e.printStackTrace();
 
         Map<String,String> map = new HashMap<>();
         map.put("error type",httpStatus.getReasonPhrase());
         map.put("code","400");
-        map.put("message","에러 발생");
+        map.put("message", e.getMessage() != null ? e.getMessage().toString() : "에러 발생");
         return new ResponseEntity<>(map,responseHeaders,httpStatus);
     }
 }
