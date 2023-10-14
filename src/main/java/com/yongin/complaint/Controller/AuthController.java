@@ -16,6 +16,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -60,15 +62,12 @@ public class AuthController {
         LOGGER.info("[signUpAdmin] 회원가입 완료.");
         return signUpResponse;
     }
-    @PostMapping(value = "")
-    public Boolean checkToken(){
-        LOGGER.info("[checkToken]: 사용자가 토큰 검증만을 요구하고 있습니다.");
-        return true;
-    }
 
+    @Transactional
     @PostMapping(value = "/memeberinfo")
-    public MemberInfoResponse getMemberInfo(HttpServletRequest servletRequest){
-        Member member = signService.getMemberinfo(servletRequest);
+    public MemberInfoResponse getMemberInfo(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member)auth.getPrincipal();
 
         MemberInfoResponse info = MemberInfoResponse.builder()
                 .name(member.getName())
@@ -82,8 +81,10 @@ public class AuthController {
     }
     @PutMapping(value = "/memberinfo")
     @Transactional
-    public void updateUserInfo(HttpServletRequest servletRequest,@Validated @RequestBody UserInfoUpdateRequest userInfo){
-        Member member = signService.getMemberinfo(servletRequest);
+    public void updateUserInfo(@Validated @RequestBody UserInfoUpdateRequest userInfo){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member)auth.getPrincipal();
+
         signService.updateUserInfo(member,userInfo);
     }
 
