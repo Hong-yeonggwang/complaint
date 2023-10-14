@@ -19,7 +19,7 @@ public class ChatRoomController {
     final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
     List<ChatRoomInfo> roomList = null;
     List<ChatRoomInfoDTO> myRoomList = null;
-    Authentication auth;// = SecurityContextHolder.getContext().getAuthentication();
+    Authentication auth; // = SecurityContextHolder.getContext().getAuthentication();
     Member myInfo;
 
     @Autowired
@@ -34,7 +34,9 @@ public class ChatRoomController {
      */
     @PostMapping(value = "/createChatRoom")
     public List<ChatRoomInfo> createRoom(@RequestBody JSONObject jsonObjectParams) {
-//        myInfo = (Member)auth.getPrincipal();
+        auth = SecurityContextHolder.getContext().getAuthentication();
+        myInfo = (Member)auth.getPrincipal();
+
         ChatRoomInfo newChatRoomInfo = new ChatRoomInfo();
 //        ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO(); // DB에 저장하기 전에 정보를 담아둘 객체
 
@@ -47,8 +49,6 @@ public class ChatRoomController {
         if (roomName != null && !roomName.trim().equals("") && chatRoomLimited > 1) {
             newChatRoomInfo.setChatRoomName(roomName);
             newChatRoomInfo.setChatRoomLimited(chatRoomLimited);
-//            newChatRoomInfoDTO.setChatRoomName(roomName);
-//            newChatRoomInfoDTO.setChatRoomLimited(maxUsers);
 
             roomList = chatServiceImpl.createChatRoom(newChatRoomInfo, myInfo);
         }
