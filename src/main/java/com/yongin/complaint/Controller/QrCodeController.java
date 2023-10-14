@@ -10,6 +10,8 @@ import com.yongin.complaint.Service.QRcode.QRcodeService;
 import com.yongin.complaint.Service.coupon.CouponService;
 import com.yongin.complaint.Service.security.SignService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.html.HTMLImageElement;
 
@@ -40,8 +42,10 @@ public class QrCodeController {
 
     }
     @PostMapping(value = "")
-    public List<QRcode> getQRcodeList(HttpServletRequest servletRequest){
-        Member member = signService.getMemberinfo(servletRequest);
+    public List<QRcode> getQRcodeList(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member)auth.getPrincipal();
+
         return qrcodeService.getQRcodeList(member.getId());
     }
     @DeleteMapping(value = "/coupon") // 쿠폰 사용
@@ -51,8 +55,10 @@ public class QrCodeController {
     }
 
     @DeleteMapping// "/qrcode" qrcode 사용
-    public QRcodeResponse useQrCode(HttpServletRequest servletRequest,String qrCodeSerial){
-        Member member = signService.getMemberinfo(servletRequest);
+    public QRcodeResponse useQrCode(String qrCodeSerial){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member)auth.getPrincipal();
+
         return qrcodeService.useQrcode(qrCodeSerial,member);
     }
 }
