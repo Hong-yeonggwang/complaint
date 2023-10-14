@@ -30,7 +30,7 @@ public class ChatRoomInfo {
 //    private Member chatRoomOwner; // Not Null
 
     @Column(name = "CURRENT_NUMBER_OF_PEOPLE"/* , nullable = false */)
-    private Integer currentNumBerOfPeople; // Not Null
+    private Integer currentNumberOfPeople; // Not Null
 
     @Column(name = "NUMBER_OF_PEOPLE_LIMITED"/* , nullable = false */)
     private Integer chatRoomLimited; // Not Null
@@ -44,7 +44,7 @@ public class ChatRoomInfo {
 //    @Column(name = "STATE"/* , nullable = false */)
 //    private boolean state; // Not Null
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "CHATROOM_MEMBERS",
             joinColumns = @JoinColumn(name = "CHATROOM_SEQ_FK"),

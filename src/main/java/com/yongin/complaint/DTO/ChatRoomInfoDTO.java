@@ -7,20 +7,31 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoomInfoDTO {
 
-    private Integer chatRoomNumber;
+    private Long chatRoomSeq;
     private String chatRoomId;
     private String chatRoomName;
 
 //    private List<String> members;
-    private Integer currentNumBerOfPeople;
+    private Integer currentNumberOfPeople;
     private Integer chatRoomLimited;
 
-    private LocalDateTime chatRoomCreatedDate;
-    private LocalDateTime chatRoomDeletedDate;
+//    private LocalDateTime chatRoomCreatedDate;
+//    private LocalDateTime chatRoomDeletedDate;
 
-    private boolean state;
+//    private boolean state;
+    private List<ChatRoomMemberDTO> members;
+
+    public ChatRoomInfoDTO(Long chatRoomSeq, String chatRoomId, String chatRoomName, Integer currentNumberOfPeople, Integer chatRoomLimited) {
+        this.chatRoomSeq = chatRoomSeq;
+        this.chatRoomId = chatRoomId;
+        this.chatRoomName = chatRoomName;
+        this.currentNumberOfPeople = currentNumberOfPeople;
+        this.chatRoomLimited = chatRoomLimited;
+    }
 }

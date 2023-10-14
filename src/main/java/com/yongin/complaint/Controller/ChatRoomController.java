@@ -17,7 +17,8 @@ import java.util.List;
 public class ChatRoomController {
 //    List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
     final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
-    List<ChatRoomInfo> roomList = null;
+//    List<ChatRoomInfo> roomList = null;
+    List<ChatRoomInfoDTO> roomList = null;
     List<ChatRoomInfoDTO> myRoomList = null;
     Authentication auth; // = SecurityContextHolder.getContext().getAuthentication();
     Member myInfo;
@@ -33,7 +34,7 @@ public class ChatRoomController {
      * @return roomList : Entity List
      */
     @PostMapping(value = "/createChatRoom")
-    public List<ChatRoomInfo> createRoom(@RequestBody JSONObject jsonObjectParams) {
+    public List<ChatRoomInfoDTO> createRoom(@RequestBody JSONObject jsonObjectParams) {
         auth = SecurityContextHolder.getContext().getAuthentication();
         myInfo = (Member)auth.getPrincipal();
 
@@ -82,7 +83,8 @@ public class ChatRoomController {
      * @return roomList : Entity List
      */
     @PostMapping(value = "/getChatRoomList")
-    public List<ChatRoomInfo> getRoomList(){
+//    public List<ChatRoomInfo> getRoomList(){
+    public List<ChatRoomInfoDTO> getRoomList(){
         roomList = chatServiceImpl.getChatRoomList();
 
         return roomList;

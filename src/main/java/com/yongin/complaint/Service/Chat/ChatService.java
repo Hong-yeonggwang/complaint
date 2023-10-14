@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface ChatService {
 
-    List<ChatRoomInfo> createChatRoom(ChatRoomInfo newChatRoomInfo, Member myInfo);
+    List<ChatRoomInfoDTO> createChatRoom(ChatRoomInfo newChatRoomInfo, Member myInfo);
 
     void enterChatRoom(Long chatRoomSeq);
 
     boolean dropChatRoom(ChatRoomInfoDTO chatRoomInfoDTO);
 
-    List<ChatRoomInfo> getChatRoomList();
+    List<ChatRoomInfoDTO> getChatRoomList();
 
     List<ChatRoomInfo> getMyChatRoomList(String userId);
 
