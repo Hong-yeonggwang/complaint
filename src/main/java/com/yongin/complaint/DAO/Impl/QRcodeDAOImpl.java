@@ -6,6 +6,7 @@ import com.yongin.complaint.JPA.Entity.QRcode;
 import com.yongin.complaint.JPA.Repository.QRcodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class QRcodeDAOImpl implements QRcodeDAO {
         return qrCodeRepository.existsQRcode(serial);
     }
     @Override
+    @Transactional
     public List<QRcode> getQRcodeList(String memberId) {
         return qrCodeRepository.getQrcodeList(memberId);
     }

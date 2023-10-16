@@ -1,5 +1,6 @@
 package com.yongin.complaint.JPA.Repository;
 
+import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,8 @@ public interface QRcodeRepository extends JpaRepository<QRcode,Long> {
 
     @Query("select q from QRcode q join fetch q.category join fetch q.owner m where m.id = :MEMBERID and q.useDate = null")
     List<QRcode> getQrcodeList(@Param("MEMBERID") String memberId);
+
+    List<QRcode> getByOwner(Member memberSeq);
 
 
 }

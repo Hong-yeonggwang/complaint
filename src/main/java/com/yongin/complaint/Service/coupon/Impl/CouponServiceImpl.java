@@ -39,7 +39,7 @@ public class CouponServiceImpl implements CouponService {
 
         if(existCoupon == null){
             LOGGER.info("[createCoupon] 중복되는 쿠폰 번호가 없습니다.");
-            QRcodeCategory qrCategory = couponDAO.getPrice(category, name);
+            QRcodeCategory qrCategory = couponDAO.findByName(category, name);
             couponDAO.saveCoupon(couponSerial,qrCategory.getQrCategorySeq());
             return CreateCouponResponse.builder()
                     .msg("생성이 완료 되었습니다.")
@@ -66,7 +66,7 @@ public class CouponServiceImpl implements CouponService {
             Coupon coupon = couponDAO.CouponExist(couponSerial);
             if(coupon != null || coupon.getStatus().equals("none")){ //쿠폰이 존재하고 사용상태가 none이라면 사용가능
                 LOGGER.info("[useCoupon]:쿠폰을 정상적으로 등록합니다.");
-                QRcodeDTO data = qrCodeGenerater.generateQRcode(coupon.getQrCodeCategory().getQrCodeCategory(),couponSerial,member);
+                QRcodeDTO data = qrCodeGenerater.generateQRcode(coupon.getQrCodeCategory(),couponSerial,member);
                 couponDAO.updateCouponStatus(couponSerial); // 쿠폰의 사용유무를 use로 바꿈
                 return QRcodeResponse.builder()
                         .qRcode(data.getQrSerial())

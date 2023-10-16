@@ -7,7 +7,7 @@ import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 public interface CouponDAO {
     Coupon CouponExist(String name);
 
-    QRcodeCategory getPrice(String category , String name);
+    QRcodeCategory findByName(String category , String name);
 
     void saveCoupon(String serial, Long category);
 

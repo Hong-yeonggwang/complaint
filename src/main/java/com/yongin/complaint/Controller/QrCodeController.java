@@ -3,7 +3,6 @@ package com.yongin.complaint.Controller;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
 import com.yongin.complaint.Payload.requset.CouponCreateRequest;
-import com.yongin.complaint.Payload.requset.QRcodeRequest;
 import com.yongin.complaint.Payload.response.CreateCouponResponse;
 import com.yongin.complaint.Payload.response.QRcodeResponse;
 import com.yongin.complaint.Service.QRcode.QRcodeService;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.html.HTMLImageElement;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

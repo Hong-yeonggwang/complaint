@@ -1,12 +1,17 @@
 package com.yongin.complaint.DAO.Impl;
 
 import com.yongin.complaint.DAO.AdminDAO;
+import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
+import com.yongin.complaint.JPA.Entity.Place;
+import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.JPA.Repository.CouponRepository;
 import com.yongin.complaint.JPA.Repository.MemberRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AdminDAOImpl implements AdminDAO {
@@ -25,6 +30,45 @@ public class AdminDAOImpl implements AdminDAO {
         this.qrCodeRepository = qrCodeRepository;
         this.qrCodeCategoryRepository = qrCodeCategoryRepository;
 
+    }
+
+    @Override
+    public List<QRcodeCategory> getAllCategory(){
+        return qrCodeCategoryRepository.findAll();
+    }
+
+    @Override
+    public void updateCategory(String placeName, String name, CategoryUpdateDTO updateInfo) {
+        QRcodeCategory qRcodeCategory = qrCodeCategoryRepository.findByName(placeName,name);
+
+        Place place = new Place();
+        place.setPlaceSeq(updateInfo.getCategorySeq());
+
+        qRcodeCategory.setQrcodeUsingPlace(place);
+        qRcodeCategory.setPrice(updateInfo.getPrice());
+        qRcodeCategory.setName(updateInfo.getName());
+
+        qrCodeCategoryRepository.save(qRcodeCategory);
+    }
+
+    @Override
+    public void addCategory(CategoryUpdateDTO updateInfo) {
+        Place place = new Place();
+        place.setPlaceSeq(updateInfo.getCategorySeq());
+        QRcodeCategory qRcodeCategory = QRcodeCategory.builder()
+                .name(updateInfo.getName())
+                .price(updateInfo.getPrice())
+                .qrcodeUsingPlace(place)
+                .build();
+        qrCodeCategoryRepository.save(qRcodeCategory);
+    }
+
+    @Override
+    public void deleteCategory(String name) {
+        QRcodeCategory qRcodeCategory = qrCodeCategoryRepository.findByName(name);
+        qRcodeCategory.setStatus("hidden");
+
+        qrCodeCategoryRepository.save(qRcodeCategory);
     }
 
 }
