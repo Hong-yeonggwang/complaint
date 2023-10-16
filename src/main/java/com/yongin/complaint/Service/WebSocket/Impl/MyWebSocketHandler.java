@@ -129,7 +129,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 //        sessionMap.remove(session.getId());
 //        super.afterConnectionClosed(session, status);
-//        System.out.println("client Closed : " + session.getUri().toString());
+        System.out.println("client Closed : " + session.getUri().toString());
 
         // 소켓 종료
         if(roomListSessions.size() > 0){ // 소켓 종료시 해당하는 세션 삭제
