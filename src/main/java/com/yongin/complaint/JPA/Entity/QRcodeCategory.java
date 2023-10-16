@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Table(name = "QRCODE_CATEGORY")
 public class QRcodeCategory {
     @Id
@@ -23,6 +24,13 @@ public class QRcodeCategory {
     @Column(name = "PRICE")
     private int price;
 
-    @Column(name = "QRCODE_CATEGORY")
-    private String qrCodeCategory;
+    @Column(name = "STATUS")
+    private String status;
+
+//    @Column(name = "QRCODE_CATEGORY")
+//    private String qrCodeCategory;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "PLACE_SEQ_FK")
+    private Place qrcodeUsingPlace;
 }

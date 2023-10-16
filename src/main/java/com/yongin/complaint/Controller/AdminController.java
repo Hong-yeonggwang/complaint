@@ -39,6 +39,10 @@ public class AdminController {
 
 
     @PostMapping(value = "/category")
+    public void addCategory(){
+
+    }
+    @GetMapping(value= "/category")
     public void getCategory(){
 
     }

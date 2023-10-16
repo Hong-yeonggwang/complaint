@@ -27,23 +27,22 @@ public class QRcodeGeneraterImpl implements QRcodeGenerater {
         this.qrCodeCategoryRepository = qrCodeCategoryRepository;
     }
     @Override
-    public QRcodeDTO generateQRcode(String category, String ticketInfo, Member userInfo) {
-        String combineString = category + ticketInfo + userInfo.getId(); // 카테고리,티켓정보,생성자이름 조합
+    public QRcodeDTO generateQRcode(QRcodeCategory category, String ticketInfo, Member userInfo) {
+        String combineString = category.getName() + ticketInfo + userInfo.getId(); // 카테고리,티켓정보,생성자이름 조합
         String qrCodeSerial = generateSHA256(combineString); // 정보 조합 문자열 sha256 돌림
 
         QRcode qrCodeExist = qeCodeRepository.existsQRcode(qrCodeSerial); // qr코드serial이 디비에 있는건지 확인
 
         if(qrCodeExist == null){
-            QRcodeCategory qrCodeCategory = qrCodeCategoryRepository.getByQrCodeCategory(category);
 //            qr코드 디비에 저장
             QRcode qrCode = QRcode.builder()
                     .qrCode(qrCodeSerial)
-                    .category(qrCodeCategory)
+                    .category(category)
                     .owner(userInfo)
                     .regulationDate(LocalDateTime.now())
                     .build();
             qeCodeRepository.save(qrCode);
-            return QRcodeDTO.builder().category(qrCodeCategory).qrSerial(qrCodeSerial).build();
+            return QRcodeDTO.builder().category(category).qrSerial(qrCodeSerial).build();
         }
         else{
 //            예외던지기

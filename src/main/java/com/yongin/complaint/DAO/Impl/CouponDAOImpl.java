@@ -31,8 +31,8 @@ public class CouponDAOImpl implements CouponDAO {
     }
 
     @Override
-    public QRcodeCategory getPrice(String category, String name) {
-        return qrCodeCategoryRepository.getPrice(category,name);
+    public QRcodeCategory findByName(String category, String name) {
+        return qrCodeCategoryRepository.findByName(category,name);
     }
 
     @Override
