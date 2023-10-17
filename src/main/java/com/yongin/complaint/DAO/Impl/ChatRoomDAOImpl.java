@@ -31,8 +31,11 @@ public class ChatRoomDAOImpl implements ChatRoomDAO {
     @Override
     @Transactional
     public ChatRoomInfoDTO findChatRoomsWithMembers(String roomId) {
+        System.out.println("DAO: " + roomId);
         ChatRoomInfoDTO roomInfo =  chatRoomInfoRepository.getChatRoomInfoDTOByChatRoomId(roomId);
+        System.out.println("DAO: " + roomInfo);
         List<ChatRoomMemberDTO> memberList = chatRoomInfoRepository.getChatRoomMemberDTOListByChatRoomId(roomId);
+        System.out.println("DAO: " + memberList);
 
         roomInfo.setMembers(memberList);
         return roomInfo;

@@ -13,7 +13,8 @@ public interface ChatRoomService {
 
     List<ChatRoomInfoDTO> createChatRoom(ChatRoomInfo newChatRoomInfo, Member myInfo);
 
-    ChatRoomInfoDTO enterChatRoom(ChatRoomInfoDTO chatRoomInfoDTO, Member myInfo);
+    ChatRoomInfoDTO getChatRoomInfoDTOWithMembers(String chatRoomId);
+    ChatRoomInfoDTO enterChatRoom(String chatRoomId, Member myInfo);
 
 //    boolean checkChatRoomId(String chatRoomId);
 

@@ -75,17 +75,19 @@ public class ChatRoomController {
 
     /**
      * 방 입장하기
-     * @param chatRoomInfoDTO
+     * @param jsonObjectChatRoomId
      * @return
      */
     @PostMapping(value = "/enterChatRoom")
-    public ChatRoomInfoDTO enterChatRoom(@RequestBody ChatRoomInfoDTO chatRoomInfoDTO) {
+    public ChatRoomInfoDTO enterChatRoom(@RequestBody JSONObject jsonObjectChatRoomId) {
         // 토큰에 들어 있는 내 정보
         auth = SecurityContextHolder.getContext().getAuthentication();
         myInfo = (Member)auth.getPrincipal();
 
+        String chatRoomId = (String) jsonObjectChatRoomId.get("chatRoomId");
 
-        chatRoomInfoDTO = chatRoomServiceImpl.enterChatRoom(chatRoomInfoDTO, myInfo);
+        System.out.println("enterChatRoom: "+ chatRoomId);
+        chatRoomInfoDTO = chatRoomServiceImpl.enterChatRoom(chatRoomId, myInfo);
         System.out.println("Controller : " + chatRoomInfoDTO);
 
         // 리다이렉트를 설정하고 chatRoomSeq를 URL 경로에 추가

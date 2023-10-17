@@ -129,45 +129,72 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomInfoDTOList;
     }
 
-    public ChatRoomInfoDTO enterChatRoom(ChatRoomInfoDTO chatRoomInfoDTO, Member myInfo){
-        List<ChatRoomMemberDTO> chatRoomMemberDTOList = chatRoomInfoRepository.getChatRoomMemberDTOListByChatRoomId(chatRoomInfoDTO.getChatRoomId());
+    @Override
+    public ChatRoomInfoDTO getChatRoomInfoDTOWithMembers(String chatRoomId) {
+        ChatRoomInfoDTO chatRoomInfoDTO =  chatRoomInfoRepository.getChatRoomInfoDTOByChatRoomId(chatRoomId);
+        System.out.println("getChatRoomInfoDTOWithMembers: " + chatRoomInfoDTO);
+        List<ChatRoomMemberDTO> memberList = chatRoomInfoRepository.getChatRoomMemberDTOListByChatRoomId(chatRoomId);
+        System.out.println("getChatRoomInfoDTOWithMembers: " + memberList);
 
-        System.out.println(chatRoomMemberDTOList);
+        chatRoomInfoDTO.setMembers(memberList);
 
-        Long mySeq = myInfo.getMemberSeq();
-
-        ChatRoomMemberDTO chatRoomMemberDTO;
-        int chatRoomMemberDTOListSize = chatRoomMemberDTOList.size();
-
-        for(int i = 0; i < chatRoomMemberDTOListSize; ++i){
-            chatRoomMemberDTO =  chatRoomMemberDTOList.get(i);
-
-            if(mySeq == chatRoomMemberDTO.getMemberSeq()){
-                // 바로 채팅방 이동
-                chatRoomInfoDTO.setMembers(chatRoomMemberDTOList);
-                break;
-            }
-
-            // test 아직 안함 controller에서 소켓 송신 확인되면 test
-            else if(i + 1 == chatRoomMemberDTOListSize){
-                // 채팅방에 내 정보 추가하고
-                
-                // DB 업데이트
-                ChatRoomInfo chatRoomInfo = chatRoomInfoRepository.findByChatRoomSeq(chatRoomInfoDTO.getChatRoomSeq());
-                chatRoomInfo.getMembers().add(myInfo);
-                chatRoomInfo = chatRoomInfoRepository.save(chatRoomInfo);
-
-                System.out.println("chatRoomInfo: " + chatRoomInfo);
-
-                // DTO 정보 업데이트
-                chatRoomInfoDTO.getMembers().add(new ChatRoomMemberDTO(myInfo.getMemberSeq(), myInfo.getNickName()));
-                System.out.println("chatRoomInfoDTO: " + chatRoomInfoDTO);
-
-                // 채팅방 이동
-            }
-        }
 
         return chatRoomInfoDTO;
+    }
+
+    public ChatRoomInfoDTO enterChatRoom(String chatRoomId, Member myInfo){
+        ChatRoomInfoDTO chatRoomInfoDTO;
+
+        try{
+            chatRoomInfoDTO = this.getChatRoomInfoDTOWithMembers(chatRoomId);
+
+            if(chatRoomInfoDTO != null){
+                List<ChatRoomMemberDTO> chatRoomMemberDTOList = chatRoomInfoDTO.getMembers();
+                System.out.println(chatRoomMemberDTOList);
+
+                Long mySeq = myInfo.getMemberSeq();
+
+                int chatRoomMemberDTOListSize = chatRoomMemberDTOList.size();
+                ChatRoomMemberDTO chatRoomMemberDTO;
+
+                for(int i = 0; i < chatRoomMemberDTOListSize; ++i){
+                    chatRoomMemberDTO =  chatRoomMemberDTOList.get(i);
+
+                    if(mySeq == chatRoomMemberDTO.getMemberSeq()){
+                        // 바로 채팅방 이동
+                        chatRoomInfoDTO.setMembers(chatRoomMemberDTOList);
+                        break;
+                    }
+
+                    // test 아직 안함 controller에서 소켓 송신 확인되면 test
+                    else if(i + 1 == chatRoomMemberDTOListSize){
+                        // 채팅방에 내 정보 추가하고
+
+                        // DB 업데이트
+//                ChatRoomInfo chatRoomInfo = chatRoomInfoRepository.findByChatRoomSeq(chatRoomInfoDTO.getChatRoomSeq());
+//                chatRoomInfo.getMembers().add(myInfo);
+//                chatRoomInfo = chatRoomInfoRepository.save(chatRoomInfo);
+//
+//                System.out.println("chatRoomInfo: " + chatRoomInfo);
+
+                        // DTO 정보 업데이트
+                        chatRoomInfoDTO.getMembers().add(new ChatRoomMemberDTO(myInfo.getMemberSeq(), myInfo.getNickName()));
+                        System.out.println("chatRoomInfoDTO: " + chatRoomInfoDTO);
+
+                        // 채팅방 이동
+                    }
+                }
+
+                return chatRoomInfoDTO;
+            }
+            else{
+                return null;
+            }
+        }
+        catch (NullPointerException e){
+            System.out.println(e);
+            return null;
+        }
     }
 
 
