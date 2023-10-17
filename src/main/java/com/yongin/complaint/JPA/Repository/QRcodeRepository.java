@@ -1,5 +1,7 @@
 package com.yongin.complaint.JPA.Repository;
 
+import com.yongin.complaint.DTO.Admin.CouponStatisticsDTO;
+import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +20,12 @@ public interface QRcodeRepository extends JpaRepository<QRcode,Long> {
     List<QRcode> getQrcodeList(@Param("MEMBERID") String memberId);
 
     List<QRcode> getByOwner(Member memberSeq);
+
+    @Query("select new com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO(COUNT(q),q.category.name) from QRcode q group by q.category")
+    List<QRcodeStatisticsDTO> getQrcodeCount();
+
+    @Query("select new com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO(q.status,COUNT(q),q.category.name) from QRcode q where q.status = 'used' group by q.category")
+    List<QRcodeStatisticsDTO> getQrcoceUseCount();
 
 
 }

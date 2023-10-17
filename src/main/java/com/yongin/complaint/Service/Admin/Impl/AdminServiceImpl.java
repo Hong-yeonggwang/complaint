@@ -3,6 +3,7 @@ package com.yongin.complaint.Service.Admin.Impl;
 import com.yongin.complaint.DAO.AdminDAO;
 import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
+import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import com.yongin.complaint.Service.Admin.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,16 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void deleteCategory(String name) {
 
+    }
+
+    @Override
+    public List<CouponUseRateResponse> getUseRateCoupon() {
+        return adminDAO.getUseRateCoupon();
+    }
+
+    @Override
+    public List<CouponUseRateResponse> getUseRateQRcode() {
+        return adminDAO.getUseRateQRcode();
     }
 
 }

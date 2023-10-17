@@ -2,16 +2,21 @@ package com.yongin.complaint.DAO.Impl;
 
 import com.yongin.complaint.DAO.AdminDAO;
 import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
+import com.yongin.complaint.DTO.Admin.CouponStatisticsDTO;
+import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
 import com.yongin.complaint.JPA.Entity.Place;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.JPA.Repository.CouponRepository;
 import com.yongin.complaint.JPA.Repository.MemberRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeRepository;
+import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class AdminDAOImpl implements AdminDAO {
@@ -69,6 +74,71 @@ public class AdminDAOImpl implements AdminDAO {
         qRcodeCategory.setStatus("hidden");
 
         qrCodeCategoryRepository.save(qRcodeCategory);
+    }
+
+    @Override
+    public List<CouponUseRateResponse> getUseRateCoupon() {
+        List<CouponStatisticsDTO> allCount = couponRepository.getCouponCount();
+        List<CouponStatisticsDTO> useCount = couponRepository.getCouponUseCount();
+
+        List<CouponUseRateResponse> returnDate = new ArrayList<>();
+
+        for(CouponStatisticsDTO all : allCount){
+            int flag = 0;
+            for(CouponStatisticsDTO use : useCount){
+                if(all.getPlaceName().equals(use.getPlaceName())){
+                    returnDate.add(
+                        CouponUseRateResponse.builder()
+                            .rate(Map.of( "use", use.getCount(),"all",all.getCount()))
+                            .placeName(all.getPlaceName())
+                            .build()
+                    );
+                    flag = 1;
+                }
+            }
+            if(flag == 0){
+                returnDate.add(
+                    CouponUseRateResponse.builder()
+                        .rate(Map.of( "use", 0l,"all",all.getCount()))
+                        .placeName(all.getPlaceName())
+                        .build()
+                );
+            }
+        }
+        return returnDate;
+    }
+
+    @Override
+    public List<CouponUseRateResponse> getUseRateQRcode() {
+
+        List<QRcodeStatisticsDTO> allCount = qrCodeRepository.getQrcodeCount();
+        List<QRcodeStatisticsDTO> useCount = qrCodeRepository.getQrcoceUseCount();
+
+        List<CouponUseRateResponse> returnDate = new ArrayList<>();
+
+        for(QRcodeStatisticsDTO all : allCount){
+            int flag = 0;
+            for(QRcodeStatisticsDTO use : useCount){
+                if(all.getPlaceName().equals(use.getPlaceName())){
+                    returnDate.add(
+                        CouponUseRateResponse.builder()
+                        .rate(Map.of( "use", use.getCount(),"all",all.getCount()))
+                        .placeName(all.getPlaceName())
+                        .build()
+                    );
+                    flag = 1;
+                }
+            }
+            if(flag == 0){
+                returnDate.add(
+                    CouponUseRateResponse.builder()
+                    .rate(Map.of( "use", 0l,"all",all.getCount()))
+                    .placeName(all.getPlaceName())
+                    .build()
+                );
+            }
+        }
+        return returnDate;
     }
 
 }

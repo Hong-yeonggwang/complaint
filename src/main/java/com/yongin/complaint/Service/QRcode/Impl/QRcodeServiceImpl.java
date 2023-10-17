@@ -35,9 +35,10 @@ public class QRcodeServiceImpl implements QRcodeService {
                     .qRcode(null)
                     .build();
         }
-        else if(qrCode != null && qrCode.getUseDate() == null){ // 디비에 존재하는 시리얼이고 사용되지 않는 시리얼 넘버임.
+        else if(qrCode != null && (qrCode.getUseDate() == null && qrCode.getStatus().equals("none"))){ // 디비에 존재하는 시리얼이고 사용되지 않는 시리얼 넘버임.
             //디비에 존재하는 시리얼 넘버임.
             qrCode.setUseDate(LocalDateTime.now());
+            qrCode.setStatus("used");
             qrCodeDAO.qrcodeUpdate(qrCode);
 
             return QRcodeResponse.builder()
