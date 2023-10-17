@@ -6,6 +6,7 @@ import com.yongin.complaint.DTO.ChatRoomMemberDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Repository.ChatRoomInfoRepository;
+import com.yongin.complaint.Payload.requset.ExitChatRoomRequest;
 import com.yongin.complaint.Service.Chat.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -195,6 +196,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             System.out.println(e);
             return null;
         }
+    }
+
+    @Override
+    public ChatRoomInfoDTO exitChatRoom(ExitChatRoomRequest exitChatRoomRequest, Member myInfo) {
+        Optional<ChatRoomInfo> chatRoomInfo = chatRoomInfoRepository.findById(exitChatRoomRequest.getChatRoomSeq());
+
+        return null;
     }
 
 
