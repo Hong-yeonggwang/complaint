@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface ChatRoomDAO {
 
-    boolean createChatRoom(ChatRoomInfoDTO newChatRoomInfoDTO);
-    ChatRoomInfo getLastestChatRoomInfo();
-    List<ChatRoomInfo> getChatRoomInfoList();
+//    ChatRoomInfoDTO createChatRoom(ChatRoomInfoDTO newChatRoomInfoDTO);
+    ChatRoomInfoDTO findChatRoomsWithMembers(String roomId);
+
+    //    ChatRoomInfo getLastestChatRoomInfo();
+    //    List<ChatRoomInfo> getChatRoomInfoList();
 
 }

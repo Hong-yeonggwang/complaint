@@ -1,31 +1,36 @@
 package com.yongin.complaint.Controller;
 
 import com.yongin.complaint.DTO.ChatRoomInfoDTO;
+import com.yongin.complaint.DTO.ChatRoomMemberDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
 import com.yongin.complaint.JPA.Entity.Member;
-import com.yongin.complaint.Service.Chat.ChatService;
+import com.yongin.complaint.Service.Chat.ChatRoomService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
 @RestController
 public class ChatRoomController {
 //    List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
-    final ChatService chatServiceImpl; // = ChatServiceImpl.getInstance();
+    final ChatRoomService chatRoomServiceImpl; // = ChatServiceImpl.getInstance();
 //    List<ChatRoomInfo> roomList = null;
-    List<ChatRoomInfoDTO> roomList = null;
-    List<ChatRoomInfoDTO> myRoomList = null;
+
+    ChatRoomInfoDTO chatRoomInfoDTO;
+    List<ChatRoomInfoDTO> chatRoomInfoDTOList;
+    List<ChatRoomInfoDTO> myRoomList;
     Authentication auth; // = SecurityContextHolder.getContext().getAuthentication();
     Member myInfo;
 
     @Autowired
-    ChatRoomController(ChatService chatServiceImpl){
-        this.chatServiceImpl = chatServiceImpl;
+    ChatRoomController(ChatRoomService chatRoomServiceImpl){
+        this.chatRoomServiceImpl = chatRoomServiceImpl;
     }
 
     /**
@@ -34,14 +39,12 @@ public class ChatRoomController {
      * @return roomList : Entity List
      */
     @PostMapping(value = "/createChatRoom")
-    public List<ChatRoomInfoDTO> createRoom(@RequestBody JSONObject jsonObjectParams) {
+    public List<ChatRoomInfoDTO> createChatRoom(@RequestBody JSONObject jsonObjectParams) {
+        // 토큰에 들어 있는 내 정보
         auth = SecurityContextHolder.getContext().getAuthentication();
         myInfo = (Member)auth.getPrincipal();
 
-        ChatRoomInfo newChatRoomInfo = new ChatRoomInfo();
-//        ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO(); // DB에 저장하기 전에 정보를 담아둘 객체
-
-//        System.out.println(jsonObjectParams);
+        ChatRoomInfo newChatRoomInfo = new ChatRoomInfo(); // 채팅방 생성시 DB에 저장할 Entity
 
         String roomName = (String) jsonObjectParams.get("chatRoomName");
         int chatRoomLimited = (Integer) jsonObjectParams.get("chatRoomLimited");
@@ -51,21 +54,47 @@ public class ChatRoomController {
             newChatRoomInfo.setChatRoomName(roomName);
             newChatRoomInfo.setChatRoomLimited(chatRoomLimited);
 
-            roomList = chatServiceImpl.createChatRoom(newChatRoomInfo, myInfo);
+            chatRoomInfoDTOList = chatRoomServiceImpl.createChatRoom(newChatRoomInfo, myInfo);
         }
         else{ System.out.println("채팅방 이름 또는 인원 제한 파라미터가 제대로 수신되지 않았습니다."); }
 
-        return roomList;
+        return chatRoomInfoDTOList;
+    }
+
+    /**
+     * 방 정보가져오기
+     * @return roomList : Entity List
+     */
+    @PostMapping(value = "/getChatRoomList")
+//    public List<ChatRoomInfo> getRoomList(){
+    public List<ChatRoomInfoDTO> getRoomList(){
+        chatRoomInfoDTOList = chatRoomServiceImpl.getChatRoomInfoDTOList();
+
+        return chatRoomInfoDTOList;
     }
 
     /**
      * 방 입장하기
-     * @param chatRoomSeq
+     * @param jsonObjectChatRoomId
      * @return
      */
-    @PostMapping(value = "/enterRoom")
-    public void createRoom(@RequestBody Long chatRoomSeq) {
-        
+    @PostMapping(value = "/enterChatRoom")
+    public ChatRoomInfoDTO enterChatRoom(@RequestBody JSONObject jsonObjectChatRoomId) {
+        // 토큰에 들어 있는 내 정보
+        auth = SecurityContextHolder.getContext().getAuthentication();
+        myInfo = (Member)auth.getPrincipal();
+
+        String chatRoomId = (String) jsonObjectChatRoomId.get("chatRoomId");
+
+        System.out.println("enterChatRoom: "+ chatRoomId);
+        chatRoomInfoDTO = chatRoomServiceImpl.enterChatRoom(chatRoomId, myInfo);
+        System.out.println("Controller : " + chatRoomInfoDTO);
+
+        // 리다이렉트를 설정하고 chatRoomSeq를 URL 경로에 추가
+//        RedirectView redirectView = new RedirectView("/chat/" + chatRoomInfoDTO.getChatRoomId());
+//        ModelAndView modelAndView = new ModelAndView(redirectView);
+
+        return chatRoomInfoDTO;
     }
 
     /**
@@ -78,17 +107,7 @@ public class ChatRoomController {
 
     }
 
-    /**
-     * 방 정보가져오기
-     * @return roomList : Entity List
-     */
-    @PostMapping(value = "/getChatRoomList")
-//    public List<ChatRoomInfo> getRoomList(){
-    public List<ChatRoomInfoDTO> getRoomList(){
-        roomList = chatServiceImpl.getChatRoomList();
 
-        return roomList;
-    }
 
     /**
      * 내 방 정보가져오기
