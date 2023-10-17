@@ -32,6 +32,9 @@ public class QRcode {
     @Column(name = "USE_DATE")
     private LocalDateTime useDate;
 
+    @Column(name = "STATUS")
+    private String status;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "MEMBER_SEQ_FK")
     private Member owner;
