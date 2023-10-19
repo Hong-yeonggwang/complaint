@@ -31,7 +31,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CreateCouponResponse createCoupon(String category, String name){
+    public CreateCouponResponse createCoupon(String category, String name) throws NullPointerException{
         CouponGenerator generator = new CouponGenerator();
         String couponSerial = generator.generateRandomCoupon(); //쿠폰번호
 
@@ -39,20 +39,30 @@ public class CouponServiceImpl implements CouponService {
 
         if(existCoupon == null){
             LOGGER.info("[createCoupon] 중복되는 쿠폰 번호가 없습니다.");
-            QRcodeCategory qrCategory = couponDAO.findByName(category, name);
-            couponDAO.saveCoupon(couponSerial,qrCategory.getQrCategorySeq());
-            return CreateCouponResponse.builder()
-                    .msg("생성이 완료 되었습니다.")
-                    .name(name)
-                    .coupon(couponSerial)
-                    .price(qrCategory.getPrice())
-                    .build();
+            try{
+                QRcodeCategory qrCategory = couponDAO.findByName(category, name);
+                couponDAO.saveCoupon(couponSerial,qrCategory.getQrCategorySeq());
+                return CreateCouponResponse.builder()
+                        .msg("생성이 완료 되었습니다.")
+                        .name(name)
+                        .coupon(couponSerial)
+                        .price(qrCategory.getPrice())
+                        .build();
+            }catch (NullPointerException e){
+                return  CreateCouponResponse.builder()
+                        .coupon("오류")
+                        .msg("올바르지 않은 값입니다.")
+                        .name(null)
+                        .price(null)
+                        .build();
+            }
+
         }
         else{
             LOGGER.info("[createCoupon] 중복되는 쿠폰 번호가 존재합니다.");
             CreateCouponResponse returnDate = CreateCouponResponse.builder()
                     .coupon(null)
-                    .msg("중복된 쿠폰 번호가 존재합니다.")
+                    .msg("중복된 쿠폰 번호가 존재합니다. 다시 시도해주세요")
                     .name(null)
                     .price(null)
                     .build();
@@ -75,14 +85,14 @@ public class CouponServiceImpl implements CouponService {
             }else{
                 LOGGER.info("[useCoupon]: 쿠폰인증 실패 에러 반환.");
                 return QRcodeResponse.builder()
-                        .qRcode("badgay")
+                        .qRcode("잘못된 입력값")
                         .msg("쿠폰번호를 확인해주세요")
                         .build();
             }
         }catch(NullPointerException e){
             LOGGER.info("[useCoupon]: 쿠폰인증 실패 에러 반환.");
             return QRcodeResponse.builder()
-                    .qRcode("badgay")
+                    .qRcode("잘못된 입력값")
                     .msg("쿠폰번호를 확인해주세요")
                     .build();
         }
