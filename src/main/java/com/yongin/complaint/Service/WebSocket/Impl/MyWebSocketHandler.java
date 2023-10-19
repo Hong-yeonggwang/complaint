@@ -25,9 +25,13 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
+        System.out.println("roomListSessions: " + roomListSessions);
+        System.out.println("roomListSessions[0]: " + roomListSessions.get(0));
         // 메시지 발송시
         String msg = message.getPayload();
+        System.out.println("msg: " + msg);
         JSONObject jsonObject = jsonToObjectParser(msg);
+        System.out.println("jsonObject: " + jsonObject);
 
 //        for(String key : sessionMap.keySet()) {
 //            WebSocketSession wss = sessionMap.get(key);
@@ -40,23 +44,24 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 //        }
 
         // 채팅중인 방번호
-        String roomId = (String)jsonObject.get("roomId");
+        String chatRoomId = (String)jsonObject.get("chatRoomId");
+        System.out.println("chatRoomId: " + chatRoomId);
         HashMap<String, Object> chatRoom = null;
 
-        // 채팅방이 존재할 때
+        // 소켓이 열린 채팅방이 존재할 때
         if(roomListSessions.size() > 0){
             for(int i = 0; i < roomListSessions.size(); ++i) {
-                String tempRoomId = (String) roomListSessions.get(i).get("roomId");
+                String tempRoomId = (String) roomListSessions.get(i).get("chatRoomId");
 
                 // 해당하는 방번호를 가진 세션리스트의 Object 검색
-                if (tempRoomId.equals(roomId)) {
+                if (tempRoomId.equals(chatRoomId)) {
                     chatRoom = roomListSessions.get(i);
                     break;
                 }
             }
-
+            System.out.println("chatRoom: " + chatRoom);
             for(String key : chatRoom.keySet()){
-                if(key.equals("roomId")) continue; // 채팅방 Id 스킵
+                if(key.equals("chatRoomId")) continue; // 채팅방 Id 스킵
 
                 WebSocketSession wss = (WebSocketSession) chatRoom.get(key);
 
@@ -83,46 +88,51 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 //        session.sendMessage(new TextMessage(obj.toJSONString()));
 //        System.out.println("client Conneted : " + session.getUri().toString());
 
-        // 소켓 연결시
+        // 소켓 연결시 세션 발급
         super.afterConnectionEstablished(session);
         boolean roomExist = false;
         String url = session.getUri().toString();
+        System.out.println("client Conneted session: " + session);
         System.out.println("client Conneted : " + url);
 
         String tempRoomId = url.split("/chat/")[1];
-        int roomIdx = roomListSessions.size();
+        int chatRoomIdx = roomListSessions.size(); // 사이즈 겸 현재 채팅방 인덱스
 
-        if(roomIdx > 0){
-            for(int i = 0; i < roomIdx; ++i){
-                String roomId = (String)roomListSessions.get(i).get("roomId");
-
-                if(roomId.equals(tempRoomId)){
+        if(chatRoomIdx > 0){
+            for(int i = 0; i < chatRoomIdx; ++i){
+                String chatRoomId = (String)roomListSessions.get(i).get("chatRoomId");
+                System.out.println("afterConnectionEstablished: " + chatRoomId);
+                
+                if(chatRoomId.equals(tempRoomId)){
                     roomExist = true;
-                    roomIdx = i;
+                    chatRoomIdx = i;
                     break;
                 }
             }
         }
 
         if(roomExist){ // 이미 존재하는 방에 세션 추가
-            HashMap<String, Object> chatRoom = roomListSessions.get(roomIdx);
+            HashMap<String, Object> chatRoom = roomListSessions.get(chatRoomIdx);
             chatRoom.put(session.getId(), session);
         }
-        else{
+        else{   // 새로운 채팅방 세션 등록
             HashMap<String, Object> newChatRoom = new HashMap<>();
-            newChatRoom.put("roomId", tempRoomId);
+            newChatRoom.put("chatRoomId", tempRoomId);
             newChatRoom.put(session.getId(), session);
             roomListSessions.add(newChatRoom);
         }
+
+        System.out.println(roomListSessions);
 
         // 세션 등록이 끝나면 발급 받은 세션 ID 값의 메시지 발송
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("type", "getSession");    // 발신 메시지 타입
         jsonObject.put("sessionId", session.getId());   // sessionId
-        jsonObject.put("Time", LocalDateTime.now().toString());   // localDateTime
+//        jsonObject.put("time", LocalDateTime.now().toString());   // localDateTime
 //        System.out.println(LocalDateTime.now().toString());
 
         session.sendMessage(new TextMessage(jsonObject.toJSONString()));
+        System.out.println("afterConnectionEstablished session 전송: ");
     }
 
     @Override

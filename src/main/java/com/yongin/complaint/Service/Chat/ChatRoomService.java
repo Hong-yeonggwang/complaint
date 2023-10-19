@@ -4,6 +4,8 @@ import com.yongin.complaint.DTO.ChatRoomInfoDTO;
 import com.yongin.complaint.DTO.ChatRoomMemberDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
 import com.yongin.complaint.JPA.Entity.Member;
+import com.yongin.complaint.Payload.requset.ExitChatRoomRequest;
+import com.yongin.complaint.Payload.response.EnterChatRoomResponse;
 
 import java.util.List;
 
@@ -14,16 +16,10 @@ public interface ChatRoomService {
     List<ChatRoomInfoDTO> createChatRoom(ChatRoomInfo newChatRoomInfo, Member myInfo);
 
     ChatRoomInfoDTO getChatRoomInfoDTOWithMembers(String chatRoomId);
-    ChatRoomInfoDTO enterChatRoom(String chatRoomId, Member myInfo);
+    EnterChatRoomResponse enterChatRoom(String chatRoomId, Member myInfo);
+    void exitChatRoom(Long chatRoomSeq, int currentNumberOfPeople, Member myInfo);
 
-//    boolean checkChatRoomId(String chatRoomId);
-
-//    ChatRoomInfoDTO getChatRoomInfoDTObySeq(String chatRoomId);
-
-//    void enterChatRoom(Long chatRoomSeq);
-
-    boolean dropChatRoom(ChatRoomInfoDTO chatRoomInfoDTO);
+    void deleteChatRoom(Long chatRoomSeq);
 
     List<ChatRoomInfo> getMyChatRoomList(String userId);
-
 }

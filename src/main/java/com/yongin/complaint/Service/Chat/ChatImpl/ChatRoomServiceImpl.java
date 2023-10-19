@@ -6,6 +6,8 @@ import com.yongin.complaint.DTO.ChatRoomMemberDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Repository.ChatRoomInfoRepository;
+import com.yongin.complaint.Payload.requset.ExitChatRoomRequest;
+import com.yongin.complaint.Payload.response.EnterChatRoomResponse;
 import com.yongin.complaint.Service.Chat.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -133,91 +135,110 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public ChatRoomInfoDTO getChatRoomInfoDTOWithMembers(String chatRoomId) {
         ChatRoomInfoDTO chatRoomInfoDTO =  chatRoomInfoRepository.getChatRoomInfoDTOByChatRoomId(chatRoomId);
         System.out.println("getChatRoomInfoDTOWithMembers: " + chatRoomInfoDTO);
-        List<ChatRoomMemberDTO> memberList = chatRoomInfoRepository.getChatRoomMemberDTOListByChatRoomId(chatRoomId);
-        System.out.println("getChatRoomInfoDTOWithMembers: " + memberList);
 
-        chatRoomInfoDTO.setMembers(memberList);
-
+        if(chatRoomInfoDTO != null){
+            List<ChatRoomMemberDTO> memberList = chatRoomInfoRepository.getChatRoomMemberDTOListByChatRoomId(chatRoomId);
+            chatRoomInfoDTO.setMembers(memberList);
+            System.out.println("getChatRoomInfoDTOWithMembers: " + memberList);
+        }
 
         return chatRoomInfoDTO;
     }
 
-    public ChatRoomInfoDTO enterChatRoom(String chatRoomId, Member myInfo){
-        ChatRoomInfoDTO chatRoomInfoDTO;
+    @Override
+    @Transactional
+    public EnterChatRoomResponse enterChatRoom(String chatRoomId, Member myInfo){
+        EnterChatRoomResponse enterChatRoomResponse = new EnterChatRoomResponse();
+        ChatRoomInfoDTO chatRoomInfoDTO = this.getChatRoomInfoDTOWithMembers(chatRoomId);
 
-        try{
-            chatRoomInfoDTO = this.getChatRoomInfoDTOWithMembers(chatRoomId);
+        if(chatRoomInfoDTO != null){ // 채팅방 존재
+            enterChatRoomResponse.setChatRoomExist(true);
 
-            if(chatRoomInfoDTO != null){
-                List<ChatRoomMemberDTO> chatRoomMemberDTOList = chatRoomInfoDTO.getMembers();
-                System.out.println(chatRoomMemberDTOList);
+            int currentNumberOfPeople = chatRoomInfoDTO.getCurrentNumberOfPeople();
+            ChatRoomMemberDTO myInfoDTO = new ChatRoomMemberDTO(myInfo.getMemberSeq(), myInfo.getNickName());
+            enterChatRoomResponse.setMyInfo(myInfoDTO);
 
-                Long mySeq = myInfo.getMemberSeq();
+            List<ChatRoomMemberDTO> chatRoomMemberDTOList = chatRoomInfoDTO.getMembers();
+            System.out.println(chatRoomMemberDTOList);
 
-                int chatRoomMemberDTOListSize = chatRoomMemberDTOList.size();
-                ChatRoomMemberDTO chatRoomMemberDTO;
+            // 내가 존재하는 방 검사용
+            int chatRoomMemberDTOListSize = chatRoomMemberDTOList.size();
+            ChatRoomMemberDTO chatRoomMemberDTO;
+            Long mySeq = myInfo.getMemberSeq();
 
-                for(int i = 0; i < chatRoomMemberDTOListSize; ++i){
-                    chatRoomMemberDTO =  chatRoomMemberDTOList.get(i);
+            for(int i = 0; i < chatRoomMemberDTOListSize; ++i){
+                chatRoomMemberDTO =  chatRoomMemberDTOList.get(i);
 
-                    if(mySeq == chatRoomMemberDTO.getMemberSeq()){
-                        // 바로 채팅방 이동
-                        chatRoomInfoDTO.setMembers(chatRoomMemberDTOList);
-                        break;
-                    }
+                if(mySeq == chatRoomMemberDTO.getMemberSeq()){ // 이미 내가 존재하는 방이면
+                    // 채팅방 정보 등록
+                    chatRoomInfoDTO.setMembers(chatRoomMemberDTOList);
+                    enterChatRoomResponse.setChatRoomInfoDTO(chatRoomInfoDTO);
+                    enterChatRoomResponse.setAlreadyEnter(true);
 
-                    // test 아직 안함 controller에서 소켓 송신 확인되면 test
-                    else if(i + 1 == chatRoomMemberDTOListSize){
+                    // 바로 채팅방 이동
+                    break;
+                }
+                else if(i + 1 == chatRoomMemberDTOListSize){ // 처음 들어가는 방이면 빈 자리 검사
+                    if(currentNumberOfPeople < chatRoomInfoDTO.getChatRoomLimited()){ // 채팅방 빈 자리 존재
+                        enterChatRoomResponse.setChatRoomRemaining(true);
+
                         // 채팅방에 내 정보 추가하고
+                        System.out.println("service enterChatRoom:" + chatRoomInfoDTO.getChatRoomSeq());
 
                         // DB 업데이트
-//                ChatRoomInfo chatRoomInfo = chatRoomInfoRepository.findByChatRoomSeq(chatRoomInfoDTO.getChatRoomSeq());
-//                chatRoomInfo.getMembers().add(myInfo);
-//                chatRoomInfo = chatRoomInfoRepository.save(chatRoomInfo);
-//
-//                System.out.println("chatRoomInfo: " + chatRoomInfo);
+                        ChatRoomInfo chatRoomInfo = chatRoomInfoRepository.findByChatRoomSeq(chatRoomInfoDTO.getChatRoomSeq());
+                        chatRoomInfo.getMembers().add(myInfo);
+                        chatRoomInfo.setCurrentNumberOfPeople(currentNumberOfPeople+1);
+                        chatRoomInfo = chatRoomInfoRepository.save(chatRoomInfo);
+
+                        System.out.println("chatRoomInfo: " + chatRoomInfo);
 
                         // DTO 정보 업데이트
                         chatRoomInfoDTO.getMembers().add(new ChatRoomMemberDTO(myInfo.getMemberSeq(), myInfo.getNickName()));
+                        chatRoomInfoDTO.setCurrentNumberOfPeople(currentNumberOfPeople+1);
                         System.out.println("chatRoomInfoDTO: " + chatRoomInfoDTO);
 
+                        // 업데이트 된 채팅방 정보 등록
+                        enterChatRoomResponse.setChatRoomInfoDTO(chatRoomInfoDTO);
                         // 채팅방 이동
                     }
+                    else // 채팅방 빈 자리 X
+                        enterChatRoomResponse.setChatRoomRemaining(false);
                 }
+            }
+        }
+        else // 채팅방 존재 X
+            enterChatRoomResponse.setChatRoomExist(false);
 
-                return chatRoomInfoDTO;
-            }
-            else{
-                return null;
+        return enterChatRoomResponse;
+    }
+
+    @Override
+    @Transactional
+    public void exitChatRoom(Long chatRoomSeq, int currentNumberOfPeople, Member myInfo) {
+        Optional<ChatRoomInfo> optionalChatRoomInfo = chatRoomInfoRepository.findById(chatRoomSeq);
+        ChatRoomInfo chatRoomInfo = optionalChatRoomInfo.get();
+        List<Member> memberList =  chatRoomInfo.getMembers();
+
+        for(Member member : memberList){
+            if(member.getMemberSeq() == myInfo.getMemberSeq()){
+                chatRoomInfo.setCurrentNumberOfPeople(chatRoomInfo.getCurrentNumberOfPeople()-1);
+                memberList.remove(member);
+                break;
             }
         }
-        catch (NullPointerException e){
-            System.out.println(e);
-            return null;
-        }
+
+        chatRoomInfo.setMembers(memberList);
+        chatRoomInfoRepository.save(chatRoomInfo);
     }
 
 
-//    @Override
-//    public ChatRoomInfoDTO getChatRoomInfoDTObySeq(String chatRoomId) {
-////        optionalChatRoomInfo = chatRoomInfoRepository.findById(chatRoomSeq);
-////
-////        if(optionalChatRoomInfo.isPresent()){
-////            chatRoomInfo = optionalChatRoomInfo.get();
-////        }
-////        else{
-////
-////        }
-//        chatRoomInfoDTO = chatRoomDAOImpl.findChatRoomsWithMembers(chatRoomId);
-//
-//        return chatRoomInfoDTO;
-//    }
-
     @Override
-    public boolean dropChatRoom(ChatRoomInfoDTO chatRoomInfoDTO) {
-        boolean result = false;
-
-        return result;
+    @Transactional
+    public void deleteChatRoom(Long chatRoomSeq) {
+        Optional<ChatRoomInfo> optionalChatRoomInfo = chatRoomInfoRepository.findById(chatRoomSeq);
+        ChatRoomInfo chatRoomInfo = optionalChatRoomInfo.get();
+        chatRoomInfoRepository.delete(chatRoomInfo);
     }
 
     @Override
