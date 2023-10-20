@@ -1,6 +1,7 @@
 package com.yongin.complaint.Controller;
 
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
+import com.yongin.complaint.Payload.response.Admin.ServiceStatusResponse;
 import com.yongin.complaint.Service.Admin.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,11 @@ public class AdminController {
     @PostMapping(value = "/AcouponStatus")
     public List<CouponUseRateResponse> getAllCouponStatus(){ // 모든 qrcode의 사용량을 확인 ex(인성관 11/12)
         return adminService.getUseRateCoupon();
+    }
+
+    @GetMapping(value = "/serviceStatus")
+    public ServiceStatusResponse getServiceStatus(){
+        return adminService.getServiceStatus();
     }
 
 

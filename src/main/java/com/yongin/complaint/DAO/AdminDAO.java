@@ -1,6 +1,8 @@
 package com.yongin.complaint.DAO;
 
 import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
+import com.yongin.complaint.JPA.Entity.Coupon;
+import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 
@@ -18,4 +20,17 @@ public interface AdminDAO {
     List<CouponUseRateResponse> getUseRateCoupon();
 
     List<CouponUseRateResponse> getUseRateQRcode();
+
+    Long getUserCount();
+
+    Long getPlaceCount();
+
+    Long getTodayUsedQRcode(String today);
+    Long getTodayCreatedQRcode(String today);
+    List<QRcodeCategory> getCategoryInfo();
+
+    List<Coupon> getCouponList();
+
+    Long getRemainQrcodeCount();
+
 }

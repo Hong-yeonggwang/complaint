@@ -4,6 +4,7 @@ import com.yongin.complaint.DAO.AdminDAO;
 import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
 import com.yongin.complaint.DTO.Admin.CouponStatisticsDTO;
 import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
+import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.Place;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.JPA.Repository.CouponRepository;
@@ -139,6 +140,41 @@ public class AdminDAOImpl implements AdminDAO {
             }
         }
         return returnDate;
+    }
+
+    @Override
+    public Long getUserCount() {
+        return memberRepository.getUserCount();
+    }
+
+    @Override
+    public Long getPlaceCount() {
+        return qrCodeCategoryRepository.getPlaceCount();
+    }
+
+    @Override
+    public Long getTodayUsedQRcode(String today) {
+        return qrCodeRepository.getTodayUsedQrcodeCount(today);
+    }
+
+    @Override
+    public Long getTodayCreatedQRcode(String today) {
+        return qrCodeRepository.getTodayCreatedQrcodeCount(today);
+    }
+
+    @Override
+    public List<QRcodeCategory> getCategoryInfo() {
+        return qrCodeCategoryRepository.findAll();
+    }
+
+    @Override
+    public List<Coupon> getCouponList() {
+        return couponRepository.findAll();
+    }
+
+    @Override
+    public Long getRemainQrcodeCount() {
+        return qrCodeRepository.getRemainQrcodeCount();
     }
 
 }
