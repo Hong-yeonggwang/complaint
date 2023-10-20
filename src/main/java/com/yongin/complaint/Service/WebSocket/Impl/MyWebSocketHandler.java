@@ -1,8 +1,11 @@
 package com.yongin.complaint.Service.WebSocket.Impl;
 
+import com.yongin.complaint.JPA.Entity.ChatHistory;
+import com.yongin.complaint.JPA.Repository.ChatHistoryRepository;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -23,6 +26,9 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
      */
     private List<HashMap<String, Object>> roomListSessions = new ArrayList<>(); // 웹소켓 세션을 담아둘 리스트
 
+    @Autowired
+    ChatHistoryRepository chatHistoryRepository;
+
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         System.out.println("roomListSessions: " + roomListSessions);
@@ -31,6 +37,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         String msg = message.getPayload();
         System.out.println("msg: " + msg);
         JSONObject jsonObject = jsonToObjectParser(msg);
+        System.out.println("jsonObject: " + jsonObject);
+
+        // 발송 시간 저장
+        LocalDateTime chatHistoryTime = LocalDateTime.now();
+        jsonObject.put("chatHistoryTime", chatHistoryTime.toString());
         System.out.println("jsonObject: " + jsonObject);
 
 //        for(String key : sessionMap.keySet()) {
@@ -60,6 +71,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
                 }
             }
             System.out.println("chatRoom: " + chatRoom);
+
             for(String key : chatRoom.keySet()){
                 if(key.equals("chatRoomId")) continue; // 채팅방 Id 스킵
 
@@ -74,6 +86,17 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
                     }
                 }
             }
+
+            // 세션 빼고 다 저장
+            chatHistoryRepository.save(new ChatHistory().builder()
+                            .messageType((String)jsonObject.get("messageType"))
+                            .chatRoomId((String)jsonObject.get("chatRoomId"))
+                            .sender((Long)jsonObject.get("memberSeq"))
+                            .senderNickName((String)jsonObject.get("nickName"))
+                            .chatMessage((String)jsonObject.get("msg"))
+                            .chatHistoryTime(chatHistoryTime)
+                            .build()
+            );
         }
     }
 
@@ -126,7 +149,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
         // 세션 등록이 끝나면 발급 받은 세션 ID 값의 메시지 발송
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "getSession");    // 발신 메시지 타입
+        jsonObject.put("messageType", "getSession");    // 발신 메시지 타입
         jsonObject.put("sessionId", session.getId());   // sessionId
 //        jsonObject.put("time", LocalDateTime.now().toString());   // localDateTime
 //        System.out.println(LocalDateTime.now().toString());

@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EnterChatRoomResponse {
     boolean isChatRoomExist;
-    boolean alreadyEnter;
+    boolean alreadyEntered;
     boolean isChatRoomRemaining;
     ChatRoomInfoDTO chatRoomInfoDTO;
     ChatRoomMemberDTO myInfo;

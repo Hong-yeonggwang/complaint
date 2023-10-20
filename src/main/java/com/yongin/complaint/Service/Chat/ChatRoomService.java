@@ -15,11 +15,12 @@ public interface ChatRoomService {
 
     List<ChatRoomInfoDTO> createChatRoom(ChatRoomInfo newChatRoomInfo, Member myInfo);
 
-    ChatRoomInfoDTO getChatRoomInfoDTOWithMembers(String chatRoomId);
     EnterChatRoomResponse enterChatRoom(String chatRoomId, Member myInfo);
     void exitChatRoom(Long chatRoomSeq, int currentNumberOfPeople, Member myInfo);
 
     void deleteChatRoom(Long chatRoomSeq);
 
-    List<ChatRoomInfo> getMyChatRoomList(String userId);
+    ChatRoomInfoDTO refreshChatRoomInfo(String chatRoomId);
+
+    List<ChatRoomInfoDTO> getMyChatRoomInfoDTOList(Member myInfo);
 }

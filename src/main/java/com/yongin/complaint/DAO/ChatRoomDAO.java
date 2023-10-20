@@ -7,10 +7,5 @@ import java.util.List;
 
 public interface ChatRoomDAO {
 
-//    ChatRoomInfoDTO createChatRoom(ChatRoomInfoDTO newChatRoomInfoDTO);
-    ChatRoomInfoDTO findChatRoomsWithMembers(String roomId);
-
-    //    ChatRoomInfo getLastestChatRoomInfo();
-    //    List<ChatRoomInfo> getChatRoomInfoList();
-
+    ChatRoomInfoDTO getChatRoomInfoDTOWithMembers(String roomId);
 }

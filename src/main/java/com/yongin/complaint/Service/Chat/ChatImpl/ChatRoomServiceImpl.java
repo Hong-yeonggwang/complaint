@@ -131,25 +131,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomInfoDTOList;
     }
 
-    @Override
-    public ChatRoomInfoDTO getChatRoomInfoDTOWithMembers(String chatRoomId) {
-        ChatRoomInfoDTO chatRoomInfoDTO =  chatRoomInfoRepository.getChatRoomInfoDTOByChatRoomId(chatRoomId);
-        System.out.println("getChatRoomInfoDTOWithMembers: " + chatRoomInfoDTO);
-
-        if(chatRoomInfoDTO != null){
-            List<ChatRoomMemberDTO> memberList = chatRoomInfoRepository.getChatRoomMemberDTOListByChatRoomId(chatRoomId);
-            chatRoomInfoDTO.setMembers(memberList);
-            System.out.println("getChatRoomInfoDTOWithMembers: " + memberList);
-        }
-
-        return chatRoomInfoDTO;
-    }
 
     @Override
     @Transactional
     public EnterChatRoomResponse enterChatRoom(String chatRoomId, Member myInfo){
         EnterChatRoomResponse enterChatRoomResponse = new EnterChatRoomResponse();
-        ChatRoomInfoDTO chatRoomInfoDTO = this.getChatRoomInfoDTOWithMembers(chatRoomId);
+        ChatRoomInfoDTO chatRoomInfoDTO = chatRoomDAOImpl.getChatRoomInfoDTOWithMembers(chatRoomId);
 
         if(chatRoomInfoDTO != null){ // 채팅방 존재
             enterChatRoomResponse.setChatRoomExist(true);
@@ -173,7 +160,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                     // 채팅방 정보 등록
                     chatRoomInfoDTO.setMembers(chatRoomMemberDTOList);
                     enterChatRoomResponse.setChatRoomInfoDTO(chatRoomInfoDTO);
-                    enterChatRoomResponse.setAlreadyEnter(true);
+                    enterChatRoomResponse.setAlreadyEntered(true);
 
                     // 바로 채팅방 이동
                     break;
@@ -232,7 +219,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomInfoRepository.save(chatRoomInfo);
     }
 
-
     @Override
     @Transactional
     public void deleteChatRoom(Long chatRoomSeq) {
@@ -242,15 +228,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public List<ChatRoomInfo> getMyChatRoomList(String userId) {
+    public ChatRoomInfoDTO refreshChatRoomInfo(String chatRoomId) {
+        return chatRoomInfoRepository.getChatRoomInfoDTOByChatRoomId(chatRoomId);
+    }
+
+    @Override
+    public List<ChatRoomInfoDTO> getMyChatRoomInfoDTOList(Member myInfo) {
         return null;
     }
 
-//    @Override
-//    public boolean checkChatRoomId(String chatRoomId) {
-//        boolean result = chatRoomInfoRepository.findByChatRoomId(chatRoomId);
-////        this.getChatRoomList();
-//
-//        return result;
-//    }
 }

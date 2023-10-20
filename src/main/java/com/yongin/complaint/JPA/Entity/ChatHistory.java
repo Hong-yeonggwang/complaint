@@ -18,18 +18,24 @@ public class ChatHistory {
     @Column(name="CHAT_SEQ_PK")
     private Long chatSeq;
 
+    @Column(name="MESSAGE_TYPE")
+    private String messageType;
+
     @Column(name="CHAT_MESSAGE"/* , nullable = false */)
     private String chatMessage; // Not Null
 
     @Column(name="CHAT_HISTORY_TIME"/* , nullable = false */)
     private LocalDateTime chatHistoryTime; // Not Null
 
-    @ManyToOne
-    @JoinColumn(name="CHAT_USER_ID_FK"/* , nullable = false */)
-    private Member chatUserId; // Not Null
+//    @ManyToOne
+    @Column(name="SENDER_SEQ")
+    private Long sender; // Not Null
 
-    @OneToOne
-    @JoinColumn(name = "CHATROOM_ID_FK"/* , nullable = false */)
-    private ChatRoomInfo chatRoomId; // Not Null
+    @Column(name="SENDER_NICKNAME")
+    private String senderNickName; // Not Null
+
+//    @ManyToOne
+    @Column(name = "CHATROOM_ID")
+    private String chatRoomId; // Not Null
 
 }

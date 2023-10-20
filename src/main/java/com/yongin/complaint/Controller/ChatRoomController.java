@@ -1,33 +1,24 @@
 package com.yongin.complaint.Controller;
 
 import com.yongin.complaint.DTO.ChatRoomInfoDTO;
-import com.yongin.complaint.DTO.ChatRoomMemberDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
 import com.yongin.complaint.JPA.Entity.Member;
+import com.yongin.complaint.Payload.requset.ChatRoomIdRequest;
 import com.yongin.complaint.Payload.requset.CreateChatRoomRequest;
-import com.yongin.complaint.Payload.requset.EnterChatRoomRequest;
 import com.yongin.complaint.Payload.requset.ExitChatRoomRequest;
-import com.yongin.complaint.Payload.response.ChatMyInfoResponse;
 import com.yongin.complaint.Payload.response.EnterChatRoomResponse;
 import com.yongin.complaint.Service.Chat.ChatRoomService;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
 @RestController
 public class ChatRoomController {
-//    List<ChatRoomInfoDTO> roomList = new ArrayList<ChatRoomInfoDTO>();
-    final ChatRoomService chatRoomServiceImpl; // = ChatServiceImpl.getInstance();
-//    List<ChatRoomInfo> roomList = null;
-    List<ChatRoomInfoDTO> chatRoomInfoDTOList;
-    List<ChatRoomInfoDTO> myRoomList;
+    final ChatRoomService chatRoomServiceImpl;
 
     @Autowired
     ChatRoomController(ChatRoomService chatRoomServiceImpl){
@@ -76,16 +67,16 @@ public class ChatRoomController {
 
     /**
      * 방 입장하기
-     * @param enterChatRoomRequest
+     * @param chatRoomIdRequest
      * @return EnterChatRoomResponse
      */
     @PostMapping(value = "/enterChatRoom")
-    public EnterChatRoomResponse enterChatRoom(@RequestBody EnterChatRoomRequest enterChatRoomRequest) {
+    public EnterChatRoomResponse enterChatRoom(@RequestBody ChatRoomIdRequest chatRoomIdRequest) {
         // 토큰에 들어 있는 내 정보
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Member myInfo = (Member)auth.getPrincipal();
 
-        String chatRoomId = enterChatRoomRequest.getChatRoomId();
+        String chatRoomId = chatRoomIdRequest.getChatRoomId();
         System.out.println("enterChatRoom: "+ chatRoomId);
 
         return chatRoomServiceImpl.enterChatRoom(chatRoomId, myInfo);
@@ -127,16 +118,15 @@ public class ChatRoomController {
 
 
 
-//    /**
-//     * 클라이언트가 직접 입력한 chat Url 검사
-//     * @param chatRoomId
-//     * @return
-//     */
-////    @RequestMapping(value = "/checkChatRoomId/{chatRoomId}")
-//    public void checkChatRoomId(@PathVariable("chatRoomId") String chatRoomId){
-//
-//    }
-
+    /**
+     * 클라이언트가 입.퇴장하면서 업데이트 된 채팅방 정보 가져오기
+     * @param chatRoomIdRequest
+     * @return
+     */
+    @RequestMapping(value = "/refreshChatRoomInfo")
+    public ChatRoomInfoDTO refreshChatRoomInfo(@RequestBody ChatRoomIdRequest chatRoomIdRequest){
+        return chatRoomServiceImpl.refreshChatRoomInfo(chatRoomIdRequest.getChatRoomId());
+    }
 
 
     /**
