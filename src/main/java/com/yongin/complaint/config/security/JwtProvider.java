@@ -80,7 +80,12 @@ public class JwtProvider {
 
     public String resolveToken(HttpServletRequest request){
         LOGGER.info("[resolveToken] HTTP 헤더에서 Token 값 추출");
-        return request.getHeader("X-AUTH-TOKEN");
+//        if(request.getHeader("X-AUTH-TOKEN") != null){
+            return request.getHeader("X-AUTH-TOKEN");
+//        }
+//        else{
+//            return request.getHeader("Sec-WebSocket-Protocol");
+//        }
     }
     public boolean validateToken(String token){
         LOGGER.info("[validateToken] 토큰 유효 체크 시작");
