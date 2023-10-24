@@ -2,8 +2,10 @@ package com.yongin.complaint.Service.Admin.Impl;
 
 import com.yongin.complaint.DAO.AdminDAO;
 import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
+import com.yongin.complaint.DTO.Admin.OperatorDTO;
 import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
+import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import com.yongin.complaint.Payload.response.Admin.ServiceStatusResponse;
 import com.yongin.complaint.Service.Admin.AdminService;
@@ -83,6 +85,17 @@ public class AdminServiceImpl implements AdminService {
                 .categoryInfo(categoryInfo)
                 .couponList(couponList)
                 .build();
+    }
+
+    @Override
+    public List<OperatorDTO> getOperatorList() {
+        return adminDAO.getOperatorList();
+    }
+
+    @Override
+    public List<QRcodeCategory> getCategoryList() {
+        List<QRcodeCategory> categoryInfo = adminDAO.getAllCategory();
+        return categoryInfo;
     }
 
 }

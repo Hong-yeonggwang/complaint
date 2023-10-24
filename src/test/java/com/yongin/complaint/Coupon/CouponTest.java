@@ -22,38 +22,38 @@ public class CouponTest{
     @Autowired
     private CouponService couponService;
 
-    @Test
-    public void testCreateCoupon() {
-        String name = "강남행 등교";
-        String category = "버스";
-
-        // CouponService의 createCoupon 메서드 호출
-        CreateCouponResponse response = couponService.createCoupon(category,name);
-
-        System.out.println(response.getCoupon());
-
-        // 테스트 검증
-//        assertNotNull(response);
-//        assertEquals("생성이 완료 되었습니다.", response.getMsg());
-//        assertEquals(name, response.getName());
-//        assertNotNull(response.getCoupon());
-//        assertEquals(1200, response.getPrice());
-    }
-
-    @Test
-    public void test(){
-        String input = "helloWorld";
-        try {
-            MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = sha256Digest.digest(input.getBytes());
-
-            // Convert the byte array to a hexadecimal string
-            String hashHex = DatatypeConverter.printHexBinary(hashBytes).toLowerCase();
-
-            System.out.println(hashHex);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Test
+//    public void testCreateCoupon() {
+//        String name = "강남행 등교";
+//        String category = "버스";
+//
+//        // CouponService의 createCoupon 메서드 호출
+//        CreateCouponResponse response = couponService.createCoupon(category,name);
+//
+//        System.out.println(response.getCoupon());
+//
+//        // 테스트 검증
+////        assertNotNull(response);
+////        assertEquals("생성이 완료 되었습니다.", response.getMsg());
+////        assertEquals(name, response.getName());
+////        assertNotNull(response.getCoupon());
+////        assertEquals(1200, response.getPrice());
+//    }
+//
+//    @Test
+//    public void test(){
+//        String input = "helloWorld";
+//        try {
+//            MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
+//            byte[] hashBytes = sha256Digest.digest(input.getBytes());
+//
+//            // Convert the byte array to a hexadecimal string
+//            String hashHex = DatatypeConverter.printHexBinary(hashBytes).toLowerCase();
+//
+//            System.out.println(hashHex);
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
 

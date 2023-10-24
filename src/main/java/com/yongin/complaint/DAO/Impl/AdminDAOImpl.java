@@ -1,16 +1,16 @@
 package com.yongin.complaint.DAO.Impl;
 
+import com.fasterxml.jackson.databind.type.PlaceholderForType;
 import com.yongin.complaint.DAO.AdminDAO;
 import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
 import com.yongin.complaint.DTO.Admin.CouponStatisticsDTO;
+import com.yongin.complaint.DTO.Admin.OperatorDTO;
 import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
 import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.Place;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
-import com.yongin.complaint.JPA.Repository.CouponRepository;
-import com.yongin.complaint.JPA.Repository.MemberRepository;
-import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
-import com.yongin.complaint.JPA.Repository.QRcodeRepository;
+import com.yongin.complaint.JPA.Repository.*;
+import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,17 +25,18 @@ public class AdminDAOImpl implements AdminDAO {
     private final CouponRepository couponRepository;
     private final QRcodeCategoryRepository qrCodeCategoryRepository;
     private final QRcodeRepository qrCodeRepository;
-
+    private final OperatorRepository operatorRepository;
     @Autowired
     public AdminDAOImpl(MemberRepository memberRepository,
                         CouponRepository couponRepository,
                         QRcodeCategoryRepository qrCodeCategoryRepository,
-                        QRcodeRepository qrCodeRepository){
+                        QRcodeRepository qrCodeRepository,
+                        OperatorRepository operatorRepository){
         this.memberRepository = memberRepository;
         this.couponRepository = couponRepository;
         this.qrCodeRepository = qrCodeRepository;
         this.qrCodeCategoryRepository = qrCodeCategoryRepository;
-
+        this.operatorRepository = operatorRepository;
     }
 
     @Override
@@ -176,5 +177,17 @@ public class AdminDAOImpl implements AdminDAO {
     public Long getRemainQrcodeCount() {
         return qrCodeRepository.getRemainQrcodeCount();
     }
+
+    @Override
+    public List<OperatorDTO> getOperatorList() {
+        return operatorRepository.getOperator();
+    }
+
+    @Override
+    public CategoryDTO getCategoryList() {
+        return CategoryDTO.builder()
+                .build();
+    }
+
 
 }

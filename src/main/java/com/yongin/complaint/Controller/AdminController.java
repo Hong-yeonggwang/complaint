@@ -1,5 +1,8 @@
 package com.yongin.complaint.Controller;
 
+import com.yongin.complaint.DTO.Admin.OperatorDTO;
+import com.yongin.complaint.JPA.Entity.QRcodeCategory;
+import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import com.yongin.complaint.Payload.response.Admin.ServiceStatusResponse;
 import com.yongin.complaint.Service.Admin.AdminService;
@@ -32,8 +35,8 @@ public class AdminController {
 
     }
     @GetMapping(value= "/category")
-    public void getCategory(){
-
+    public List<QRcodeCategory> getCategory(){
+        return adminService.getCategoryList();
     }
 
     @PutMapping(value = "/category")
@@ -64,8 +67,10 @@ public class AdminController {
         return adminService.getServiceStatus();
     }
 
-
-
+    @GetMapping(value = "/operatorStatus")
+    public List<OperatorDTO> getOperatorStatis(){
+        return adminService.getOperatorList();
+    }
 
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<Map<String,String>> ExceptionHandler(RuntimeException e){

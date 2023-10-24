@@ -2,6 +2,10 @@ package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
 import com.yongin.complaint.Common.MemberRoleEnum;
+import com.yongin.complaint.JPA.Entity.Operator;
+import com.yongin.complaint.JPA.Entity.QRcodeCategory;
+import com.yongin.complaint.JPA.Repository.OperatorRepository;
+import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.MemberInfoResponse;
@@ -17,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -27,15 +32,21 @@ import java.util.Collections;
 public class SignServiceImpl implements SignService {
     private final Logger LOGGER = LoggerFactory.getLogger(SignServiceImpl.class);
 
-    public MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     public JwtProvider jwtProvider;
     public PasswordEncoder passwordEncoder;
 
+    private OperatorRepository operatorRepository;
+
+    private QRcodeCategoryRepository qrCodeCategoryRepository;
+
     @Autowired
-    public SignServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder){
+    public SignServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder,OperatorRepository operatorRepository,QRcodeCategoryRepository qrCodeCategoryRepository){
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
+        this.operatorRepository = operatorRepository;
+        this.qrCodeCategoryRepository = qrCodeCategoryRepository;
     }
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
@@ -95,6 +106,7 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
+    @Transactional
     public SignUpResponse signUpAdmin(SignUpAdminRequest signUpAdminRequest) {
         LOGGER.info("[signUpAdmin] 회원 가입 정보 전달");
         Member member;
@@ -107,6 +119,21 @@ public class SignServiceImpl implements SignService {
                 .build();
 
         Member savedAdmin = memberRepository.save(member);
+
+        if(signUpAdminRequest.getRole().equals("ROLE_OPERATOR")){
+            Member adminSeq = new Member();
+            adminSeq.setMemberSeq(savedAdmin.getMemberSeq());
+
+            QRcodeCategory adminQRcodeSeq = qrCodeCategoryRepository.findByName(signUpAdminRequest.getPlace());
+            System.out.println(adminQRcodeSeq.toString());
+            Operator operator = Operator.builder()
+                    .memberSeq(adminSeq)
+                    .qRcodeCategorySeq(adminQRcodeSeq)
+                    .build();
+
+            operatorRepository.save(operator);
+        }
+
         SignUpResponse signUpResponse = new SignUpResponse();
 
         LOGGER.info("[signUpAdmin] adminEntity 값이 들어왔는지 확인 후 결과값 주입");

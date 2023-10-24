@@ -53,9 +53,6 @@ public class Member implements UserDetails {
     @Enumerated(EnumType.STRING)
     private MemberRoleEnum role;
 
-    // 다대다 관계 매핑 (역방향)
-    @ManyToMany(mappedBy = "members")
-    private List<ChatRoomInfo> chatRooms;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){

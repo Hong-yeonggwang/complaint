@@ -1,7 +1,9 @@
 package com.yongin.complaint.Service.Admin;
 
 import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
+import com.yongin.complaint.DTO.Admin.OperatorDTO;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
+import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import com.yongin.complaint.Payload.response.Admin.ServiceStatusResponse;
 
@@ -22,4 +24,8 @@ public interface AdminService {
     List<CouponUseRateResponse> getUseRateQRcode();
 
     ServiceStatusResponse getServiceStatus();
+
+    List<OperatorDTO> getOperatorList();
+    List<QRcodeCategory> getCategoryList();
+
 }
