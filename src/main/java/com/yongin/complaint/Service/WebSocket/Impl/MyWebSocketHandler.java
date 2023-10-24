@@ -91,9 +91,9 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             chatHistoryRepository.save(new ChatHistory().builder()
                             .messageType((String)jsonObject.get("messageType"))
                             .chatRoomId((String)jsonObject.get("chatRoomId"))
-                            .sender((Long)jsonObject.get("memberSeq"))
-                            .senderNickName((String)jsonObject.get("nickName"))
-                            .chatMessage((String)jsonObject.get("msg"))
+                            .memberSeq((Long)jsonObject.get("memberSeq"))
+                            .nickName((String)jsonObject.get("nickName"))
+                            .msg((String)jsonObject.get("msg"))
                             .chatHistoryTime(chatHistoryTime)
                             .build()
             );

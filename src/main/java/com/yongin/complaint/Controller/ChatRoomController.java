@@ -133,8 +133,12 @@ public class ChatRoomController {
      * 내 방 정보가져오기
      * @return myRoomList : Entity List
      */
-//    @PostMapping(value = "/getMyChatRoomList")
-//    public List<ChatRoomInfoDTO> getRoomList(String userId){
-//        return myRoomList;
-//    }
+    @PostMapping(value = "/getMyChatRoomList")
+    public List<ChatRoomInfoDTO> getMyChatRoomList(){
+        // 토큰에 들어 있는 내 정보
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member myInfo = (Member)auth.getPrincipal();
+
+        return chatRoomServiceImpl.getMyChatRoomInfoDTOList(myInfo);
+    }
 }

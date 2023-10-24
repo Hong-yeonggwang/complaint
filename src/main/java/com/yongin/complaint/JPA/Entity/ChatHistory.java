@@ -22,17 +22,17 @@ public class ChatHistory {
     private String messageType;
 
     @Column(name="CHAT_MESSAGE"/* , nullable = false */)
-    private String chatMessage; // Not Null
+    private String msg; // Not Null
 
     @Column(name="CHAT_HISTORY_TIME"/* , nullable = false */)
     private LocalDateTime chatHistoryTime; // Not Null
 
 //    @ManyToOne
-    @Column(name="SENDER_SEQ")
-    private Long sender; // Not Null
+    @Column(name="MEMBER_SEQ")
+    private Long memberSeq; // Not Null
 
     @Column(name="SENDER_NICKNAME")
-    private String senderNickName; // Not Null
+    private String nickName; // Not Null
 
 //    @ManyToOne
     @Column(name = "CHATROOM_ID")

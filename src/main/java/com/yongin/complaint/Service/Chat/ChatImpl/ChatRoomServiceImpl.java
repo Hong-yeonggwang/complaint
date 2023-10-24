@@ -234,7 +234,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<ChatRoomInfoDTO> getMyChatRoomInfoDTOList(Member myInfo) {
-        return null;
+        return chatRoomInfoRepository.getChatRoomInfoDTOListByMemberSeq(myInfo.getMemberSeq());
     }
 
 }
