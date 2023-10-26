@@ -28,7 +28,7 @@ public class Member implements UserDetails {
     @Column(name="MEMBER_SEQ_PK")
     private Long memberSeq;
 
-    @Column(name = "ID")
+    @Column(name = "ID", unique = true)
     private String id;
 
     @Column(name = "PWD")
@@ -48,6 +48,9 @@ public class Member implements UserDetails {
 
     @Column(name = "MAJOR")
     private String major;
+
+    @Column(name = "EMAIL", unique = true )
+    private String email;
 
     @Column(name = "ROLE")
     @Enumerated(EnumType.STRING)
