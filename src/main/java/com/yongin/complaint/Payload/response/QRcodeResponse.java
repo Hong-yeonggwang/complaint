@@ -1,6 +1,5 @@
 package com.yongin.complaint.Payload.response;
 
-import com.yongin.complaint.QRcodeGenerater.QRcodeGenerater;
 import lombok.*;
 
 @Getter

@@ -2,9 +2,13 @@ package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
 import com.yongin.complaint.Common.MemberRoleEnum;
+import com.yongin.complaint.Component.QRcodeGenerater.emailSender.EmailSender;
+import com.yongin.complaint.DTO.Email.EmailDTO;
 import com.yongin.complaint.JPA.Entity.Operator;
+import com.yongin.complaint.JPA.Entity.PasswordCode;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.JPA.Repository.OperatorRepository;
+import com.yongin.complaint.JPA.Repository.PasswordCodeRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
@@ -27,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 @Service
 public class SignServiceImpl implements SignService {
@@ -39,14 +44,21 @@ public class SignServiceImpl implements SignService {
     private OperatorRepository operatorRepository;
 
     private QRcodeCategoryRepository qrCodeCategoryRepository;
+    private PasswordCodeRepository passwordCodeRepository;
+
+    private EmailSender emailSender;
 
     @Autowired
-    public SignServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder,OperatorRepository operatorRepository,QRcodeCategoryRepository qrCodeCategoryRepository){
+    public SignServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder,
+                           OperatorRepository operatorRepository,QRcodeCategoryRepository qrCodeCategoryRepository,
+                           EmailSender emailSender,PasswordCodeRepository passwordCodeRepository){
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
         this.operatorRepository = operatorRepository;
         this.qrCodeCategoryRepository = qrCodeCategoryRepository;
+        this.emailSender = emailSender;
+        this.passwordCodeRepository = passwordCodeRepository;
     }
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
@@ -61,6 +73,7 @@ public class SignServiceImpl implements SignService {
                 .nickName(signUpRequest.getNickName())
                 .birth(signUpRequest.getBirth())
                 .major(signUpRequest.getMajor())
+                .email(signUpRequest.getEmail())
                 .build();
 
         Member savedAdmin = memberRepository.save(member);
@@ -164,6 +177,112 @@ public class SignServiceImpl implements SignService {
         memberRepository.save(member);
     }
 
+    @Override
+    public String findId(String email) {
+        String content = memberRepository.getIdToEmail(email); // 이메일에 매핑되는 아이디
+        String subject = "Ycomplaint 아이디찾기입니다!";
+
+        return emailSender.sendMail(EmailDTO.builder()
+                        .email(email)
+                        .content(content)
+                        .subject(subject)
+                        .mailFlag("id")
+                        .build());
+
+    }
+
+    @Override
+    public String findPassword(String id){
+        Member member = memberRepository.getById(id); // 아이디로 이메일 찾기
+        if(member == null){
+            LOGGER.info("[findPassword] 존재하지 않는 아이디입니다.");
+            return "존재하지 않는 아이디입니다.";
+        }
+        String code = createCode();
+        PasswordCode passwordCodeExists = passwordCodeRepository.findById(id);
+        if(passwordCodeExists != null){
+            passwordCodeExists.setCode(code);
+            passwordCodeRepository.save(passwordCodeExists);
+        }else{
+            passwordCodeRepository.save(PasswordCode.builder()
+                    .code(code)
+                    .member(member)
+                    .build());
+        }
+
+
+        String subject = "Ycomplaint 비밀번호 인증번호입니다!";
+
+        return emailSender.sendMail(EmailDTO.builder()
+                .email(member.getEmail())
+                .content(code)
+                .subject(subject)
+                .mailFlag("passwordCode")
+                .build());
+    }
+
+    @Override
+    @Transactional
+    public String checkPasswordCode(String id, String code) {
+        PasswordCode codeInfo = passwordCodeRepository.findById(id); // 디비에 저장되어 있는 코드
+
+        if(!codeInfo.getCode().equals(code)){
+            return "잘못된 코드 번호입니다 다시 한번 확인해주세요";
+        }
+
+        String tempPassword = createCode(); // 임시 비밀번호 생성
+
+        Member member = codeInfo.getMember();
+        member.setPwd(passwordEncoder.encode(tempPassword));
+
+        memberRepository.save(member);
+
+        passwordCodeRepository.delete(codeInfo);
+
+
+        String subject = "Ycomplaint 임시 비밀번호입니다!";
+
+        return emailSender.sendMail(EmailDTO.builder()
+                .email(member.getEmail())
+                .content(tempPassword)
+                .subject(subject)
+                .mailFlag("passwordCode")
+                .build());
+    }
+
+    @Override
+    public String updatePassword(Member member,String nowPassword,String newPassword) {
+
+        if(!passwordEncoder.matches(nowPassword, member.getPassword())){
+            return "비밀번호가 일치하지 않습니다";
+        }
+
+        member.setPwd(passwordEncoder.encode(newPassword));
+
+        memberRepository.save(member);
+
+        return "정상적으로 비밀번호가 변경되었습니다.";
+    }
+
+    @Override
+    public boolean checkId(String id) {
+        Member member = memberRepository.getById(id);
+        if(member == null){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkEmail(String email) {
+        String id = memberRepository.getIdToEmail(email);
+        System.out.println(id);
+        if(id == null){
+            return true;
+        }
+        return false;
+    }
+
     private void setSuccessResult(SignUpResponse result){
         result.setSuccess(true);
         result.setCode(CommonResponse.SUCCESS.getCode());
@@ -174,4 +293,21 @@ public class SignServiceImpl implements SignService {
         result.setCode(CommonResponse.SUCCESS.getCode());
         result.setMsg(CommonResponse.SUCCESS.getMsg());
     }
+
+    public String createCode() {
+        Random random = new Random();
+        StringBuffer key = new StringBuffer();
+
+        for (int i = 0; i < 8; i++) {
+            int index = random.nextInt(4);
+
+            switch (index) {
+                case 0: key.append((char) ((int) random.nextInt(26) + 97)); break;
+                case 1: key.append((char) ((int) random.nextInt(26) + 65)); break;
+                default: key.append(random.nextInt(9));
+            }
+        }
+        return key.toString();
+    }
+
 }

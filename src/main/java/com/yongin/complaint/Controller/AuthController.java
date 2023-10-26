@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +81,8 @@ public class AuthController {
     @PutMapping(value = "/memberinfo")
     @Transactional
     public void updateUserInfo(@Validated @RequestBody UserInfoUpdateRequest userInfo){
+        LOGGER.info("[updateUserInfo]:{}",userInfo.toString());
+        System.out.println(userInfo.getMajor());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member)auth.getPrincipal();
 
@@ -91,6 +92,46 @@ public class AuthController {
     @GetMapping(value = "/exception")
     public void exceptionTest() throws RuntimeException{
         throw new RuntimeException("접근이 금지되었습니다.");
+    }
+
+    @GetMapping(value = "/id")
+    public String findId(@RequestParam Map<String,String> params){
+        String email = params.get("email");
+        LOGGER.info("[findId] email:{}",email);
+        return signService.findId(email);
+    }
+    @GetMapping(value = "/passwordcode")
+    public String sendPasswordCode(@RequestParam Map<String,String> params){
+        String id = params.get("id");
+        return signService.findPassword(id);
+    }
+    @PostMapping(value = "/passwordcode")
+    public String checkPasswordCode(@RequestBody Map<String, String> params){
+        String code = params.get("code");
+        String id = params.get("id");
+        return signService.checkPasswordCode(id,code);
+    }
+
+    @PutMapping(value = "/password")
+    public String updatePassword(@RequestBody Map<String,String> params){
+        String newPassword = params.get("newPassword");
+        String nowPassword = params.get("nowPassword");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member)auth.getPrincipal();
+
+        return signService.updatePassword(member,nowPassword,newPassword);
+    }
+
+    @PostMapping(value = "/id")
+    public boolean checkID(@RequestBody Map<String,String> params){
+        String checkId = params.get("id");
+        return signService.checkId(checkId);
+    }
+
+    @PostMapping(value = "/email")
+    public boolean checkEmail(@RequestBody Map<String,String> params){
+        String checkEmail = params.get("email");
+        return signService.checkEmail(checkEmail);
     }
 
     @ExceptionHandler(value = RuntimeException.class)

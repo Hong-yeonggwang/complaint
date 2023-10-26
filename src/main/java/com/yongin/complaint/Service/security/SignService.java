@@ -19,4 +19,13 @@ public interface SignService {
     Member getMemberinfo(HttpServletRequest servletRequest);
 
     void updateUserInfo(Member member,UserInfoUpdateRequest userInfo);
+
+    String findId(String email);
+    String findPassword(String id);
+    String checkPasswordCode(String id, String code);
+
+    String updatePassword(Member member,String nowPassword ,String newPassword);
+
+    boolean checkId(String id);
+    boolean checkEmail(String email);
 }
