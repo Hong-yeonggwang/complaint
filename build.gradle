@@ -47,6 +47,16 @@ dependencies {
 	// json
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 
+//	email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//타임리프
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+
+
+
 }
 
 tasks.named('test') {
