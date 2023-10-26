@@ -1,4 +1,4 @@
-package com.yongin.complaint.QRcodeGenerater.Impl;
+package com.yongin.complaint.Component.QRcodeGenerater.Impl;
 
 import com.yongin.complaint.DTO.QRcodeDTO;
 import com.yongin.complaint.JPA.Entity.Member;
@@ -6,7 +6,7 @@ import com.yongin.complaint.JPA.Entity.QRcode;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeRepository;
-import com.yongin.complaint.QRcodeGenerater.QRcodeGenerater;
+import com.yongin.complaint.Component.QRcodeGenerater.QRcodeGenerater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

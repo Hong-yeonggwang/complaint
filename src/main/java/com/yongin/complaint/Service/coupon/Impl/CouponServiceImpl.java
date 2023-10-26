@@ -7,7 +7,7 @@ import com.yongin.complaint.Payload.response.CreateCouponResponse;
 import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.response.QRcodeResponse;
-import com.yongin.complaint.QRcodeGenerater.QRcodeGenerater;
+import com.yongin.complaint.Component.QRcodeGenerater.QRcodeGenerater;
 import com.yongin.complaint.Service.coupon.CouponService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

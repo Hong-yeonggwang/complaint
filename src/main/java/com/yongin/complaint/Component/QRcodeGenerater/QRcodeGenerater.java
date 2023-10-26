@@ -1,4 +1,4 @@
-package com.yongin.complaint.QRcodeGenerater;
+package com.yongin.complaint.Component.QRcodeGenerater;
 
 import com.yongin.complaint.DTO.QRcodeDTO;
 import com.yongin.complaint.JPA.Entity.Member;
