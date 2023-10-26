@@ -4,7 +4,7 @@ import com.yongin.complaint.DAO.QRcodeDAO;
 import com.yongin.complaint.Payload.response.QRcodeResponse;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
-import com.yongin.complaint.QRcodeGenerater.QRcodeGenerater;
+import com.yongin.complaint.Component.QRcodeGenerater.QRcodeGenerater;
 import com.yongin.complaint.Service.QRcode.QRcodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
