@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/v1/admin")
 public class AdminController {
     private final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     private final AdminService adminService;

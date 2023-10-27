@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @RestController
+@RequestMapping("/v1")
 public class ChatRoomController {
     final ChatRoomService chatRoomServiceImpl;
 

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
 public class AuthController {
     private final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
     private final SignService signService;

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/qrcode")
+@RequestMapping("/v1/qrcode")
 public class QrCodeController {
     private QRcodeService qrcodeService;
     private CouponService couponService;

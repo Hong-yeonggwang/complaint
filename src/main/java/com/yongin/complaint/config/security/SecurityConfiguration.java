@@ -23,9 +23,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/auth/sign-in","/auth/sign-up").permitAll()
-                .antMatchers("**excetion**").permitAll()
-                .antMatchers("/auth/sign-up/admin").hasRole("ADMIN") // admin 경로는 ADMIN 역할을 가진 사용자에게만 허용
+                .antMatchers("/v1/auth/sign-in","/v1/auth/sign-up").permitAll()
+                .antMatchers("/v1/auth/sign-up/admin").hasRole("ADMIN") // admin 경로는 ADMIN 역할을 가진 사용자에게만 허용
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
@@ -37,6 +36,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity webSecurity){
-        webSecurity.ignoring().antMatchers("/chat/**"); //,"/getChatRoom"
+        webSecurity.ignoring().antMatchers("/v1/chat/**"); //,"/getChatRoom"
     }
 }
