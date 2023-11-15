@@ -12,4 +12,5 @@ public class CategoryUpdateDTO {
     private int price;
     private String name;
     private Long categorySeq;
+    private String show;
 }

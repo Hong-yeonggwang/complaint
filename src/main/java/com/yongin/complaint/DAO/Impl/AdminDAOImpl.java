@@ -2,10 +2,7 @@ package com.yongin.complaint.DAO.Impl;
 
 import com.fasterxml.jackson.databind.type.PlaceholderForType;
 import com.yongin.complaint.DAO.AdminDAO;
-import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
-import com.yongin.complaint.DTO.Admin.CouponStatisticsDTO;
-import com.yongin.complaint.DTO.Admin.OperatorDTO;
-import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
+import com.yongin.complaint.DTO.Admin.*;
 import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.Place;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
@@ -14,6 +11,7 @@ import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +24,20 @@ public class AdminDAOImpl implements AdminDAO {
     private final QRcodeCategoryRepository qrCodeCategoryRepository;
     private final QRcodeRepository qrCodeRepository;
     private final OperatorRepository operatorRepository;
+    private final PlaceRepository placeRepository;
     @Autowired
     public AdminDAOImpl(MemberRepository memberRepository,
                         CouponRepository couponRepository,
                         QRcodeCategoryRepository qrCodeCategoryRepository,
                         QRcodeRepository qrCodeRepository,
-                        OperatorRepository operatorRepository){
+                        OperatorRepository operatorRepository,
+                        PlaceRepository placeRepository){
         this.memberRepository = memberRepository;
         this.couponRepository = couponRepository;
         this.qrCodeRepository = qrCodeRepository;
         this.qrCodeCategoryRepository = qrCodeCategoryRepository;
         this.operatorRepository = operatorRepository;
+        this.placeRepository = placeRepository;
     }
 
     @Override
@@ -45,17 +46,31 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
-    public void updateCategory(String placeName, String name, CategoryUpdateDTO updateInfo) {
-        QRcodeCategory qRcodeCategory = qrCodeCategoryRepository.findByName(placeName,name);
+    public List<Place> getAllPlace() {
+        return placeRepository.findAll();
+    }
 
-        Place place = new Place();
-        place.setPlaceSeq(updateInfo.getCategorySeq());
 
-        qRcodeCategory.setQrcodeUsingPlace(place);
-        qRcodeCategory.setPrice(updateInfo.getPrice());
-        qRcodeCategory.setName(updateInfo.getName());
+    @Override
+    @Transactional
+    public void updateCategory(CategoryUpdateDTO categoryUpdateDTO) {
+        QRcodeCategory qRcodeCategory = qrCodeCategoryRepository.getById(categoryUpdateDTO.getCategorySeq());
+        qRcodeCategory.setPrice(categoryUpdateDTO.getPrice());
+        qRcodeCategory.setName(categoryUpdateDTO.getName());
+        qRcodeCategory.setStatus(categoryUpdateDTO.getShow());
 
         qrCodeCategoryRepository.save(qRcodeCategory);
+    }
+
+    @Override
+    @Transactional
+    public void updatePlace(Long seq, String name) {
+        Place place = placeRepository.getById(seq);
+
+        place.setName(name);
+
+        placeRepository.save(place);
+
     }
 
     @Override
@@ -66,6 +81,7 @@ public class AdminDAOImpl implements AdminDAO {
                 .name(updateInfo.getName())
                 .price(updateInfo.getPrice())
                 .qrcodeUsingPlace(place)
+                .status(updateInfo.getShow())
                 .build();
         qrCodeCategoryRepository.save(qRcodeCategory);
     }
@@ -114,6 +130,7 @@ public class AdminDAOImpl implements AdminDAO {
     public List<CouponUseRateResponse> getUseRateQRcode() {
 
         List<QRcodeStatisticsDTO> allCount = qrCodeRepository.getQrcodeCount();
+        allCount.forEach(name-> System.out.println(name.toString()));
         List<QRcodeStatisticsDTO> useCount = qrCodeRepository.getQrcoceUseCount();
 
         List<CouponUseRateResponse> returnDate = new ArrayList<>();
@@ -189,5 +206,28 @@ public class AdminDAOImpl implements AdminDAO {
                 .build();
     }
 
+    @Override
+    public void savePlace(Place entity) {
+        placeRepository.save(entity);
+    }
 
+    @Override
+    public Long getUsingCategory() {
+        return qrCodeCategoryRepository.getUsingCategory();
+    }
+
+    @Override
+    public List<QRcodeDateDTO> getOperatorQrcode(QRcodeCategory category) {
+        return qrCodeRepository.getQRcodeCountToDateWithUsed(category.getQrCategorySeq());
+    }
+
+    @Override
+    public List<Coupon> getCouponLog() {
+        return couponRepository.findAllOrderByStatus();
+    }
+
+    @Override
+    public List<UserInfoDTO> getUserInfo() {
+        return memberRepository.getUserInfo();
+    }
 }

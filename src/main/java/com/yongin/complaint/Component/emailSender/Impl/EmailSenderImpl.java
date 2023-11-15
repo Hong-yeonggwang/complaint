@@ -1,4 +1,4 @@
-package com.yongin.complaint.Component.QRcodeGenerater.emailSender.Impl;
+package com.yongin.complaint.Component.emailSender.Impl;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,12 +8,10 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.yongin.complaint.DTO.Email.EmailDTO;
-import com.yongin.complaint.JPA.Repository.MemberRepository;
-import com.yongin.complaint.Component.QRcodeGenerater.emailSender.EmailSender;
+import com.yongin.complaint.Component.emailSender.EmailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 
 import javax.mail.internet.MimeMessage;
@@ -59,6 +57,13 @@ public class EmailSenderImpl implements EmailSender {
         }
 
     public String setContext(String code ,String type) {
+        if(type.equals("post")){
+            String[] text = code.split("<br>");
+            Context context = new Context();
+            context.setVariable("code", text[0]);
+            context.setVariable("content", text[1]);
+            return templateEngine.process(type, context);
+        }
         Context context = new Context();
         context.setVariable("code", code);
         return templateEngine.process(type, context);

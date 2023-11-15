@@ -1,6 +1,7 @@
 package com.yongin.complaint.DAO.Impl;
 
 import com.yongin.complaint.DAO.QRcodeDAO;
+import com.yongin.complaint.DTO.Member.QRcodeLogDTO;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
 import com.yongin.complaint.JPA.Repository.QRcodeRepository;
@@ -31,5 +32,10 @@ public class QRcodeDAOImpl implements QRcodeDAO {
     @Override
     public void qrcodeUpdate(QRcode qrCode) {
         qrCodeRepository.save(qrCode);
+    }
+
+    @Override
+    public List<QRcodeLogDTO> getQRcodeLog(Long seq) {
+        return qrCodeRepository.getByUserSeq(seq);
     }
 }

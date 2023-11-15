@@ -77,7 +77,7 @@ public class CouponServiceImpl implements CouponService {
             if(coupon != null || coupon.getStatus().equals("none")){ //쿠폰이 존재하고 사용상태가 none이라면 사용가능
                 LOGGER.info("[useCoupon]:쿠폰을 정상적으로 등록합니다.");
                 QRcodeDTO data = qrCodeGenerater.generateQRcode(coupon.getQrCodeCategory(),couponSerial,member);
-                couponDAO.updateCouponStatus(couponSerial); // 쿠폰의 사용유무를 use로 바꿈
+                couponDAO.updateCouponStatus(couponSerial , member.getMemberSeq()); // 쿠폰의 사용유무를 use로 바꿈
                 return QRcodeResponse.builder()
                         .qRcode(data.getQrSerial())
                         .msg("쿠폰이 정상적으로 사용됐습니다.")

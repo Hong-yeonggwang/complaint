@@ -1,7 +1,9 @@
 package com.yongin.complaint.Controller;
 
+import com.yongin.complaint.DTO.Member.QRcodeLogDTO;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
+import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.requset.CouponCreateRequest;
 import com.yongin.complaint.Payload.response.CreateCouponResponse;
 import com.yongin.complaint.Payload.response.QRcodeResponse;
@@ -57,6 +59,16 @@ public class QrCodeController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Member member = (Member)auth.getPrincipal();
 
-        return qrcodeService.useQrcode(qrCodeSerial,member);
+        QRcodeCategory qRcodeCategory = signService.getOperatorInfo(member.getMemberSeq());
+
+        return qrcodeService.useQrcode(qrCodeSerial,qRcodeCategory.getQrCategorySeq());
+    }
+
+    @GetMapping(value = "/log")
+    public List<QRcodeLogDTO> getQRcodeLog(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member)auth.getPrincipal();
+
+        return qrcodeService.getQRcodeLog(member.getMemberSeq());
     }
 }

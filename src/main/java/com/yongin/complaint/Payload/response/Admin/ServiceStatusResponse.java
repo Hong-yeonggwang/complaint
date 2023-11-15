@@ -23,4 +23,5 @@ public class ServiceStatusResponse {
     private Long remainQrcodeCount;
     private List<QRcodeCategory> categoryInfo;
     private List<Coupon> couponList;
+    private Long usingCategory;
 }

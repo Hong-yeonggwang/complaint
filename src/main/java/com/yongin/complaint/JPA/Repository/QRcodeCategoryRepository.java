@@ -22,5 +22,8 @@ public interface QRcodeCategoryRepository extends JpaRepository<QRcodeCategory,L
     @Query("select count(q) from QRcodeCategory q where q.status = 'show'")
     Long getPlaceCount();
 
+    @Query("select count(q) from QRcodeCategory q where q.status = 'show'")
+    Long getUsingCategory();
+
 
 }

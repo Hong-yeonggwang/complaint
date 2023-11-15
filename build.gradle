@@ -54,6 +54,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
+//	fireBase
+	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
+
 
 
 

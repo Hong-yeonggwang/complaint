@@ -19,6 +19,10 @@ public interface CouponRepository extends JpaRepository<Coupon,Long> {
     @Query("select new com.yongin.complaint.DTO.Admin.CouponStatisticsDTO(c.status,COUNT(c),c.qrCodeCategory.name) from Coupon c  where c.status = 'use' group by  c.qrCodeCategory")
     List<CouponStatisticsDTO> getCouponUseCount();
 
-    @Query("select c from Coupon c join fetch c.qrCodeCategory order by c.qrCodeCategory,c.status")
+    @Query("select c from Coupon c join fetch c.qrCodeCategory where c.status = 'none' order by c.qrCodeCategory.name ,c.status")
     List<Coupon> findAll();
+
+    @Query("select c from Coupon c order by c.status")
+    List<Coupon> findAllOrderByStatus();
+
 }

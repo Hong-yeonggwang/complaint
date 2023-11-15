@@ -1,4 +1,4 @@
-package com.yongin.complaint.Component.QRcodeGenerater.emailSender;
+package com.yongin.complaint.Component.emailSender;
 
 import com.yongin.complaint.DTO.Email.EmailDTO;
 

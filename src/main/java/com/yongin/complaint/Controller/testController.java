@@ -5,7 +5,10 @@ import com.yongin.complaint.JPA.Entity.Member;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.File;
 import java.util.List;
 
 @RestController
@@ -26,5 +29,16 @@ public class testController {
         System.out.println(member.getId());
         System.out.println(member.getUsername());
         return member.toString();
+    }
+
+    @PostMapping(value = "/img")
+    public void imgUpload(MultipartHttpServletRequest img) throws Exception{
+        System.out.println(img.toString());
+        String absolutePath = new File("").getAbsolutePath() + "\\";
+
+        String path = "images/";
+        File file = new File(absolutePath + path + "/" + "test.jpg");
+//        img.get.transferTo(file);
+
     }
 }

@@ -12,5 +12,5 @@ public class EmailDTO {
     private String email;
     private String subject;
     private String content;
-    private String mailFlag;  // id, passwordCode, tempPassword
+    private String mailFlag;  // id, passwordCode, tempPassword, post
 }

@@ -2,6 +2,7 @@ package com.yongin.complaint.JPA.Repository;
 
 import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
 import com.yongin.complaint.DTO.Admin.QRcodeDateDTO;
+import com.yongin.complaint.DTO.Member.QRcodeLogDTO;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,20 +34,22 @@ public interface QRcodeRepository extends JpaRepository<QRcode,Long> {
     List<QRcodeDateDTO> getQRcodeCountToDate();
 
     @Query("select new com.yongin.complaint.DTO.Admin.QRcodeDateDTO(COUNT(e),CONCAT(EXTRACT(YEAR FROM e.regulationDate), '-', LPAD(EXTRACT(MONTH FROM e.regulationDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.regulationDate), 2, '0'))) " +
-            "from QRcode e where e.status = 'used' group by CONCAT(EXTRACT(YEAR FROM e.regulationDate), '-', LPAD(EXTRACT(MONTH FROM e.regulationDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.regulationDate), 2, '0'))")
-    List<QRcodeDateDTO> getQRcodeCountToDateWithUsed();
-
-    @Query("select count(e)" +
-            "from QRcode e where " +
-            "CONCAT(EXTRACT(YEAR FROM e.regulationDate), '-', LPAD(EXTRACT(MONTH FROM e.regulationDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.regulationDate), 2, '0')) = :TODAY")
-    Long getTodayUsedQrcodeCount(@Param(value = "TODAY")String today);
+            "from QRcode e where e.status = 'used' and e.category.qrCategorySeq = :CATEGORY group by CONCAT(EXTRACT(YEAR FROM e.regulationDate), '-', LPAD(EXTRACT(MONTH FROM e.regulationDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.regulationDate), 2, '0'))")
+    List<QRcodeDateDTO> getQRcodeCountToDateWithUsed(@Param(value = "CATEGORY") Long seq);
 
     @Query("select count(e)" +
             "from QRcode e where " +
             "CONCAT(EXTRACT(YEAR FROM e.useDate), '-', LPAD(EXTRACT(MONTH FROM e.useDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.useDate), 2, '0')) = :TODAY")
+    Long getTodayUsedQrcodeCount(@Param(value = "TODAY")String today);
+
+    @Query("select count(e)" +
+            "from QRcode e where " +
+            "CONCAT(EXTRACT(YEAR FROM e.regulationDate), '-', LPAD(EXTRACT(MONTH FROM e.regulationDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.regulationDate), 2, '0')) = :TODAY")
     Long getTodayCreatedQrcodeCount(@Param(value = "TODAY")String today);
 
-    @Query("select count(q) from QRcode q where q.status ='none' and q.useDate= null")
+    @Query("select count(q) from QRcode q where (q.status ='none' or q.status = null) and q.useDate= null")
     Long getRemainQrcodeCount();
 
+    @Query("select new com.yongin.complaint.DTO.Member.QRcodeLogDTO(q.qrCodeSeq,q.qrCode,q.useDate,q.category) from QRcode q where q.owner.memberSeq = :SEQ and q.status = 'used'")
+    List<QRcodeLogDTO> getByUserSeq(@Param(value = "SEQ") Long seq);
 }

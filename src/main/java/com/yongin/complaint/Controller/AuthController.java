@@ -5,6 +5,7 @@ import com.yongin.complaint.Payload.requset.SignInRequest;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.MemberInfoResponse;
+import com.yongin.complaint.Payload.response.OperatorInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
@@ -65,18 +66,43 @@ public class AuthController {
     @Transactional
     @PostMapping(value = "/memeberinfo")
     public MemberInfoResponse getMemberInfo(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member)auth.getPrincipal();
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Member member = (Member) auth.getPrincipal();
 
-        MemberInfoResponse info = MemberInfoResponse.builder()
-                .name(member.getName())
-                .birth(member.getBirth())
-                .major(member.getMajor())
-                .nickName(member.getNickName())
-                .phoneNumber(member.getPhoneNumber())
-                .build();
+            MemberInfoResponse info = MemberInfoResponse.builder()
+                    .name(member.getName())
+                    .birth(member.getBirth())
+                    .major(member.getMajor())
+                    .nickName(member.getNickName())
+                    .phoneNumber(member.getPhoneNumber())
+                    .build();
 
-        return info;
+            return info;
+        }catch (ClassCastException e){
+            throw new RuntimeException();
+        }
+
+    }
+
+    @Transactional
+    @PostMapping(value = "/memeberinfo/operator")
+    public OperatorInfoResponse getOperatorInfo(){
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Member member = (Member) auth.getPrincipal();
+
+            OperatorInfoResponse info = OperatorInfoResponse.builder()
+                    .name(member.getName())
+                    .phoneNumber(member.getPhoneNumber())
+                    .category(signService.getOperatorInfo(member.getMemberSeq()))
+                    .build();
+
+            return info;
+        }catch (ClassCastException e){
+            throw new RuntimeException();
+        }
+
     }
     @PutMapping(value = "/memberinfo")
     @Transactional
@@ -87,11 +113,6 @@ public class AuthController {
         Member member = (Member)auth.getPrincipal();
 
         signService.updateUserInfo(member,userInfo);
-    }
-
-    @GetMapping(value = "/exception")
-    public void exceptionTest() throws RuntimeException{
-        throw new RuntimeException("접근이 금지되었습니다.");
     }
 
     @GetMapping(value = "/id")

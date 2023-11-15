@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div style="margin:100px;">
+    <div style="width:20rem;
+        margin:0 auto;
+        text-align: center;">
+        <h1> 안녕하세요.</h1>
+        <h1> Ycomplaint입니다!</h1>
+    </div>
+
+    <div style="width:40rem;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 1rem;border:1px solid black; font-family:verdana;">
+        <h3 style="color: #2684D2;"> 쿠폰번호입니다!</h3>
+        <div class="code" th:text="${code}"></div>
+        <div class="code" th:text="${content}"></div>
+    </div>
+    <br/>
+</div>
+
+</body>
+</html>

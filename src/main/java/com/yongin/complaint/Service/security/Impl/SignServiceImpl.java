@@ -2,21 +2,18 @@ package com.yongin.complaint.Service.security.Impl;
 
 import com.yongin.complaint.Common.CommonResponse;
 import com.yongin.complaint.Common.MemberRoleEnum;
-import com.yongin.complaint.Component.QRcodeGenerater.emailSender.EmailSender;
+import com.yongin.complaint.Component.QRcodeGenerater.QRcodeGenerater;
+import com.yongin.complaint.Component.emailSender.EmailSender;
 import com.yongin.complaint.DTO.Email.EmailDTO;
-import com.yongin.complaint.JPA.Entity.Operator;
-import com.yongin.complaint.JPA.Entity.PasswordCode;
-import com.yongin.complaint.JPA.Entity.QRcodeCategory;
+import com.yongin.complaint.JPA.Entity.*;
 import com.yongin.complaint.JPA.Repository.OperatorRepository;
 import com.yongin.complaint.JPA.Repository.PasswordCodeRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
-import com.yongin.complaint.Payload.response.MemberInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
 import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
-import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Repository.MemberRepository;
 import com.yongin.complaint.Service.security.SignService;
 import com.yongin.complaint.config.security.JwtProvider;
@@ -30,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 
 @Service
@@ -41,6 +37,8 @@ public class SignServiceImpl implements SignService {
     public JwtProvider jwtProvider;
     public PasswordEncoder passwordEncoder;
 
+    public QRcodeGenerater qrCodeGenerater;
+
     private OperatorRepository operatorRepository;
 
     private QRcodeCategoryRepository qrCodeCategoryRepository;
@@ -48,10 +46,13 @@ public class SignServiceImpl implements SignService {
 
     private EmailSender emailSender;
 
+
     @Autowired
     public SignServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder,
                            OperatorRepository operatorRepository,QRcodeCategoryRepository qrCodeCategoryRepository,
-                           EmailSender emailSender,PasswordCodeRepository passwordCodeRepository){
+                           EmailSender emailSender,PasswordCodeRepository passwordCodeRepository,
+                           QRcodeGenerater qrCodeGenerater
+                           ){
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
@@ -59,6 +60,7 @@ public class SignServiceImpl implements SignService {
         this.qrCodeCategoryRepository = qrCodeCategoryRepository;
         this.emailSender = emailSender;
         this.passwordCodeRepository = passwordCodeRepository;
+        this.qrCodeGenerater = qrCodeGenerater;
     }
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
@@ -77,9 +79,15 @@ public class SignServiceImpl implements SignService {
                 .build();
 
         Member savedAdmin = memberRepository.save(member);
+//        이벤트 회원가입시 모든 사람들이게 간식 qr코드 주기
+        QRcodeCategory qRcodeCategory = new QRcodeCategory();
+        qRcodeCategory.setQrCategorySeq(16L);
+        qrCodeGenerater.generateQRcode(qRcodeCategory,"SJRL24OS98S",member);
+
+
         SignUpResponse signUpResponse = new SignUpResponse();
 
-        LOGGER.info("[getSignUpResult] adminEntity 값이 들어왔는지 확인 후 결과값 주입");
+        LOGGER.info("[getSignUpResult] Entity 값이 들어왔는지 확인 후 결과값 주입");
         if(!savedAdmin.getName().isEmpty()){
             LOGGER.info("[getSignUpResult] 정상 처리 완료 ");
             setSuccessResult(signUpResponse);
@@ -281,6 +289,14 @@ public class SignServiceImpl implements SignService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public QRcodeCategory getOperatorInfo(Long seq) {
+
+        Operator operator = operatorRepository.getByMemberSeq(seq);
+
+        return operator.getQRcodeCategorySeq();
     }
 
     private void setSuccessResult(SignUpResponse result){

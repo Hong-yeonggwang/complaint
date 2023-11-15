@@ -26,4 +26,7 @@ public class Coupon {
 
     @Column(name = "STATUS")
     private String status;
+
+    @Column(name = "USEDMEMBER_SEQ")
+    private Long userMemberSeq;
 }

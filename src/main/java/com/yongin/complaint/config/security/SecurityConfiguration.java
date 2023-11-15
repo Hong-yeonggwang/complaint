@@ -36,6 +36,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity webSecurity){
-        webSecurity.ignoring().antMatchers("/v1/chat/**"); //,"/getChatRoom"
+        webSecurity.ignoring().antMatchers("/chat/**","/v1/auth/sign-in","/v1/auth/sign-up"
+        ,"/v1/auth/id","/v1/auth/passwordcode","/v1/auth/password","/v1/auth/email"
+        ); //,"/getChatRoom"
     }
 }

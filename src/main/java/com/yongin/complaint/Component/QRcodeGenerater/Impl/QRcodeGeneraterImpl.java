@@ -40,6 +40,7 @@ public class QRcodeGeneraterImpl implements QRcodeGenerater {
                     .category(category)
                     .owner(userInfo)
                     .regulationDate(LocalDateTime.now())
+                    .status("none")
                     .build();
             qeCodeRepository.save(qrCode);
             return QRcodeDTO.builder().category(category).qrSerial(qrCodeSerial).build();

@@ -11,7 +11,7 @@ public interface CouponDAO {
 
     void saveCoupon(String serial, Long category);
 
-    void updateCouponStatus(String couponSerial);
+    void updateCouponStatus(String couponSerial, Long memberSeq);
 
 
 }

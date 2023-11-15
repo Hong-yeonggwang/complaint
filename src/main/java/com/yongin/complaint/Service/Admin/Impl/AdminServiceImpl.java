@@ -1,9 +1,9 @@
 package com.yongin.complaint.Service.Admin.Impl;
 
 import com.yongin.complaint.DAO.AdminDAO;
-import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
-import com.yongin.complaint.DTO.Admin.OperatorDTO;
+import com.yongin.complaint.DTO.Admin.*;
 import com.yongin.complaint.JPA.Entity.Coupon;
+import com.yongin.complaint.JPA.Entity.Place;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
@@ -33,13 +33,36 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updateCategory(String name, String placeName, CategoryUpdateDTO updateInfo){
-        adminDAO.updateCategory(name,placeName,updateInfo);
+    public String updateCategory(CategoryUpdateDTO categoryUpdateDTO){
+        adminDAO.updateCategory(categoryUpdateDTO);
+        return "정상적으로 입력되었습니다.";
     }
 
     @Override
-    public void addCategory(CategoryUpdateDTO updateInfo) {
+    public String updatePlace(Long seq, String name) {
+        adminDAO.updatePlace(seq, name);
+        return "정상적으로 입력되었습니다.";
+    }
+
+    @Override
+    public List<QRcodeDateDTO> getOperatorQrcode(QRcodeCategory category) {
+        return adminDAO.getOperatorQrcode(category);
+    }
+
+    @Override
+    public List<Coupon> getCouponLog() {
+        return adminDAO.getCouponLog();
+    }
+
+    @Override
+    public List<UserInfoDTO> getUserInfo() {
+        return adminDAO.getUserInfo();
+    }
+
+    @Override
+    public String addCategory(CategoryUpdateDTO updateInfo) {
         adminDAO.addCategory(updateInfo);
+        return "정상적으로 입력되었습니다";
     }
 
     @Override
@@ -74,6 +97,8 @@ public class AdminServiceImpl implements AdminService {
 
         List<Coupon> couponList = adminDAO.getCouponList();
 
+        Long usingCategory = adminDAO.getUsingCategory();
+
         return ServiceStatusResponse.builder()
                 .couponUseRate(couponUseRate)
                 .qrcodeUSeRate(qrcodeUSeRate)
@@ -84,6 +109,7 @@ public class AdminServiceImpl implements AdminService {
                 .remainQrcodeCount(remainQrcodeCount)
                 .categoryInfo(categoryInfo)
                 .couponList(couponList)
+                .usingCategory(usingCategory)
                 .build();
     }
 
@@ -93,9 +119,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<QRcodeCategory> getCategoryList() {
+    public CategoryPlaceDTO getCategoryList() {
         List<QRcodeCategory> categoryInfo = adminDAO.getAllCategory();
-        return categoryInfo;
+        List<Place>  placeInfo = adminDAO.getAllPlace();
+        return CategoryPlaceDTO.builder().place(placeInfo).category(categoryInfo).build();
     }
+
+    @Override
+    public String addPlcae(String name) {
+        adminDAO.savePlace(Place.builder().name(name).build());
+        return "정상적으로 입력되었습니다!";
+    }
+
 
 }

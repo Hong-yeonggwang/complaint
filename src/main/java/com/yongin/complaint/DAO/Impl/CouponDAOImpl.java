@@ -49,9 +49,10 @@ public class CouponDAOImpl implements CouponDAO {
 
     @Transactional
     @Override
-    public void updateCouponStatus(String couponSerial) {
+    public void updateCouponStatus(String couponSerial , Long memberSeq) {
         Coupon coupon = couponRepository.getBySerial(couponSerial);
         coupon.setStatus("use");
+        coupon.setUserMemberSeq(memberSeq);
         couponRepository.save(coupon);
     }
 }

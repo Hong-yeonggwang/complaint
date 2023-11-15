@@ -2,6 +2,7 @@ package com.yongin.complaint.Service.security;
 
 
 import com.yongin.complaint.JPA.Entity.Member;
+import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.SignInResponse;
@@ -28,4 +29,6 @@ public interface SignService {
 
     boolean checkId(String id);
     boolean checkEmail(String email);
+
+    QRcodeCategory getOperatorInfo(Long seq);
 }

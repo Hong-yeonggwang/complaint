@@ -1,7 +1,7 @@
 package com.yongin.complaint.Service.Admin;
 
-import com.yongin.complaint.DTO.Admin.CategoryUpdateDTO;
-import com.yongin.complaint.DTO.Admin.OperatorDTO;
+import com.yongin.complaint.DTO.Admin.*;
+import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
@@ -12,11 +12,6 @@ import java.util.List;
 public interface AdminService {
 
     List<QRcodeCategory> getAllCategory();
-
-    void updateCategory(String name, String placeName, CategoryUpdateDTO updateInfo);
-
-    void addCategory(CategoryUpdateDTO updateInfo);
-
     void deleteCategory(String name);
 
     List<CouponUseRateResponse> getUseRateCoupon();
@@ -26,6 +21,18 @@ public interface AdminService {
     ServiceStatusResponse getServiceStatus();
 
     List<OperatorDTO> getOperatorList();
-    List<QRcodeCategory> getCategoryList();
+    CategoryPlaceDTO getCategoryList();
 
+    String addPlcae(String name);
+
+    String addCategory(CategoryUpdateDTO updateInfo);
+
+    String updateCategory(CategoryUpdateDTO categoryUpdateDTO);
+    String updatePlace(Long seq, String name);
+
+    List<QRcodeDateDTO> getOperatorQrcode(QRcodeCategory category);
+
+    List<Coupon> getCouponLog();
+
+    List<UserInfoDTO> getUserInfo();
 }

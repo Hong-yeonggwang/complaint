@@ -1,17 +1,22 @@
 package com.yongin.complaint.Controller;
 
-import com.yongin.complaint.DTO.Admin.OperatorDTO;
+import com.yongin.complaint.DTO.Admin.*;
+import com.yongin.complaint.JPA.Entity.Coupon;
+import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import com.yongin.complaint.Payload.response.Admin.ServiceStatusResponse;
 import com.yongin.complaint.Service.Admin.AdminService;
+import com.yongin.complaint.Service.security.SignService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,27 +28,40 @@ import java.util.Map;
 public class AdminController {
     private final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     private final AdminService adminService;
+    private final SignService signService;
 
     @Autowired
-    public AdminController(AdminService adminService){
+    public AdminController(AdminService adminService,SignService signService){
         this.adminService = adminService;
-    }
-
-
-    @PostMapping(value = "/category")
-    public void addCategory(){
-
+        this.signService = signService;
     }
     @GetMapping(value= "/category")
-    public List<QRcodeCategory> getCategory(){
+    public CategoryPlaceDTO getCategory(){
         return adminService.getCategoryList();
     }
-
-    @PutMapping(value = "/category")
-    public void updateCategory(){
+    @PostMapping(value = "/place")
+    public String updatePlace(@RequestBody CategoryUpdateDTO params){
+        String name = params.getName();
+        Long seq = params.getCategorySeq();
+        return adminService.updatePlace(seq,name);
     }
-    @DeleteMapping(value = "/category")
-    public void deleteCategory(){}
+    @PutMapping(value = "/place")
+    public String addPlace(@RequestBody Map<String,String> params){
+        String name = params.get("name");
+        return adminService.addPlcae(name);
+    }
+    @DeleteMapping(value = "/place")
+    public void deletePlace(){}
+
+    @PostMapping(value = "/category")
+    public String updateCategory(@RequestBody CategoryUpdateDTO params){
+        return adminService.updateCategory(params);
+
+    }
+    @PutMapping(value = "/category")
+    public String addCategory(@RequestBody CategoryUpdateDTO params){
+        return adminService.addCategory(params);
+    }
 
     @PutMapping(value = "/admininfo")
     public void updateAdminInfo(){
@@ -68,22 +86,28 @@ public class AdminController {
     }
 
     @GetMapping(value = "/operatorStatus")
-    public List<OperatorDTO> getOperatorStatis(){
+    public List<OperatorDTO> getOperatorStatus(){
         return adminService.getOperatorList();
     }
 
-    @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<Map<String,String>> ExceptionHandler(RuntimeException e){
-        HttpHeaders responseHeaders = new HttpHeaders();
-        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        LOGGER.info("ExceptionHandler 호출.");
-        LOGGER.info("원인: {}", e.toString());
-        e.printStackTrace();
-
-        Map<String,String> map = new HashMap<>();
-        map.put("error type",httpStatus.getReasonPhrase());
-        map.put("code","400");
-        map.put("message", e.getMessage() != null ? e.getMessage().toString() : "에러 발생");
-        return new ResponseEntity<>(map,responseHeaders,httpStatus);
+    @GetMapping(value = "/operator/qrcode")
+    public List<QRcodeDateDTO> getOperatorQrcode(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) auth.getPrincipal();
+        QRcodeCategory category = signService.getOperatorInfo(member.getMemberSeq());
+        return adminService.getOperatorQrcode(category);
     }
+
+    @GetMapping(value = "/coupon/log")
+    public List<Coupon> getCouponLog(){
+        return adminService.getCouponLog();
+    }
+
+    @GetMapping(value = "/user/log")
+    public List<UserInfoDTO> getUserInfoLog(){
+        return adminService.getUserInfo();
+    }
+
+
+
 }
