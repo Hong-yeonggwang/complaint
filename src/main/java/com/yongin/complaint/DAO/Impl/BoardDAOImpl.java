@@ -19,7 +19,7 @@ public class BoardDAOImpl implements BoardDAO {
 
     private final BoardRepository boardRepository;
 
-    public BoardDAOImpl(BoardRepository boardRepository){
+    public BoardDAOImpl(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
     }
 
@@ -29,12 +29,12 @@ public class BoardDAOImpl implements BoardDAO {
     public Board savePost(BoardWriteDTO boardWriteDTO, Member writer) {
 
         return boardRepository.save(Board.builder()
-                        .subject(boardWriteDTO.getSubject())
-                        .content(boardWriteDTO.getContent())
-                        .tag(BoardTagEnum.valueOf(boardWriteDTO.getTag()))
-                        .writer(writer)
-                        .regulationDate(LocalDateTime.now())
-                        .status("no")
+                .subject(boardWriteDTO.getSubject())
+                .content(boardWriteDTO.getContent())
+                .tag(BoardTagEnum.valueOf(boardWriteDTO.getTag()))
+                .writer(writer)
+                .regulationDate(LocalDateTime.now())
+                .status("no")
                 .build()
 
         );

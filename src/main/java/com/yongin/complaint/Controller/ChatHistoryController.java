@@ -17,7 +17,7 @@ public class ChatHistoryController {
     ChatHistoryService chatHistoryServiceImpl;
 
     @PostMapping(value = "/v1/getChatHistories")
-    List<ChatHistory> getChatHistoires(@RequestBody ChatRoomIdRequest chatRoomIdRequest){
+    List<ChatHistory> getChatHistories(@RequestBody ChatRoomIdRequest chatRoomIdRequest) {
         return chatHistoryServiceImpl.getChatHistories(chatRoomIdRequest.getChatRoomId());
     }
 }

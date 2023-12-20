@@ -12,27 +12,27 @@ import javax.transaction.Transactional;
 
 @Component
 public class CouponDAOImpl implements CouponDAO {
-    private CouponRepository couponRepository;
-    private QRcodeCategoryRepository qrCodeCategoryRepository;
+    private final CouponRepository couponRepository;
+    private final QRcodeCategoryRepository qrCodeCategoryRepository;
 
     @Autowired
     public CouponDAOImpl(
             CouponRepository couponRepository,
             QRcodeCategoryRepository qrCodeCategoryRepository
-    ){
+    ) {
         this.couponRepository = couponRepository;
         this.qrCodeCategoryRepository = qrCodeCategoryRepository;
     }
 
     @Override
-    public Coupon CouponExist(String serial){
+    public Coupon CouponExist(String serial) {
         Coupon coupon = couponRepository.getBySerial(serial);
         return coupon;
     }
 
     @Override
     public QRcodeCategory findByName(String category, String name) {
-        return qrCodeCategoryRepository.findByName(category,name);
+        return qrCodeCategoryRepository.findByName(category, name);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CouponDAOImpl implements CouponDAO {
 
     @Transactional
     @Override
-    public void updateCouponStatus(String couponSerial , Long memberSeq) {
+    public void updateCouponStatus(String couponSerial, Long memberSeq) {
         Coupon coupon = couponRepository.getBySerial(couponSerial);
         coupon.setStatus("use");
         coupon.setUserMemberSeq(memberSeq);

@@ -1,7 +1,6 @@
 package com.yongin.complaint.DAO;
 
 import com.yongin.complaint.DTO.Member.QRcodeLogDTO;
-import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
 
 import java.util.List;

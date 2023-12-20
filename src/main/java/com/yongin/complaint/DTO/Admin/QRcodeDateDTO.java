@@ -11,7 +11,7 @@ public class QRcodeDateDTO {
     private String time;
     private Long count;
 
-    public QRcodeDateDTO(Long count,String time){
+    public QRcodeDateDTO(Long count, String time) {
         this.time = time;
         this.count = count;
     }

@@ -21,38 +21,40 @@ import java.util.Map;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-    private BoardDAO boardDAO;
-    private EmailSender emailSender;
-    private FireBasePush fireBasePush;
+    private final BoardDAO boardDAO;
+    private final EmailSender emailSender;
+    private final FireBasePush fireBasePush;
 
     @Autowired
-    public BoardServiceImpl(BoardDAO boardDAO, EmailSender emailSender,FireBasePush fireBasePush){
+    public BoardServiceImpl(BoardDAO boardDAO, EmailSender emailSender, FireBasePush fireBasePush) {
         this.boardDAO = boardDAO;
         this.emailSender = emailSender;
         this.fireBasePush = fireBasePush;
     }
+
     @Override
     public String writePost(BoardWriteDTO boardWriteDTO, Member writer) {
 
 
-        if(boardDAO.savePost(boardWriteDTO,writer) == null){
+        if (boardDAO.savePost(boardWriteDTO, writer) == null) {
             return "일시적인 오류입니다. 잠시후 시도해주세요.";
-        }else{
+        } else {
             fireBasePush.sendPush(FirebaseDTO.builder()
-                            .title("["+boardWriteDTO.getTag()+"] 새로운 문의글입니다!")
-                            .body(boardWriteDTO.getSubject())
-                            .build());
+                    .title("[" + boardWriteDTO.getTag() + "] 새로운 문의글입니다!")
+                    .body(boardWriteDTO.getSubject())
+                    .build());
             return "정상적으로 입력되었습니다. 메일로 답장드릴게요!";
         }
     }
+
     @Override
     public List<UserPostDTO> getMyPost(Member member) {
         return boardDAO.getUserPost(member);
     }
 
     @Override
-    public Map<String,List<UserPostDTO>> getAllPost() {
-        Map<String,List<UserPostDTO>> postData = new HashMap<>();
+    public Map<String, List<UserPostDTO>> getAllPost() {
+        Map<String, List<UserPostDTO>> postData = new HashMap<>();
 
         postData.put("yes", boardDAO.getAllPostYes());
         postData.put("no", boardDAO.getAllPostNo());
@@ -68,18 +70,18 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public String writeComment(Long seq, String comment) {
         Board board = boardDAO.addComment(seq, comment);
-        if(board == null){
+        if (board == null) {
             return "일시적인 오류입니다. 잠시후 시도해주세요";
         }
         return "정상적으로 입력되었습니다!";
     }
 
     @Override
-    public String sendEmail(String coupon, String comment,String email) {
+    public String sendEmail(String coupon, String comment, String email) {
         EmailDTO emailDTO = EmailDTO.builder()
                 .email(email)
                 .subject("[Ycomplaint]문의글에 대한 답변입니다!")
-                .content(coupon+"<br>"+comment)
+                .content(coupon + "<br>" + comment)
                 .mailFlag("post")
                 .build();
         return emailSender.sendMail(emailDTO);

@@ -11,6 +11,6 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class CouponUseRateResponse {
-    private Map<String,Long> rate;
+    private Map<String, Long> rate;
     private String placeName;
 }

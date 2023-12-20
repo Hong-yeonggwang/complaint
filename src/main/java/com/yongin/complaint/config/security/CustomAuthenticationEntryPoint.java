@@ -15,6 +15,7 @@ import java.io.IOException;
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final Logger LOGGER = LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.AuthenticationException authException) throws IOException, ServletException {
         ObjectMapper objectMApper = new ObjectMapper();

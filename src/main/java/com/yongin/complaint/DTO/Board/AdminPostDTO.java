@@ -24,18 +24,18 @@ public class AdminPostDTO {
     private String comment;
 
     public AdminPostDTO(
-             String subject,
-             String content,
-             BoardTagEnum tag,
-             Long seq,
-             String writerName,
-             String writerPhoneNumber,
-             String writerEmail,
-             String status,
-             LocalDateTime regulationDate,
-             LocalDateTime completeDate,
-             String comment
-    ){
+            String subject,
+            String content,
+            BoardTagEnum tag,
+            Long seq,
+            String writerName,
+            String writerPhoneNumber,
+            String writerEmail,
+            String status,
+            LocalDateTime regulationDate,
+            LocalDateTime completeDate,
+            String comment
+    ) {
         this.subject = subject;
         this.content = content;
         this.tag = tag.toString();

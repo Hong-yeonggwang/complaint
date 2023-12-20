@@ -13,11 +13,12 @@ public interface BoardService {
     String writePost(BoardWriteDTO boardWriteDTO, Member writer);
 
     List<UserPostDTO> getMyPost(Member member);
-    Map<String,List<UserPostDTO>> getAllPost();
+
+    Map<String, List<UserPostDTO>> getAllPost();
 
     AdminPostDTO getSeqPost(Long seq);
 
     String writeComment(Long seq, String comment);
 
-    String sendEmail(String coupon,String comment,String email);
+    String sendEmail(String coupon, String comment, String email);
 }

@@ -1,7 +1,9 @@
 package com.yongin.complaint.DTO.Board;
 
 import com.yongin.complaint.Common.BoardTagEnum;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -19,15 +21,15 @@ public class UserPostDTO {
     private LocalDateTime completeDate;
 
     public UserPostDTO(
-             String subject,
-             String content,
-             BoardTagEnum tag,
-             Long seq,
-             String write,
-             String status,
-             LocalDateTime regulationDate,
-             LocalDateTime completeDate
-    ){
+            String subject,
+            String content,
+            BoardTagEnum tag,
+            Long seq,
+            String write,
+            String status,
+            LocalDateTime regulationDate,
+            LocalDateTime completeDate
+    ) {
         this.subject = subject;
         this.content = content;
         this.tag = tag.toString();

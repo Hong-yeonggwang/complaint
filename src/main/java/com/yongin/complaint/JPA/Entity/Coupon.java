@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="COUPON_SEQ_PK")
+    @Column(name = "COUPON_SEQ_PK")
     private Long qrCategorySeq;
 
     @Column(name = "SERIAL")

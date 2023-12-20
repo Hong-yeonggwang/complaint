@@ -1,6 +1,5 @@
 package com.yongin.complaint.DTO.Member;
 
-import com.yongin.complaint.Common.BoardTagEnum;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +21,7 @@ public class QRcodeLogDTO {
             String serial,
             LocalDateTime usedDate,
             QRcodeCategory category
-    ){
+    ) {
         this.seq = seq;
         this.serial = serial;
         this.usedDate = usedDate;

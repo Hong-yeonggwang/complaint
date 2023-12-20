@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="PLACE_SEQ_PK")
+    @Column(name = "PLACE_SEQ_PK")
     private Long placeSeq;
 
     @Column(name = "NAME")

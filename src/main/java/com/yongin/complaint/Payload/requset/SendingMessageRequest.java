@@ -1,6 +1,8 @@
 package com.yongin.complaint.Payload.requset;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter

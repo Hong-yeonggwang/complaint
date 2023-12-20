@@ -4,7 +4,6 @@ import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter

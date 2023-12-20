@@ -5,7 +5,6 @@ import com.yongin.complaint.DTO.Admin.OperatorDTO;
 import com.yongin.complaint.DTO.Admin.QRcodeDateDTO;
 import com.yongin.complaint.DTO.Admin.UserInfoDTO;
 import com.yongin.complaint.JPA.Entity.Coupon;
-import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.Place;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
 import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
@@ -15,7 +14,9 @@ import java.util.List;
 
 public interface AdminDAO {
     List<QRcodeCategory> getAllCategory();
+
     List<Place> getAllPlace();
+
 
     void updateCategory(CategoryUpdateDTO categoryUpdateDTO);
 
@@ -33,9 +34,13 @@ public interface AdminDAO {
 
     Long getPlaceCount();
 
+
     Long getTodayUsedQRcode(String today);
+
     Long getTodayCreatedQRcode(String today);
+
     List<QRcodeCategory> getCategoryInfo();
+
 
     List<Coupon> getCouponList();
 
@@ -47,8 +52,11 @@ public interface AdminDAO {
 
     void savePlace(Place entity);
 
+
     Long getUsingCategory();
+
     List<QRcodeDateDTO> getOperatorQrcode(QRcodeCategory category);
+
 
     List<Coupon> getCouponLog();
 

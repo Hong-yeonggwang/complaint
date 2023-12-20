@@ -1,6 +1,5 @@
 package com.yongin.complaint.DAO.Impl;
 
-import com.fasterxml.jackson.databind.type.PlaceholderForType;
 import com.yongin.complaint.DAO.AdminDAO;
 import com.yongin.complaint.DTO.Admin.*;
 import com.yongin.complaint.JPA.Entity.Coupon;
@@ -25,13 +24,14 @@ public class AdminDAOImpl implements AdminDAO {
     private final QRcodeRepository qrCodeRepository;
     private final OperatorRepository operatorRepository;
     private final PlaceRepository placeRepository;
+
     @Autowired
     public AdminDAOImpl(MemberRepository memberRepository,
                         CouponRepository couponRepository,
                         QRcodeCategoryRepository qrCodeCategoryRepository,
                         QRcodeRepository qrCodeRepository,
                         OperatorRepository operatorRepository,
-                        PlaceRepository placeRepository){
+                        PlaceRepository placeRepository) {
         this.memberRepository = memberRepository;
         this.couponRepository = couponRepository;
         this.qrCodeRepository = qrCodeRepository;
@@ -41,7 +41,7 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
-    public List<QRcodeCategory> getAllCategory(){
+    public List<QRcodeCategory> getAllCategory() {
         return qrCodeCategoryRepository.findAll();
     }
 
@@ -101,25 +101,25 @@ public class AdminDAOImpl implements AdminDAO {
 
         List<CouponUseRateResponse> returnDate = new ArrayList<>();
 
-        for(CouponStatisticsDTO all : allCount){
+        for (CouponStatisticsDTO all : allCount) {
             int flag = 0;
-            for(CouponStatisticsDTO use : useCount){
-                if(all.getPlaceName().equals(use.getPlaceName())){
+            for (CouponStatisticsDTO use : useCount) {
+                if (all.getPlaceName().equals(use.getPlaceName())) {
                     returnDate.add(
-                        CouponUseRateResponse.builder()
-                            .rate(Map.of( "use", use.getCount(),"all",all.getCount()))
-                            .placeName(all.getPlaceName())
-                            .build()
+                            CouponUseRateResponse.builder()
+                                    .rate(Map.of("use", use.getCount(), "all", all.getCount()))
+                                    .placeName(all.getPlaceName())
+                                    .build()
                     );
                     flag = 1;
                 }
             }
-            if(flag == 0){
+            if (flag == 0) {
                 returnDate.add(
-                    CouponUseRateResponse.builder()
-                        .rate(Map.of( "use", 0l,"all",all.getCount()))
-                        .placeName(all.getPlaceName())
-                        .build()
+                        CouponUseRateResponse.builder()
+                                .rate(Map.of("use", 0L, "all", all.getCount()))
+                                .placeName(all.getPlaceName())
+                                .build()
                 );
             }
         }
@@ -130,30 +130,30 @@ public class AdminDAOImpl implements AdminDAO {
     public List<CouponUseRateResponse> getUseRateQRcode() {
 
         List<QRcodeStatisticsDTO> allCount = qrCodeRepository.getQrcodeCount();
-        allCount.forEach(name-> System.out.println(name.toString()));
+        allCount.forEach(name -> System.out.println(name.toString()));
         List<QRcodeStatisticsDTO> useCount = qrCodeRepository.getQrcoceUseCount();
 
         List<CouponUseRateResponse> returnDate = new ArrayList<>();
 
-        for(QRcodeStatisticsDTO all : allCount){
+        for (QRcodeStatisticsDTO all : allCount) {
             int flag = 0;
-            for(QRcodeStatisticsDTO use : useCount){
-                if(all.getPlaceName().equals(use.getPlaceName())){
+            for (QRcodeStatisticsDTO use : useCount) {
+                if (all.getPlaceName().equals(use.getPlaceName())) {
                     returnDate.add(
-                        CouponUseRateResponse.builder()
-                        .rate(Map.of( "use", use.getCount(),"all",all.getCount()))
-                        .placeName(all.getPlaceName())
-                        .build()
+                            CouponUseRateResponse.builder()
+                                    .rate(Map.of("use", use.getCount(), "all", all.getCount()))
+                                    .placeName(all.getPlaceName())
+                                    .build()
                     );
                     flag = 1;
                 }
             }
-            if(flag == 0){
+            if (flag == 0) {
                 returnDate.add(
-                    CouponUseRateResponse.builder()
-                    .rate(Map.of( "use", 0l,"all",all.getCount()))
-                    .placeName(all.getPlaceName())
-                    .build()
+                        CouponUseRateResponse.builder()
+                                .rate(Map.of("use", 0L, "all", all.getCount()))
+                                .placeName(all.getPlaceName())
+                                .build()
                 );
             }
         }

@@ -21,53 +21,55 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/qrcode")
 public class QrCodeController {
-    private QRcodeService qrcodeService;
-    private CouponService couponService;
-    private SignService signService;
+    private final QRcodeService qrcodeService;
+    private final CouponService couponService;
+    private final SignService signService;
 
     @Autowired
-    public QrCodeController(QRcodeService qrcodeService, CouponService couponService,SignService signService){
+    public QrCodeController(QRcodeService qrcodeService, CouponService couponService, SignService signService) {
         this.qrcodeService = qrcodeService;
         this.couponService = couponService;
         this.signService = signService;
     }
 
     @PostMapping(value = "/coupon") // 쿠폰 생성
-    public CreateCouponResponse couponTicket(@RequestBody CouponCreateRequest couponCreateRequest){
-        return couponService.createCoupon(couponCreateRequest.getCategory(),couponCreateRequest.getName());
+    public CreateCouponResponse couponTicket(@RequestBody CouponCreateRequest couponCreateRequest) {
+        return couponService.createCoupon(couponCreateRequest.getCategory(), couponCreateRequest.getName());
     }
 
     @PostMapping(value = "/purchase") //티켓 구매 qrcode 생성
-    public void purchaseTicket(){
+    public void purchaseTicket() {
 
     }
+
     @PostMapping(value = "")
-    public List<QRcode> getQRcodeList(){
+    public List<QRcode> getQRcodeList() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member)auth.getPrincipal();
+        Member member = (Member) auth.getPrincipal();
 
         return qrcodeService.getQRcodeList(member.getId());
     }
+
     @DeleteMapping(value = "/coupon") // 쿠폰 사용
-    public QRcodeResponse useCoupon(HttpServletRequest servletRequest, String couponSerial){
+    public QRcodeResponse useCoupon(HttpServletRequest servletRequest, String couponSerial) {
         Member member = signService.getMemberinfo(servletRequest);
-        return couponService.useCoupon(couponSerial,member);
+        return couponService.useCoupon(couponSerial, member);
     }
 
     @DeleteMapping// "/qrcode" qrcode 사용
-    public QRcodeResponse useQrCode(String qrCodeSerial){
+    public QRcodeResponse useQrCode(String qrCodeSerial) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member)auth.getPrincipal();
+        Member member = (Member) auth.getPrincipal();
 
         QRcodeCategory qRcodeCategory = signService.getOperatorInfo(member.getMemberSeq());
 
-        return qrcodeService.useQrcode(qrCodeSerial,qRcodeCategory.getQrCategorySeq());
+        return qrcodeService.useQrcode(qrCodeSerial, qRcodeCategory.getQrCategorySeq());
     }
 
     @GetMapping(value = "/log")
-    public List<QRcodeLogDTO> getQRcodeLog(){
+    public List<QRcodeLogDTO> getQRcodeLog() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member)auth.getPrincipal();
+        Member member = (Member) auth.getPrincipal();
 
         return qrcodeService.getQRcodeLog(member.getMemberSeq());
     }

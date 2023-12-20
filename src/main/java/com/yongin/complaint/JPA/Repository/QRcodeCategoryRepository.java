@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface QRcodeCategoryRepository extends JpaRepository<QRcodeCategory,Long> {
+public interface QRcodeCategoryRepository extends JpaRepository<QRcodeCategory, Long> {
 
     @Query("SELECT q FROM QRcodeCategory q WHERE q.name = :NAME AND q.qrcodeUsingPlace.name = :CATEGORY")
     QRcodeCategory findByName(@Param("CATEGORY") String category, @Param("NAME") String name);

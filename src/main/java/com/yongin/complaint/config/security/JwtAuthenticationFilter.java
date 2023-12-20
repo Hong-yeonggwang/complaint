@@ -16,26 +16,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(JwtProvider jwtProvider){
+    public JwtAuthenticationFilter(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
     @Override
-    protected void doFilterInternal (HttpServletRequest servletRequest,
-                                     HttpServletResponse servletResponse,
-                                     FilterChain filterChain) throws ServletException, IOException{
+    protected void doFilterInternal(HttpServletRequest servletRequest,
+                                    HttpServletResponse servletResponse,
+                                    FilterChain filterChain) throws ServletException, IOException {
         String token = jwtProvider.resolveToken(servletRequest);
-        LOGGER.info("[doFilterInternal] 요청 url: {}",servletRequest.getRequestURI().toString());
+        LOGGER.info("[doFilterInternal] 요청 url: {}", servletRequest.getRequestURI());
         LOGGER.info("[doFilterInternal]  token 값 추출 완료. token:");
         LOGGER.info(token);
 
         LOGGER.info("[dofilterInternal] token 값 유효성 체크 시작");
-        if(token != null && jwtProvider.validateToken(token)){
+        if (token != null && jwtProvider.validateToken(token)) {
             Authentication authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             LOGGER.info("[doFilterInternal] token 값 유효성 체크 완료");
         }
 
-        filterChain.doFilter(servletRequest,servletResponse);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }

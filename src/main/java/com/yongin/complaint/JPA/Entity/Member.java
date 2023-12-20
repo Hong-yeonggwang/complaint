@@ -11,8 +11,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Setter
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
 public class Member implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="MEMBER_SEQ_PK")
+    @Column(name = "MEMBER_SEQ_PK")
     private Long memberSeq;
 
     @Column(name = "ID", unique = true)
@@ -49,7 +47,7 @@ public class Member implements UserDetails {
     @Column(name = "MAJOR")
     private String major;
 
-    @Column(name = "EMAIL", unique = true )
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @Column(name = "ROLE")
@@ -58,7 +56,7 @@ public class Member implements UserDetails {
 
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collect = new ArrayList<>();
         collect.add(new SimpleGrantedAuthority(this.role.toString()));
         return collect;
@@ -66,33 +64,37 @@ public class Member implements UserDetails {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return this.name;
     }
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
-    public boolean isAccountNonExpired(){
-        return true;
-    }
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public boolean isAccountNonLocked(){
-        return true;
-    }
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public boolean isCredentialsNonExpired(){
-        return true;
-    }
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Override
-    public boolean isEnabled(){
+    public boolean isAccountNonExpired() {
         return true;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
-    public String getPassword(){
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public String getPassword() {
         return this.pwd;
     }
 }

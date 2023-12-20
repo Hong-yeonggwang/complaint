@@ -5,16 +5,19 @@ import com.yongin.complaint.Common.MemberRoleEnum;
 import com.yongin.complaint.Component.QRcodeGenerater.QRcodeGenerater;
 import com.yongin.complaint.Component.emailSender.EmailSender;
 import com.yongin.complaint.DTO.Email.EmailDTO;
-import com.yongin.complaint.JPA.Entity.*;
+import com.yongin.complaint.JPA.Entity.Member;
+import com.yongin.complaint.JPA.Entity.Operator;
+import com.yongin.complaint.JPA.Entity.PasswordCode;
+import com.yongin.complaint.JPA.Entity.QRcodeCategory;
+import com.yongin.complaint.JPA.Repository.MemberRepository;
 import com.yongin.complaint.JPA.Repository.OperatorRepository;
 import com.yongin.complaint.JPA.Repository.PasswordCodeRepository;
 import com.yongin.complaint.JPA.Repository.QRcodeCategoryRepository;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
+import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.SignInResponse;
-import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
-import com.yongin.complaint.JPA.Repository.MemberRepository;
 import com.yongin.complaint.Service.security.SignService;
 import com.yongin.complaint.config.security.JwtProvider;
 import org.slf4j.Logger;
@@ -27,32 +30,30 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 @Service
 public class SignServiceImpl implements SignService {
     private final Logger LOGGER = LoggerFactory.getLogger(SignServiceImpl.class);
-
-    private MemberRepository memberRepository;
     public JwtProvider jwtProvider;
     public PasswordEncoder passwordEncoder;
-
     public QRcodeGenerater qrCodeGenerater;
+    private final MemberRepository memberRepository;
+    private final OperatorRepository operatorRepository;
 
-    private OperatorRepository operatorRepository;
+    private final QRcodeCategoryRepository qrCodeCategoryRepository;
+    private final PasswordCodeRepository passwordCodeRepository;
 
-    private QRcodeCategoryRepository qrCodeCategoryRepository;
-    private PasswordCodeRepository passwordCodeRepository;
-
-    private EmailSender emailSender;
+    private final EmailSender emailSender;
 
 
     @Autowired
     public SignServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder,
-                           OperatorRepository operatorRepository,QRcodeCategoryRepository qrCodeCategoryRepository,
-                           EmailSender emailSender,PasswordCodeRepository passwordCodeRepository,
+                           OperatorRepository operatorRepository, QRcodeCategoryRepository qrCodeCategoryRepository,
+                           EmailSender emailSender, PasswordCodeRepository passwordCodeRepository,
                            QRcodeGenerater qrCodeGenerater
-                           ){
+    ) {
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
@@ -62,6 +63,7 @@ public class SignServiceImpl implements SignService {
         this.passwordCodeRepository = passwordCodeRepository;
         this.qrCodeGenerater = qrCodeGenerater;
     }
+
     @Override
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
         LOGGER.info("[getSignUpResult] 회원 가입 정보 전달");
@@ -82,16 +84,16 @@ public class SignServiceImpl implements SignService {
 //        이벤트 회원가입시 모든 사람들이게 간식 qr코드 주기
         QRcodeCategory qRcodeCategory = new QRcodeCategory();
         qRcodeCategory.setQrCategorySeq(16L);
-        qrCodeGenerater.generateQRcode(qRcodeCategory,"SJRL24OS98S",member);
+        qrCodeGenerater.generateQRcode(qRcodeCategory, "SJRL24OS98S", member);
 
 
         SignUpResponse signUpResponse = new SignUpResponse();
 
         LOGGER.info("[getSignUpResult] Entity 값이 들어왔는지 확인 후 결과값 주입");
-        if(!savedAdmin.getName().isEmpty()){
+        if (!savedAdmin.getName().isEmpty()) {
             LOGGER.info("[getSignUpResult] 정상 처리 완료 ");
             setSuccessResult(signUpResponse);
-        }else{
+        } else {
             LOGGER.info("[getSignUpResult] 실패 처리 완료 ");
             setFailResult(signUpResponse);
         }
@@ -102,10 +104,10 @@ public class SignServiceImpl implements SignService {
     public SignInResponse signIn(String id, String password) throws RuntimeException {
         LOGGER.info("[getSignInResult] signDataHandler로 회원 정보 요청");
         Member member = memberRepository.getById(id);
-        LOGGER.info("[getSignInResult] id : {} ",id);
+        LOGGER.info("[getSignInResult] id : {} ", id);
         LOGGER.info("[getSignInResult] 패스워드 비교 수행");
 
-        if(!passwordEncoder.matches(password, member.getPassword())){
+        if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다");
         }
         LOGGER.info("[getSignInResult] 패스워드 일치");
@@ -115,10 +117,9 @@ public class SignServiceImpl implements SignService {
         SignInResponse signInResultDTO = SignInResponse.builder()
                 .token(jwtProvider.createToken(
                         String.valueOf(member.getId())
-                        ,new ArrayList<>(Arrays.asList(member.getRole().toString())))
+                        , new ArrayList<>(Collections.singletonList(member.getRole().toString())))
                 )
                 .build();
-
 
 
         LOGGER.info("[getSignInResult] SignInResultDto 객체에 값 주입");
@@ -141,7 +142,7 @@ public class SignServiceImpl implements SignService {
 
         Member savedAdmin = memberRepository.save(member);
 
-        if(signUpAdminRequest.getRole().equals("ROLE_OPERATOR")){
+        if (signUpAdminRequest.getRole().equals("ROLE_OPERATOR")) {
             Member adminSeq = new Member();
             adminSeq.setMemberSeq(savedAdmin.getMemberSeq());
 
@@ -158,10 +159,10 @@ public class SignServiceImpl implements SignService {
         SignUpResponse signUpResponse = new SignUpResponse();
 
         LOGGER.info("[signUpAdmin] adminEntity 값이 들어왔는지 확인 후 결과값 주입");
-        if(!savedAdmin.getName().isEmpty()){
+        if (!savedAdmin.getName().isEmpty()) {
             LOGGER.info("[signUpAdmin] 정상 처리 완료 ");
             setSuccessResult(signUpResponse);
-        }else{
+        } else {
             LOGGER.info("[signUpAdmin] 실패 처리 완료 ");
             setFailResult(signUpResponse);
         }
@@ -176,7 +177,7 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public void updateUserInfo(Member member,UserInfoUpdateRequest userInfo) {
+    public void updateUserInfo(Member member, UserInfoUpdateRequest userInfo) {
         member.setBirth(userInfo.getBirth());
         member.setMajor(userInfo.getMajor());
         member.setNickName(userInfo.getNickName());
@@ -191,27 +192,27 @@ public class SignServiceImpl implements SignService {
         String subject = "Ycomplaint 아이디찾기입니다!";
 
         return emailSender.sendMail(EmailDTO.builder()
-                        .email(email)
-                        .content(content)
-                        .subject(subject)
-                        .mailFlag("id")
-                        .build());
+                .email(email)
+                .content(content)
+                .subject(subject)
+                .mailFlag("id")
+                .build());
 
     }
 
     @Override
-    public String findPassword(String id){
+    public String findPassword(String id) {
         Member member = memberRepository.getById(id); // 아이디로 이메일 찾기
-        if(member == null){
+        if (member == null) {
             LOGGER.info("[findPassword] 존재하지 않는 아이디입니다.");
             return "존재하지 않는 아이디입니다.";
         }
         String code = createCode();
         PasswordCode passwordCodeExists = passwordCodeRepository.findById(id);
-        if(passwordCodeExists != null){
+        if (passwordCodeExists != null) {
             passwordCodeExists.setCode(code);
             passwordCodeRepository.save(passwordCodeExists);
-        }else{
+        } else {
             passwordCodeRepository.save(PasswordCode.builder()
                     .code(code)
                     .member(member)
@@ -234,7 +235,7 @@ public class SignServiceImpl implements SignService {
     public String checkPasswordCode(String id, String code) {
         PasswordCode codeInfo = passwordCodeRepository.findById(id); // 디비에 저장되어 있는 코드
 
-        if(!codeInfo.getCode().equals(code)){
+        if (!codeInfo.getCode().equals(code)) {
             return "잘못된 코드 번호입니다 다시 한번 확인해주세요";
         }
 
@@ -259,9 +260,9 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public String updatePassword(Member member,String nowPassword,String newPassword) {
+    public String updatePassword(Member member, String nowPassword, String newPassword) {
 
-        if(!passwordEncoder.matches(nowPassword, member.getPassword())){
+        if (!passwordEncoder.matches(nowPassword, member.getPassword())) {
             return "비밀번호가 일치하지 않습니다";
         }
 
@@ -275,20 +276,14 @@ public class SignServiceImpl implements SignService {
     @Override
     public boolean checkId(String id) {
         Member member = memberRepository.getById(id);
-        if(member == null){
-            return true;
-        }
-        return false;
+        return member == null;
     }
 
     @Override
     public boolean checkEmail(String email) {
         String id = memberRepository.getIdToEmail(email);
         System.out.println(id);
-        if(id == null){
-            return true;
-        }
-        return false;
+        return id == null;
     }
 
     @Override
@@ -299,12 +294,13 @@ public class SignServiceImpl implements SignService {
         return operator.getQRcodeCategorySeq();
     }
 
-    private void setSuccessResult(SignUpResponse result){
+    private void setSuccessResult(SignUpResponse result) {
         result.setSuccess(true);
         result.setCode(CommonResponse.SUCCESS.getCode());
         result.setMsg(CommonResponse.SUCCESS.getMsg());
     }
-    private void setFailResult(SignUpResponse result){
+
+    private void setFailResult(SignUpResponse result) {
         result.setSuccess(true);
         result.setCode(CommonResponse.SUCCESS.getCode());
         result.setMsg(CommonResponse.SUCCESS.getMsg());
@@ -318,9 +314,14 @@ public class SignServiceImpl implements SignService {
             int index = random.nextInt(4);
 
             switch (index) {
-                case 0: key.append((char) ((int) random.nextInt(26) + 97)); break;
-                case 1: key.append((char) ((int) random.nextInt(26) + 65)); break;
-                default: key.append(random.nextInt(9));
+                case 0:
+                    key.append((char) (random.nextInt(26) + 97));
+                    break;
+                case 1:
+                    key.append((char) (random.nextInt(26) + 65));
+                    break;
+                default:
+                    key.append(random.nextInt(9));
             }
         }
         return key.toString();

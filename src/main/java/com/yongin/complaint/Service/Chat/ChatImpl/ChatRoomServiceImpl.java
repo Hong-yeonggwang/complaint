@@ -6,7 +6,6 @@ import com.yongin.complaint.DTO.ChatRoomMemberDTO;
 import com.yongin.complaint.JPA.Entity.ChatRoomInfo;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Repository.ChatRoomInfoRepository;
-import com.yongin.complaint.Payload.requset.ExitChatRoomRequest;
 import com.yongin.complaint.Payload.response.EnterChatRoomResponse;
 import com.yongin.complaint.Service.Chat.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +21,26 @@ import java.util.Optional;
 
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
-    SecureRandom secureRandom  = new SecureRandom(); // 채팅방 고유 ID를 생성하기 위한 랜덤 객체
+    SecureRandom secureRandom = new SecureRandom(); // 채팅방 고유 ID를 생성하기 위한 랜덤 객체
     ChatRoomInfoRepository chatRoomInfoRepository; //
     ChatRoomDAO chatRoomDAOImpl;
 
 
     @Autowired
-    public ChatRoomServiceImpl(ChatRoomInfoRepository chatRoomInfoRepository, ChatRoomDAO chatRoomDAOImpl){
+    public ChatRoomServiceImpl(ChatRoomInfoRepository chatRoomInfoRepository, ChatRoomDAO chatRoomDAOImpl) {
         this.chatRoomInfoRepository = chatRoomInfoRepository;
         this.chatRoomDAOImpl = chatRoomDAOImpl;
     }
 
     @Override
     public List<ChatRoomInfoDTO> getChatRoomInfoDTOList() {
-        List<ChatRoomInfo> chatRoomInfoList = chatRoomInfoRepository.findAll();;
+        List<ChatRoomInfo> chatRoomInfoList = chatRoomInfoRepository.findAll();
 
         List<ChatRoomInfoDTO> chatRoomInfoDTOList = new ArrayList<>();
 
         ChatRoomInfoDTO chatRoomInfoDTO;
         for (ChatRoomInfo chatRoom : chatRoomInfoList) {
-            chatRoomInfoDTO = new ChatRoomInfoDTO().builder()
+            chatRoomInfoDTO = ChatRoomInfoDTO.builder()
                     .chatRoomSeq(chatRoom.getChatRoomSeq())
                     .chatRoomId(chatRoom.getChatRoomId())
                     .chatRoomName(chatRoom.getChatRoomName())
@@ -66,10 +65,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 //            }
 //        }
 
-        for(int i = 0; i < chatRoomInfoDTOList.size(); ++i){
+        for (int i = 0; i < chatRoomInfoDTOList.size(); ++i) {
             System.out.println(chatRoomInfoDTOList.get(i));
 
-            for (ChatRoomMemberDTO member: chatRoomInfoDTOList.get(i).getMembers()) {
+            for (ChatRoomMemberDTO member : chatRoomInfoDTOList.get(i).getMembers()) {
                 System.out.println(member);
 
             }
@@ -105,7 +104,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             }
         }
 
-        List<Member> memberList = new ArrayList<>(){{
+        List<Member> memberList = new ArrayList<>() {{
             add(myInfo);
         }};
 
@@ -116,7 +115,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         newChatRoomInfo = chatRoomInfoRepository.save(newChatRoomInfo);
 
-        ChatRoomInfoDTO newChatRoomInfoDTO = new ChatRoomInfoDTO().builder()
+        ChatRoomInfoDTO newChatRoomInfoDTO = ChatRoomInfoDTO.builder()
                 .chatRoomSeq(newChatRoomInfo.getChatRoomSeq())
                 .chatRoomId(newChatRoomInfo.getChatRoomId())
                 .chatRoomName(newChatRoomInfo.getChatRoomName())
@@ -134,11 +133,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public EnterChatRoomResponse enterChatRoom(String chatRoomId, Member myInfo){
+    public EnterChatRoomResponse enterChatRoom(String chatRoomId, Member myInfo) {
         EnterChatRoomResponse enterChatRoomResponse = new EnterChatRoomResponse();
         ChatRoomInfoDTO chatRoomInfoDTO = chatRoomDAOImpl.getChatRoomInfoDTOWithMembers(chatRoomId);
 
-        if(chatRoomInfoDTO != null){ // 채팅방 존재
+        if (chatRoomInfoDTO != null) { // 채팅방 존재
             enterChatRoomResponse.setChatRoomExist(true);
 
             int currentNumberOfPeople = chatRoomInfoDTO.getCurrentNumberOfPeople();
@@ -153,10 +152,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             ChatRoomMemberDTO chatRoomMemberDTO;
             Long mySeq = myInfo.getMemberSeq();
 
-            for(int i = 0; i < chatRoomMemberDTOListSize; ++i){
-                chatRoomMemberDTO =  chatRoomMemberDTOList.get(i);
+            for (int i = 0; i < chatRoomMemberDTOListSize; ++i) {
+                chatRoomMemberDTO = chatRoomMemberDTOList.get(i);
 
-                if(mySeq == chatRoomMemberDTO.getMemberSeq()){ // 이미 내가 존재하는 방이면
+                if (mySeq == chatRoomMemberDTO.getMemberSeq()) { // 이미 내가 존재하는 방이면
                     // 채팅방 정보 등록
                     chatRoomInfoDTO.setMembers(chatRoomMemberDTOList);
                     enterChatRoomResponse.setChatRoomInfoDTO(chatRoomInfoDTO);
@@ -164,9 +163,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
                     // 바로 채팅방 이동
                     break;
-                }
-                else if(i + 1 == chatRoomMemberDTOListSize){ // 처음 들어가는 방이면 빈 자리 검사
-                    if(currentNumberOfPeople < chatRoomInfoDTO.getChatRoomLimited()){ // 채팅방 빈 자리 존재
+                } else if (i + 1 == chatRoomMemberDTOListSize) { // 처음 들어가는 방이면 빈 자리 검사
+                    if (currentNumberOfPeople < chatRoomInfoDTO.getChatRoomLimited()) { // 채팅방 빈 자리 존재
                         enterChatRoomResponse.setChatRoomRemaining(true);
 
                         // 채팅방에 내 정보 추가하고
@@ -175,26 +173,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                         // DB 업데이트
                         ChatRoomInfo chatRoomInfo = chatRoomInfoRepository.findByChatRoomSeq(chatRoomInfoDTO.getChatRoomSeq());
                         chatRoomInfo.getMembers().add(myInfo);
-                        chatRoomInfo.setCurrentNumberOfPeople(currentNumberOfPeople+1);
+                        chatRoomInfo.setCurrentNumberOfPeople(currentNumberOfPeople + 1);
                         chatRoomInfo = chatRoomInfoRepository.save(chatRoomInfo);
 
                         System.out.println("chatRoomInfo: " + chatRoomInfo);
 
                         // DTO 정보 업데이트
                         chatRoomInfoDTO.getMembers().add(new ChatRoomMemberDTO(myInfo.getMemberSeq(), myInfo.getNickName()));
-                        chatRoomInfoDTO.setCurrentNumberOfPeople(currentNumberOfPeople+1);
+                        chatRoomInfoDTO.setCurrentNumberOfPeople(currentNumberOfPeople + 1);
                         System.out.println("chatRoomInfoDTO: " + chatRoomInfoDTO);
 
                         // 업데이트 된 채팅방 정보 등록
                         enterChatRoomResponse.setChatRoomInfoDTO(chatRoomInfoDTO);
                         // 채팅방 이동
-                    }
-                    else // 채팅방 빈 자리 X
+                    } else // 채팅방 빈 자리 X
                         enterChatRoomResponse.setChatRoomRemaining(false);
                 }
             }
-        }
-        else // 채팅방 존재 X
+        } else // 채팅방 존재 X
             enterChatRoomResponse.setChatRoomExist(false);
 
         return enterChatRoomResponse;
@@ -205,11 +201,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void exitChatRoom(Long chatRoomSeq, int currentNumberOfPeople, Member myInfo) {
         Optional<ChatRoomInfo> optionalChatRoomInfo = chatRoomInfoRepository.findById(chatRoomSeq);
         ChatRoomInfo chatRoomInfo = optionalChatRoomInfo.get();
-        List<Member> memberList =  chatRoomInfo.getMembers();
+        List<Member> memberList = chatRoomInfo.getMembers();
 
-        for(Member member : memberList){
-            if(member.getMemberSeq() == myInfo.getMemberSeq()){
-                chatRoomInfo.setCurrentNumberOfPeople(chatRoomInfo.getCurrentNumberOfPeople()-1);
+        for (Member member : memberList) {
+            if (member.getMemberSeq() == myInfo.getMemberSeq()) {
+                chatRoomInfo.setCurrentNumberOfPeople(chatRoomInfo.getCurrentNumberOfPeople() - 1);
                 memberList.remove(member);
                 break;
             }

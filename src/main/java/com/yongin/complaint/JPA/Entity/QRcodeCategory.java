@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class QRcodeCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="QRCODE_CATEGORY_SEQ_PK")
+    @Column(name = "QRCODE_CATEGORY_SEQ_PK")
     private Long qrCategorySeq;
 
     @Column(name = "NAME")

@@ -12,12 +12,13 @@ public class QRcodeStatisticsDTO {
     private String placeName;
     private Long count;
 
-    public QRcodeStatisticsDTO(String status, Long count, String placeName){
+    public QRcodeStatisticsDTO(String status, Long count, String placeName) {
         this.status = status;
         this.count = count;
         this.placeName = placeName;
     }
-    public QRcodeStatisticsDTO(Long count, String placeName){
+
+    public QRcodeStatisticsDTO(Long count, String placeName) {
         this.count = count;
         this.placeName = placeName;
     }

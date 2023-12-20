@@ -2,7 +2,6 @@ package com.yongin.complaint.DAO.Impl;
 
 import com.yongin.complaint.DAO.QRcodeDAO;
 import com.yongin.complaint.DTO.Member.QRcodeLogDTO;
-import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
 import com.yongin.complaint.JPA.Repository.QRcodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +12,18 @@ import java.util.List;
 
 @Component
 public class QRcodeDAOImpl implements QRcodeDAO {
-    private QRcodeRepository qrCodeRepository;
+    private final QRcodeRepository qrCodeRepository;
 
     @Autowired
-    public QRcodeDAOImpl(QRcodeRepository qrCodeRepository){
+    public QRcodeDAOImpl(QRcodeRepository qrCodeRepository) {
         this.qrCodeRepository = qrCodeRepository;
     }
+
     @Override
     public QRcode existQRcode(String serial) {
         return qrCodeRepository.existsQRcode(serial);
     }
+
     @Override
     @Transactional
     public List<QRcode> getQRcodeList(String memberId) {

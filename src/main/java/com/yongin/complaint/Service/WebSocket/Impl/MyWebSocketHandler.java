@@ -21,13 +21,23 @@ import java.util.List;
 @Component
 public class MyWebSocketHandler extends TextWebSocketHandler {
 //     HashMap<String, WebSocketSession> sessionMap = new HashMap<>(); // 웹소켓 세션을 담아둘 맵
+    @Autowired
+    ChatHistoryRepository chatHistoryRepository;
     /**
      * 채팅방 목록 > 채팅방 별 세션들
      */
-    private List<HashMap<String, Object>> roomListSessions = new ArrayList<>(); // 웹소켓 세션을 담아둘 리스트
+    private final List<HashMap<String, Object>> roomListSessions = new ArrayList<>(); // 웹소켓 세션을 담아둘 리스트
 
-    @Autowired
-    ChatHistoryRepository chatHistoryRepository;
+    private static JSONObject jsonToObjectParser(String jsonStr) {
+        JSONParser parser = new JSONParser();
+        JSONObject obj = null;
+        try {
+            obj = (JSONObject) parser.parse(jsonStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
@@ -55,13 +65,13 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 //        }
 
         // 채팅중인 방번호
-        String chatRoomId = (String)jsonObject.get("chatRoomId");
+        String chatRoomId = (String) jsonObject.get("chatRoomId");
         System.out.println("chatRoomId: " + chatRoomId);
         HashMap<String, Object> chatRoom = null;
 
         // 소켓이 열린 채팅방이 존재할 때
-        if(roomListSessions.size() > 0){
-            for(int i = 0; i < roomListSessions.size(); ++i) {
+        if (roomListSessions.size() > 0) {
+            for (int i = 0; i < roomListSessions.size(); ++i) {
                 String tempRoomId = (String) roomListSessions.get(i).get("chatRoomId");
 
                 // 해당하는 방번호를 가진 세션리스트의 Object 검색
@@ -72,16 +82,15 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             }
             System.out.println("chatRoom: " + chatRoom);
 
-            for(String key : chatRoom.keySet()){
-                if(key.equals("chatRoomId")) continue; // 채팅방 Id 스킵
+            for (String key : chatRoom.keySet()) {
+                if (key.equals("chatRoomId")) continue; // 채팅방 Id 스킵
 
                 WebSocketSession wss = (WebSocketSession) chatRoom.get(key);
 
-                if(wss != null){
+                if (wss != null) {
                     try {
                         wss.sendMessage(new TextMessage(jsonObject.toJSONString()));
-                    }
-                    catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -89,13 +98,13 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
             // 세션 빼고 다 저장
             chatHistoryRepository.save(new ChatHistory().builder()
-                            .messageType((String)jsonObject.get("messageType"))
-                            .chatRoomId((String)jsonObject.get("chatRoomId"))
-                            .memberSeq((Long)jsonObject.get("memberSeq"))
-                            .nickName((String)jsonObject.get("nickName"))
-                            .msg((String)jsonObject.get("msg"))
-                            .chatHistoryTime(chatHistoryTime)
-                            .build()
+                    .messageType((String) jsonObject.get("messageType"))
+                    .chatRoomId((String) jsonObject.get("chatRoomId"))
+                    .memberSeq((Long) jsonObject.get("memberSeq"))
+                    .nickName((String) jsonObject.get("nickName"))
+                    .msg((String) jsonObject.get("msg"))
+                    .chatHistoryTime(chatHistoryTime)
+                    .build()
             );
         }
     }
@@ -115,18 +124,18 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionEstablished(session);
         boolean roomExist = false;
         String url = session.getUri().toString();
-        System.out.println("client Conneted session: " + session);
-        System.out.println("client Conneted : " + url);
+        System.out.println("client Connected session: " + session);
+        System.out.println("client Connected : " + url);
 
         String tempRoomId = url.split("/chat/")[1];
         int chatRoomIdx = roomListSessions.size(); // 사이즈 겸 현재 채팅방 인덱스
 
-        if(chatRoomIdx > 0){
-            for(int i = 0; i < chatRoomIdx; ++i){
-                String chatRoomId = (String)roomListSessions.get(i).get("chatRoomId");
+        if (chatRoomIdx > 0) {
+            for (int i = 0; i < chatRoomIdx; ++i) {
+                String chatRoomId = (String) roomListSessions.get(i).get("chatRoomId");
                 System.out.println("afterConnectionEstablished: " + chatRoomId);
-                
-                if(chatRoomId.equals(tempRoomId)){
+
+                if (chatRoomId.equals(tempRoomId)) {
                     roomExist = true;
                     chatRoomIdx = i;
                     break;
@@ -134,11 +143,10 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             }
         }
 
-        if(roomExist){ // 이미 존재하는 방에 세션 추가
+        if (roomExist) { // 이미 존재하는 방에 세션 추가
             HashMap<String, Object> chatRoom = roomListSessions.get(chatRoomIdx);
             chatRoom.put(session.getId(), session);
-        }
-        else{   // 새로운 채팅방 세션 등록
+        } else {   // 새로운 채팅방 세션 등록
             HashMap<String, Object> newChatRoom = new HashMap<>();
             newChatRoom.put("chatRoomId", tempRoomId);
             newChatRoom.put(session.getId(), session);
@@ -165,23 +173,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         System.out.println("client Closed : " + session.getUri().toString());
 
         // 소켓 종료
-        if(roomListSessions.size() > 0){ // 소켓 종료시 해당하는 세션 삭제
-            for(int i = 0; i < roomListSessions.size(); ++i){
+        if (roomListSessions.size() > 0) { // 소켓 종료시 해당하는 세션 삭제
+            for (int i = 0; i < roomListSessions.size(); ++i) {
                 roomListSessions.get(i).remove(session.getId());
             }
         }
         super.afterConnectionClosed(session, status);
-    }
-
-
-    private static JSONObject jsonToObjectParser(String jsonStr) {
-        JSONParser parser = new JSONParser();
-        JSONObject obj = null;
-        try {
-            obj = (JSONObject)parser.parse(jsonStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return obj;
     }
 }

@@ -18,6 +18,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("select new com.yongin.complaint.DTO.Board.UserPostDTO(b.subject,b.content,b.tag,b.boardSeq,b.writer.name, b.status,b.regulationDate,b.completeDate) from Board b where b.status = 'yes'")
     List<UserPostDTO> getAllPostYes();
+
     @Query("select new com.yongin.complaint.DTO.Board.AdminPostDTO(b.subject,b.content,b.tag,b.boardSeq,b.writer.name,b.writer.phoneNumber,b.writer.email, b.status,b.regulationDate,b.completeDate,b.comment) from Board b where b.boardSeq = :SEQ")
     AdminPostDTO findToId(@Param(value = "SEQ") Long seq);
 }

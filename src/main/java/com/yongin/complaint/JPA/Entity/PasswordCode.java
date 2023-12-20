@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class PasswordCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="PASSWORDCODE_SEQ_PK")
+    @Column(name = "PASSWORDCODE_SEQ_PK")
     private Long passwordCodeSeq;
 
     @OneToOne

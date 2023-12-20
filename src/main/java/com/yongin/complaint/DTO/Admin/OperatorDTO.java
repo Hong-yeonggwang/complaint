@@ -12,7 +12,8 @@ public class OperatorDTO {
     private String name;
     private String phoneNumber;
     private QRcodeCategory qRcodeCategory;
-    public OperatorDTO(String name, QRcodeCategory qRcodeCategory,String phoneNumber){
+
+    public OperatorDTO(String name, QRcodeCategory qRcodeCategory, String phoneNumber) {
         this.name = name;
         this.qRcodeCategory = qRcodeCategory;
         this.phoneNumber = phoneNumber;

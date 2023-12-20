@@ -15,7 +15,7 @@ public class CategoryDTO {
     private List<Place> place;
     private List<QRcodeCategory> category;
 
-    public CategoryDTO(List<Place> place , List<QRcodeCategory> category){
+    public CategoryDTO(List<Place> place, List<QRcodeCategory> category) {
         this.place = place;
         this.category = category;
     }

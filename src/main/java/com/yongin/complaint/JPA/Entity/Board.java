@@ -1,7 +1,6 @@
 package com.yongin.complaint.JPA.Entity;
 
 import com.yongin.complaint.Common.BoardTagEnum;
-import com.yongin.complaint.Common.MemberRoleEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="BOARD_SEQ_PK")
+    @Column(name = "BOARD_SEQ_PK")
     private Long boardSeq;
 
     @Column(name = "TAG")

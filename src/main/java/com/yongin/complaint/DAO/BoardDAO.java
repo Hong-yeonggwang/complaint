@@ -13,8 +13,12 @@ public interface BoardDAO {
     Board savePost(BoardWriteDTO boardWriteDTO, Member writer);
 
     List<UserPostDTO> getUserPost(Member member);
+
     List<UserPostDTO> getAllPostNo();
+
     List<UserPostDTO> getAllPostYes();
+
     AdminPostDTO getSeqPost(Long seq);
+
     Board addComment(Long seq, String comment);
 }

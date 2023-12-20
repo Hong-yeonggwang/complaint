@@ -5,7 +5,6 @@ import com.yongin.complaint.DTO.Admin.*;
 import com.yongin.complaint.JPA.Entity.Coupon;
 import com.yongin.complaint.JPA.Entity.Place;
 import com.yongin.complaint.JPA.Entity.QRcodeCategory;
-import com.yongin.complaint.Payload.response.Admin.CategoryDTO;
 import com.yongin.complaint.Payload.response.Admin.CouponUseRateResponse;
 import com.yongin.complaint.Payload.response.Admin.ServiceStatusResponse;
 import com.yongin.complaint.Service.Admin.AdminService;
@@ -22,7 +21,7 @@ public class AdminServiceImpl implements AdminService {
     private final AdminDAO adminDAO;
 
     @Autowired
-    public AdminServiceImpl (AdminDAO adminDAO){
+    public AdminServiceImpl(AdminDAO adminDAO) {
         this.adminDAO = adminDAO;
     }
 
@@ -33,7 +32,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String updateCategory(CategoryUpdateDTO categoryUpdateDTO){
+    public String updateCategory(CategoryUpdateDTO categoryUpdateDTO) {
         adminDAO.updateCategory(categoryUpdateDTO);
         return "정상적으로 입력되었습니다.";
     }
@@ -121,7 +120,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public CategoryPlaceDTO getCategoryList() {
         List<QRcodeCategory> categoryInfo = adminDAO.getAllCategory();
-        List<Place>  placeInfo = adminDAO.getAllPlace();
+        List<Place> placeInfo = adminDAO.getAllPlace();
         return CategoryPlaceDTO.builder().place(placeInfo).category(categoryInfo).build();
     }
 

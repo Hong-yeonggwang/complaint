@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CouponRepository extends JpaRepository<Coupon,Long> {
+public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
     @Query("SELECT c FROM Coupon c join fetch c.qrCodeCategory q WHERE c.serial = :SERIAL")
     Coupon getBySerial(@Param("SERIAL") String serial);

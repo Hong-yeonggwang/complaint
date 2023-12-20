@@ -1,7 +1,7 @@
 package com.yongin.complaint.JPA.Repository;
 
-import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
 import com.yongin.complaint.DTO.Admin.QRcodeDateDTO;
+import com.yongin.complaint.DTO.Admin.QRcodeStatisticsDTO;
 import com.yongin.complaint.DTO.Member.QRcodeLogDTO;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.JPA.Entity.QRcode;
@@ -9,11 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
-public interface QRcodeRepository extends JpaRepository<QRcode,Long> {
+public interface QRcodeRepository extends JpaRepository<QRcode, Long> {
 
     @Query("SELECT q from QRcode q join fetch q.category where q.qrCode = :SERIAL")
     QRcode existsQRcode(@Param("SERIAL") String qrCodeSerial);
@@ -40,12 +39,12 @@ public interface QRcodeRepository extends JpaRepository<QRcode,Long> {
     @Query("select count(e)" +
             "from QRcode e where " +
             "CONCAT(EXTRACT(YEAR FROM e.useDate), '-', LPAD(EXTRACT(MONTH FROM e.useDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.useDate), 2, '0')) = :TODAY")
-    Long getTodayUsedQrcodeCount(@Param(value = "TODAY")String today);
+    Long getTodayUsedQrcodeCount(@Param(value = "TODAY") String today);
 
     @Query("select count(e)" +
             "from QRcode e where " +
             "CONCAT(EXTRACT(YEAR FROM e.regulationDate), '-', LPAD(EXTRACT(MONTH FROM e.regulationDate), 2, '0'), '-', LPAD(EXTRACT(DAY FROM e.regulationDate), 2, '0')) = :TODAY")
-    Long getTodayCreatedQrcodeCount(@Param(value = "TODAY")String today);
+    Long getTodayCreatedQrcodeCount(@Param(value = "TODAY") String today);
 
     @Query("select count(q) from QRcode q where (q.status ='none' or q.status = null) and q.useDate= null")
     Long getRemainQrcodeCount();

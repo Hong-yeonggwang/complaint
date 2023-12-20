@@ -3,7 +3,6 @@ package com.yongin.complaint.JPA.Entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -16,7 +15,7 @@ import javax.validation.constraints.NotNull;
 public class Operator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="OPERATOR_SEQ_PK")
+    @Column(name = "OPERATOR_SEQ_PK")
     private Long operatorSeq;
 
     @OneToOne

@@ -13,17 +13,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtProvider jwtProvider;
 
     @Autowired
-    public SecurityConfiguration(JwtProvider jwtProvider){
+    public SecurityConfiguration(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
+
     @Override
-    protected void configure (HttpSecurity httpSecurity) throws Exception{
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/v1/auth/sign-in","/v1/auth/sign-up").permitAll()
+                .antMatchers("/v1/auth/sign-in", "/v1/auth/sign-up").permitAll()
                 .antMatchers("/v1/auth/sign-up/admin").hasRole("ADMIN") // admin 경로는 ADMIN 역할을 가진 사용자에게만 허용
                 .anyRequest().authenticated()
                 .and()
@@ -34,10 +35,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
     }
+
     @Override
-    public void configure(WebSecurity webSecurity){
-        webSecurity.ignoring().antMatchers("/chat/**","/v1/auth/sign-in","/v1/auth/sign-up"
-        ,"/v1/auth/id","/v1/auth/passwordcode","/v1/auth/password","/v1/auth/email"
+    public void configure(WebSecurity webSecurity) {
+        webSecurity.ignoring().antMatchers("/chat/**", "/v1/auth/sign-in", "/v1/auth/sign-up"
+                , "/v1/auth/id", "/v1/auth/passwordcode", "/v1/auth/password", "/v1/auth/email"
         ); //,"/getChatRoom"
     }
 }

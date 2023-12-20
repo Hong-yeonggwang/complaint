@@ -3,11 +3,11 @@ package com.yongin.complaint.Controller;
 import com.yongin.complaint.JPA.Entity.Member;
 import com.yongin.complaint.Payload.requset.SignInRequest;
 import com.yongin.complaint.Payload.requset.SignUpAdminRequest;
+import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.requset.UserInfoUpdateRequest;
 import com.yongin.complaint.Payload.response.MemberInfoResponse;
 import com.yongin.complaint.Payload.response.OperatorInfoResponse;
 import com.yongin.complaint.Payload.response.SignInResponse;
-import com.yongin.complaint.Payload.requset.SignUpRequest;
 import com.yongin.complaint.Payload.response.SignUpResponse;
 import com.yongin.complaint.Service.security.SignService;
 import org.slf4j.Logger;
@@ -33,21 +33,22 @@ public class AuthController {
     private final SignService signService;
 
     @Autowired
-    public AuthController(SignService signService){
+    public AuthController(SignService signService) {
         this.signService = signService;
     }
 
     @PostMapping(value = "/sign-in")
-    public ResponseEntity signIn(@RequestBody SignInRequest signInRequest){
+    public ResponseEntity signIn(@RequestBody SignInRequest signInRequest) {
         LOGGER.info("[signIn] 로그인을 시도하고 있습니다.");
         SignInResponse signInResultDTO = signService.signIn(signInRequest.getId(), signInRequest.getPassword());
-            if(signInResultDTO.getCode() == 0){
-                LOGGER.info("[signIn] 정상적으로 로그인되었습니다.");
-            }
-            return ResponseEntity.ok(signInResultDTO);
+        if (signInResultDTO.getCode() == 0) {
+            LOGGER.info("[signIn] 정상적으로 로그인되었습니다.");
+        }
+        return ResponseEntity.ok(signInResultDTO);
     }
+
     @PostMapping(value = "/sign-up")
-    public SignUpResponse signUp(@Validated @RequestBody SignUpRequest signUpRequest){
+    public SignUpResponse signUp(@Validated @RequestBody SignUpRequest signUpRequest) {
         LOGGER.info("[signUp] 회원가입을 수행합니다.");
         SignUpResponse signUpResponse = signService.signUp(signUpRequest);
         LOGGER.info("[signUp] 회원가입 완료.");
@@ -56,7 +57,7 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/sign-up/admin")
-    public SignUpResponse signUpAdmin(@Validated @RequestBody SignUpAdminRequest signUpAdminRequest){
+    public SignUpResponse signUpAdmin(@Validated @RequestBody SignUpAdminRequest signUpAdminRequest) {
         LOGGER.info("[signUpAdmin] 관리자 아이디를 생성을 시작합니다.");
         SignUpResponse signUpResponse = signService.signUpAdmin(signUpAdminRequest);
         LOGGER.info("[signUpAdmin] 회원가입 완료.");
@@ -65,7 +66,7 @@ public class AuthController {
 
     @Transactional
     @PostMapping(value = "/memeberinfo")
-    public MemberInfoResponse getMemberInfo(){
+    public MemberInfoResponse getMemberInfo() {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Member member = (Member) auth.getPrincipal();
@@ -79,7 +80,7 @@ public class AuthController {
                     .build();
 
             return info;
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new RuntimeException();
         }
 
@@ -87,7 +88,7 @@ public class AuthController {
 
     @Transactional
     @PostMapping(value = "/memeberinfo/operator")
-    public OperatorInfoResponse getOperatorInfo(){
+    public OperatorInfoResponse getOperatorInfo() {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Member member = (Member) auth.getPrincipal();
@@ -99,74 +100,77 @@ public class AuthController {
                     .build();
 
             return info;
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new RuntimeException();
         }
 
     }
+
     @PutMapping(value = "/memberinfo")
     @Transactional
-    public void updateUserInfo(@Validated @RequestBody UserInfoUpdateRequest userInfo){
-        LOGGER.info("[updateUserInfo]:{}",userInfo.toString());
+    public void updateUserInfo(@Validated @RequestBody UserInfoUpdateRequest userInfo) {
+        LOGGER.info("[updateUserInfo]:{}", userInfo.toString());
         System.out.println(userInfo.getMajor());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member)auth.getPrincipal();
+        Member member = (Member) auth.getPrincipal();
 
-        signService.updateUserInfo(member,userInfo);
+        signService.updateUserInfo(member, userInfo);
     }
 
     @GetMapping(value = "/id")
-    public String findId(@RequestParam Map<String,String> params){
+    public String findId(@RequestParam Map<String, String> params) {
         String email = params.get("email");
-        LOGGER.info("[findId] email:{}",email);
+        LOGGER.info("[findId] email:{}", email);
         return signService.findId(email);
     }
+
     @GetMapping(value = "/passwordcode")
-    public String sendPasswordCode(@RequestParam Map<String,String> params){
+    public String sendPasswordCode(@RequestParam Map<String, String> params) {
         String id = params.get("id");
         return signService.findPassword(id);
     }
+
     @PostMapping(value = "/passwordcode")
-    public String checkPasswordCode(@RequestBody Map<String, String> params){
+    public String checkPasswordCode(@RequestBody Map<String, String> params) {
         String code = params.get("code");
         String id = params.get("id");
-        return signService.checkPasswordCode(id,code);
+        return signService.checkPasswordCode(id, code);
     }
 
     @PutMapping(value = "/password")
-    public String updatePassword(@RequestBody Map<String,String> params){
+    public String updatePassword(@RequestBody Map<String, String> params) {
         String newPassword = params.get("newPassword");
         String nowPassword = params.get("nowPassword");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Member member = (Member)auth.getPrincipal();
+        Member member = (Member) auth.getPrincipal();
 
-        return signService.updatePassword(member,nowPassword,newPassword);
+        return signService.updatePassword(member, nowPassword, newPassword);
     }
 
     @PostMapping(value = "/id")
-    public boolean checkID(@RequestBody Map<String,String> params){
+    public boolean checkID(@RequestBody Map<String, String> params) {
         String checkId = params.get("id");
         return signService.checkId(checkId);
     }
 
     @PostMapping(value = "/email")
-    public boolean checkEmail(@RequestBody Map<String,String> params){
+    public boolean checkEmail(@RequestBody Map<String, String> params) {
         String checkEmail = params.get("email");
         return signService.checkEmail(checkEmail);
     }
 
     @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<Map<String,String>> ExceptionHandler(RuntimeException e){
+    public ResponseEntity<Map<String, String>> ExceptionHandler(RuntimeException e) {
         HttpHeaders responseHeaders = new HttpHeaders();
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         LOGGER.info("ExceptionHandler 호출.");
         LOGGER.info("원인: {}", e.toString());
         e.printStackTrace();
 
-        Map<String,String> map = new HashMap<>();
-        map.put("error type",httpStatus.getReasonPhrase());
-        map.put("code","400");
-        map.put("message", e.getMessage() != null ? e.getMessage().toString() : "에러 발생");
-        return new ResponseEntity<>(map,responseHeaders,httpStatus);
+        Map<String, String> map = new HashMap<>();
+        map.put("error type", httpStatus.getReasonPhrase());
+        map.put("code", "400");
+        map.put("message", e.getMessage() != null ? e.getMessage() : "에러 발생");
+        return new ResponseEntity<>(map, responseHeaders, httpStatus);
     }
 }

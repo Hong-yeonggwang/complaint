@@ -27,50 +27,50 @@ import java.util.List;
 public class JwtProvider {
     private final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
     private final MemberDetailsService memberDetailsService;
-
+    private final long tokenValidMillisecond = 1000L * 60 * 60;
     @Value("${spring.jwt.secret}")
     private String secretKey;
-    private final long tokenValidMillisecond = 1000L*60*60;
 
     @PostConstruct // 의존성이 주입된 이후 시작되는 메서드.
-    protected void init(){
+    protected void init() {
         LOGGER.info("[init] JwtProvider내 secretKey 초기화 시작");
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
         LOGGER.info(secretKey);
         LOGGER.info("[init] JwtProvider내 secretKey 완료");
     }
 
-    public String createToken(String userUid , List<String> roles){
+    public String createToken(String userUid, List<String> roles) {
         LOGGER.info("[createToken] 토큰 생성 시작.");
         Claims claims = Jwts.claims().setSubject(userUid);
-        claims.put("roles",roles);
+        claims.put("roles", roles);
         Date now = new Date();
 
-        String token  = Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + tokenValidMillisecond))
-                .signWith(SignatureAlgorithm.HS256,secretKey)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
         LOGGER.info("[createToken] 토큰 생성 완료");
         return token;
     }
-    public Authentication getAuthentication(String token){
+
+    public Authentication getAuthentication(String token) {
         LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 시작");
         UserDetails userDetails = memberDetailsService.loadUserByUsername(this.getUsername(token));
-        LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 완료, UserDetails UserName :{}, {}",userDetails.getUsername(),userDetails.getAuthorities());
-        return new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
+        LOGGER.info("[getAuthentication] 토큰 인증 정보 조회 완료, UserDetails UserName :{}, {}", userDetails.getUsername(), userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String getUsername (String token){
+    public String getUsername(String token) {
         LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
         String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-        LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료, info:{}",info);
-        LOGGER.info("[getUsername]",Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody());
+        LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료, info:{}", info);
+        LOGGER.info("[getUsername]", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody());
         return info;
     }
 
-    public String getUserInfo(HttpServletRequest servletRequest){
+    public String getUserInfo(HttpServletRequest servletRequest) {
         LOGGER.info("[getUserInfo] 회원 정보 추출");
         String token = servletRequest.getHeader("X-AUTH-TOKEN");
         String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
@@ -78,21 +78,22 @@ public class JwtProvider {
         return info;
     }
 
-    public String resolveToken(HttpServletRequest request){
+    public String resolveToken(HttpServletRequest request) {
         LOGGER.info("[resolveToken] HTTP 헤더에서 Token 값 추출");
 //        if(request.getHeader("X-AUTH-TOKEN") != null){
-            return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader("X-AUTH-TOKEN");
 //        }
 //        else{
 //            return request.getHeader("Sec-WebSocket-Protocol");
 //        }
     }
-    public boolean validateToken(String token){
+
+    public boolean validateToken(String token) {
         LOGGER.info("[validateToken] 토큰 유효 체크 시작");
-        try{
+        try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.info("[validateToken] 토큰 유효 체크 예외 발생");
             return false;
         }
